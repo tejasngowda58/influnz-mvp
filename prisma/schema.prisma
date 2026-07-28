@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CREATOR
+  BRAND
+}
+
+enum ContentCategory {
+  FASHION
+  BEAUTY
+  TECH
+  FOOD
+  FITNESS
+  TRAVEL
+  OTHER
+}
+
+model User {
+  id             String          @id @default(uuid())
+  email          String          @unique
+  passwordHash   String
+  role           UserRole
+  createdAt      DateTime        @default(now())
+  creatorProfile CreatorProfile?
+  brandProfile   BrandProfile?
+}
+
+model CreatorProfile {
+  id              String          @id @default(uuid())
+  userId          String          @unique
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String
+  phone           String
+  instagramHandle String
+  contentCategory ContentCategory
+  city            String
+}
+
+model BrandProfile {
+  id               String @id @default(uuid())
+  userId           String @unique
+  user             User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name             String
+  companyName      String
+  workEmail        String
+  companyWebsite   String
+  industryCategory String
+  city             String
+}
