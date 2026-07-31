@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, getSession } from "next-auth/react";
 import { Field } from "../_components/field";
+import { getDashboardPath } from "@/lib/dashboard-path";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,7 +39,13 @@ export default function LoginPage() {
     const session = await getSession();
     const role = session?.user?.role;
 
-    router.push(role === "CREATOR" ? "/dashboard/creator" : "/dashboard/brand");
+    if (!role) {
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
+      return;
+    }
+
+    router.push(getDashboardPath(role));
   }
 
   return (
