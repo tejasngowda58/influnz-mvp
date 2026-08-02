@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Field } from "../../_components/field";
+import { AuthShell } from "../../_components/auth-shell";
+import { Button } from "../../_components/ui/button";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const WEBSITE_REGEX = /^\S+\.\S+$/;
@@ -115,16 +118,19 @@ export default function BrandSignupPage() {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center px-6 py-16 sm:py-24">
-      <div className="w-full max-w-md rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Sign up as a Brand
-        </h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Create your brand profile and start discovering creators.
-        </p>
+    <AuthShell
+      eyebrow="For brand managers"
+      title="Find authentic creators for your next campaign"
+      pitch="Search and filter creators by niche, city, and audience, then manage every collaboration and payout from one dashboard."
+    >
+      <h1 className="text-2xl font-semibold text-gray-900">
+        Sign up as a Brand
+      </h1>
+      <p className="mt-2 text-sm text-gray-600">
+        Create your brand profile and start discovering creators.
+      </p>
 
-        <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-4">
+      <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-4">
           <Field
             label="Your name"
             id="name"
@@ -191,15 +197,21 @@ export default function BrandSignupPage() {
 
           {submitError && <p className="text-sm text-red-600">{submitError}</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 rounded-full bg-orange-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-orange-700 disabled:opacity-60"
-          >
+          <Button type="submit" disabled={loading} className="mt-2 w-full">
             {loading ? "Creating account..." : "Sign up as Brand"}
-          </button>
-        </form>
-      </div>
-    </main>
+          </Button>
+      </form>
+
+      <p className="mt-6 text-center text-sm text-gray-600">
+        Already have an account?{" "}
+        <Link href="/login" className="font-medium text-orange-600 hover:text-orange-700">
+          Log in
+        </Link>{" "}
+        &middot;{" "}
+        <Link href="/signup/creator" className="font-medium text-orange-600 hover:text-orange-700">
+          Sign up as a creator
+        </Link>
+      </p>
+    </AuthShell>
   );
 }

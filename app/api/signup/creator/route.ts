@@ -20,6 +20,7 @@ interface CreatorSignupBody {
   instagramHandle?: string;
   contentCategory?: string;
   city?: string;
+  followerCount?: number;
   password?: string;
 }
 
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { name, email, phone, instagramHandle, contentCategory, city, password } = body;
+  const { name, email, phone, instagramHandle, contentCategory, city, followerCount, password } = body;
 
   if (!name || !email || !phone || !instagramHandle || !contentCategory || !city || !password) {
     return NextResponse.json(
@@ -45,6 +46,10 @@ export async function POST(request: Request) {
       { error: `contentCategory must be one of: ${CONTENT_CATEGORIES.join(", ")}` },
       { status: 400 },
     );
+  }
+
+  if (followerCount != null && !(Number(followerCount) >= 0)) {
+    return NextResponse.json({ error: "followerCount must be a non-negative number" }, { status: 400 });
   }
 
   try {
@@ -68,6 +73,7 @@ export async function POST(request: Request) {
               instagramHandle,
               contentCategory: contentCategory as ContentCategory,
               city,
+              followerCount: followerCount != null ? Math.round(Number(followerCount)) : null,
             },
           },
         },

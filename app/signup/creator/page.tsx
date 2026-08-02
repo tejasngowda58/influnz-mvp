@@ -1,19 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Field } from "../../_components/field";
-
-const CONTENT_CATEGORIES = [
-  { value: "FASHION", label: "Fashion" },
-  { value: "BEAUTY", label: "Beauty" },
-  { value: "TECH", label: "Tech" },
-  { value: "FOOD", label: "Food" },
-  { value: "FITNESS", label: "Fitness" },
-  { value: "TRAVEL", label: "Travel" },
-  { value: "OTHER", label: "Other" },
-] as const;
+import { Field, SelectField } from "../../_components/field";
+import { AuthShell } from "../../_components/auth-shell";
+import { Button } from "../../_components/ui/button";
+import { CONTENT_CATEGORIES } from "@/lib/content-categories";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -24,6 +18,7 @@ interface FormState {
   instagramHandle: string;
   contentCategory: string;
   city: string;
+  followerCount: string;
   password: string;
 }
 
@@ -36,6 +31,7 @@ const initialFormState: FormState = {
   instagramHandle: "",
   contentCategory: "",
   city: "",
+  followerCount: "",
   password: "",
 };
 
@@ -63,6 +59,9 @@ export default function CreatorSignupPage() {
     if (!form.instagramHandle.trim()) nextErrors.instagramHandle = "Instagram handle is required";
     if (!form.contentCategory) nextErrors.contentCategory = "Select a content category";
     if (!form.city.trim()) nextErrors.city = "City is required";
+    if (form.followerCount.trim() && !(Number(form.followerCount) >= 0)) {
+      nextErrors.followerCount = "Enter a valid follower count";
+    }
     if (!form.password) {
       nextErrors.password = "Password is required";
     } else if (form.password.length < 8) {
@@ -88,7 +87,10 @@ export default function CreatorSignupPage() {
       const response = await fetch("/api/signup/creator", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          followerCount: form.followerCount.trim() ? Number(form.followerCount) : undefined,
+        }),
       });
 
       const data = await response.json();
@@ -120,16 +122,19 @@ export default function CreatorSignupPage() {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center px-6 py-16 sm:py-24">
-      <div className="w-full max-w-md rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Sign up as a Creator
-        </h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Create your creator profile and start connecting with brands.
-        </p>
+    <AuthShell
+      eyebrow="For creators"
+      title="Get discovered, get paid"
+      pitch="Build a profile that showcases your content and audience, get matched with brands looking for creators like you, and negotiate collaborations securely."
+    >
+      <h1 className="text-2xl font-semibold text-gray-900">
+        Sign up as a Creator
+      </h1>
+      <p className="mt-2 text-sm text-gray-600">
+        Create your creator profile and start connecting with brands.
+      </p>
 
-        <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-4">
+      <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-4">
           <Field
             label="Name"
             id="name"
@@ -167,29 +172,25 @@ export default function CreatorSignupPage() {
             error={errors.instagramHandle}
           />
 
-          <div className="flex flex-col gap-1">
-            <label htmlFor="contentCategory" className="text-sm font-medium text-gray-700">
-              Content category
-            </label>
-            <select
-              id="contentCategory"
-              value={form.contentCategory}
-              onChange={(event) => updateField("contentCategory", event.target.value)}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-orange-600"
-            >
-              <option value="" disabled>
-                Select a category
-              </option>
-              {CONTENT_CATEGORIES.map((category) => (
-                <option key={category.value} value={category.value}>
-                  {category.label}
-                </option>
-              ))}
-            </select>
-            {errors.contentCategory && (
-              <p className="text-sm text-red-600">{errors.contentCategory}</p>
-            )}
-          </div>
+          <Field
+            label="Follower count (optional)"
+            id="followerCount"
+            type="number"
+            placeholder="e.g. 12000"
+            value={form.followerCount}
+            onChange={(value) => updateField("followerCount", value)}
+            error={errors.followerCount}
+          />
+
+          <SelectField
+            label="Content category"
+            id="contentCategory"
+            value={form.contentCategory}
+            onChange={(value) => updateField("contentCategory", value)}
+            options={CONTENT_CATEGORIES}
+            placeholder="Select a category"
+            error={errors.contentCategory}
+          />
 
           <Field
             label="City"
@@ -212,15 +213,21 @@ export default function CreatorSignupPage() {
 
           {submitError && <p className="text-sm text-red-600">{submitError}</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 rounded-full bg-orange-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-orange-700 disabled:opacity-60"
-          >
+          <Button type="submit" disabled={loading} className="mt-2 w-full">
             {loading ? "Creating account..." : "Sign up as Creator"}
-          </button>
-        </form>
-      </div>
-    </main>
+          </Button>
+      </form>
+
+      <p className="mt-6 text-center text-sm text-gray-600">
+        Already have an account?{" "}
+        <Link href="/login" className="font-medium text-orange-600 hover:text-orange-700">
+          Log in
+        </Link>{" "}
+        &middot;{" "}
+        <Link href="/signup/brand" className="font-medium text-orange-600 hover:text-orange-700">
+          Sign up as a brand
+        </Link>
+      </p>
+    </AuthShell>
   );
 }
