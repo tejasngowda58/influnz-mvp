@@ -10,10 +10,10 @@ import { prisma } from "@/lib/prisma";
 export default async function BrowseCampaignsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; city?: string }>;
+  searchParams: Promise<{ category?: string; city?: string; search?: string }>;
 }) {
   const session = await requireRole("CREATOR");
-  const { category, city } = await searchParams;
+  const { category, city, search } = await searchParams;
 
   const creatorProfile = await prisma.creatorProfile.findUnique({
     where: { userId: session.user.id },
@@ -22,11 +22,20 @@ export default async function BrowseCampaignsPage({
 
   const campaigns = await prisma.campaign.findMany({
     where: {
-      status: "OPEN",
+      status: "APPROVED",
       ...(category ? { category: category as ContentCategory } : {}),
       ...(city ? { city: { contains: city, mode: "insensitive" } } : {}),
+      ...(search
+        ? {
+            OR: [
+              { title: { contains: search, mode: "insensitive" } },
+              { brand: { companyName: { contains: search, mode: "insensitive" } } },
+            ],
+          }
+        : {}),
     },
     orderBy: { createdAt: "desc" },
+    include: { brand: { select: { companyName: true } } },
   });
 
   return (
@@ -35,11 +44,18 @@ export default async function BrowseCampaignsPage({
         <BackLink href="/dashboard/creator" label="Back to dashboard" />
         <h1 className="text-2xl font-semibold text-gray-900">Open campaigns</h1>
         <p className="mt-1 text-sm text-gray-600">
-          Browse paid collaborations from brands and apply to the ones that fit.
+          Search by campaign or brand name, and browse paid collaborations to apply to.
         </p>
       </div>
 
-      <FilterBar action="/dashboard/creator/campaigns" category={category} city={city} />
+      <FilterBar
+        action="/dashboard/creator/campaigns"
+        category={category}
+        city={city}
+        search={search}
+        searchLabel="Search campaigns"
+        searchPlaceholder="Campaign or brand name"
+      />
 
       {campaigns.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-gray-200 py-16 text-center">
@@ -47,7 +63,7 @@ export default async function BrowseCampaignsPage({
             <Megaphone className="h-6 w-6" strokeWidth={1.75} />
           </span>
           <p className="text-sm font-medium text-gray-900">No open campaigns match those filters</p>
-          <p className="max-w-sm text-sm text-gray-600">Try a different category or city.</p>
+          <p className="max-w-sm text-sm text-gray-600">Try a different search, category, or city.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -56,6 +72,7 @@ export default async function BrowseCampaignsPage({
               key={campaign.id}
               href={`/dashboard/creator/campaigns/${campaign.id}`}
               title={campaign.title}
+              brandName={campaign.brand.companyName}
               category={campaign.category}
               city={campaign.city}
               budget={campaign.budget}

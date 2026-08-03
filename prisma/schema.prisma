@@ -24,17 +24,27 @@ enum ContentCategory {
 }
 
 enum CampaignStatus {
-  OPEN
+  PENDING_REVIEW
+  APPROVED
+  CHANGES_REQUESTED
+  REJECTED
   CLOSED
 }
 
 enum ApplicationStatus {
   APPLIED
   SHORTLISTED
+  BRAND_COUNTERED
+  CREATOR_COUNTERED
   CONFIRMED
   CONTENT_SUBMITTED
   APPROVED
   REJECTED
+}
+
+enum OfferSide {
+  CREATOR
+  BRAND
 }
 
 model User {
@@ -57,6 +67,7 @@ model CreatorProfile {
   contentCategory ContentCategory
   city            String
   followerCount   Int?
+  bio             String?
   applications    Application[]
 }
 
@@ -85,7 +96,10 @@ model Campaign {
   deliverables   String
   targetAudience String?
   deadline       DateTime
-  status         CampaignStatus @default(OPEN)
+  negotiable     Boolean        @default(false)
+  status         CampaignStatus @default(PENDING_REVIEW)
+  adminComment   String?
+  reviewedAt     DateTime?
   createdAt      DateTime       @default(now())
   applications   Application[]
 }
@@ -97,6 +111,11 @@ model Application {
   creatorId  String
   creator    CreatorProfile    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   pitch      String?
+  proposedBudget       Int
+  proposedDeliverables String
+  negotiationMessage   String?
+  round                Int               @default(1)
+  lastOfferBy          OfferSide         @default(CREATOR)
   status     ApplicationStatus @default(APPLIED)
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt

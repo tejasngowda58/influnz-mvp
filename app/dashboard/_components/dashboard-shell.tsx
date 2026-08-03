@@ -4,10 +4,16 @@ import { Badge } from "@/app/_components/ui/badge";
 import { LogoutButton } from "./logout-button";
 
 interface DashboardShellProps {
-  role: "Creator" | "Brand";
+  role: "Creator" | "Brand" | "Admin";
   name?: string;
   children: React.ReactNode;
 }
+
+const ROLE_BADGE_TONE = {
+  Creator: "orange",
+  Brand: "orange",
+  Admin: "blue",
+} as const;
 
 export function DashboardShell({ role, name, children }: DashboardShellProps) {
   return (
@@ -18,7 +24,7 @@ export function DashboardShell({ role, name, children }: DashboardShellProps) {
             <Link href="/">
               <Logo />
             </Link>
-            <Badge tone="orange">{role}</Badge>
+            <Badge tone={ROLE_BADGE_TONE[role]}>{role}</Badge>
           </div>
           <div className="flex items-center gap-4">
             {name && (

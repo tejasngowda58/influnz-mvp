@@ -22,14 +22,15 @@ export default async function BrandDashboardPage() {
     },
   });
 
-  const [openCampaigns, pendingApplications] = profile
+  const [liveCampaigns, pendingReviewCampaigns, pendingApplications] = profile
     ? await Promise.all([
-        prisma.campaign.count({ where: { brandId: profile.id, status: "OPEN" } }),
+        prisma.campaign.count({ where: { brandId: profile.id, status: "APPROVED" } }),
+        prisma.campaign.count({ where: { brandId: profile.id, status: "PENDING_REVIEW" } }),
         prisma.application.count({
-          where: { status: "APPLIED", campaign: { brandId: profile.id } },
+          where: { status: { in: ["APPLIED", "CREATOR_COUNTERED"] }, campaign: { brandId: profile.id } },
         }),
       ])
-    : [0, 0];
+    : [0, 0, 0];
 
   return (
     <DashboardShell role="Brand" name={profile?.name}>
@@ -71,15 +72,19 @@ export default async function BrandDashboardPage() {
             href="/dashboard/brand/campaigns"
             icon={Megaphone}
             label="Campaigns"
-            value={openCampaigns}
-            description="Open campaigns creators can discover and apply to."
+            value={liveCampaigns}
+            description={
+              pendingReviewCampaigns > 0
+                ? `Live campaigns. ${pendingReviewCampaigns} awaiting admin review.`
+                : "Live campaigns creators can discover and apply to."
+            }
           />
           <StatCard
             href="/dashboard/brand/campaigns"
             icon={Users}
             label="Applications"
             value={pendingApplications}
-            description="Creator applications waiting on your review."
+            description="Creator applications waiting on your response."
           />
           <EmptyStateCard
             icon={BarChart3}

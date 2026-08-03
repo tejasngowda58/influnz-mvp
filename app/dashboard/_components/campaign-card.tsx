@@ -1,28 +1,26 @@
 import Link from "next/link";
+import type { CampaignStatus } from "@prisma/client";
 import { Calendar, MapPin, Tag, Wallet } from "lucide-react";
 import { Card } from "@/app/_components/ui/card";
-import { Badge, type BadgeTone } from "@/app/_components/ui/badge";
 import { formatBudget, formatDate, formatEnumLabel } from "@/lib/format";
-
-const STATUS_TONE: Record<"OPEN" | "CLOSED", BadgeTone> = {
-  OPEN: "green",
-  CLOSED: "gray",
-};
+import { CampaignStatusBadge } from "./campaign-status-badge";
 
 interface CampaignCardProps {
   href: string;
   title: string;
+  brandName?: string;
   category: string;
   city: string | null;
   budget: number;
   deadline: Date;
-  status?: "OPEN" | "CLOSED";
+  status?: CampaignStatus;
   applicantCount?: number;
 }
 
 export function CampaignCard({
   href,
   title,
+  brandName,
   category,
   city,
   budget,
@@ -34,8 +32,11 @@ export function CampaignCard({
     <Link href={href} className="block">
       <Card className="flex flex-col gap-3 p-6 transition-shadow hover:shadow-md">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="font-semibold text-gray-900">{title}</h3>
-          {status && <Badge tone={STATUS_TONE[status]}>{formatEnumLabel(status)}</Badge>}
+          <div>
+            {brandName && <p className="text-xs font-medium text-orange-600">{brandName}</p>}
+            <h3 className="font-semibold text-gray-900">{title}</h3>
+          </div>
+          {status && <CampaignStatusBadge status={status} />}
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-gray-500">
           <span className="inline-flex items-center gap-1">

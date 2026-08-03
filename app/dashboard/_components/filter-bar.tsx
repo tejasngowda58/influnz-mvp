@@ -8,10 +8,20 @@ interface FilterBarProps {
   action: string;
   category?: string;
   city?: string;
+  search?: string;
+  searchLabel?: string;
+  searchPlaceholder?: string;
 }
 
-export function FilterBar({ action, category = "", city = "" }: FilterBarProps) {
-  const hasFilters = Boolean(category || city);
+export function FilterBar({
+  action,
+  category = "",
+  city = "",
+  search = "",
+  searchLabel = "Search",
+  searchPlaceholder,
+}: FilterBarProps) {
+  const hasFilters = Boolean(category || city || search);
 
   return (
     <form
@@ -19,6 +29,18 @@ export function FilterBar({ action, category = "", city = "" }: FilterBarProps) 
       action={action}
       className="flex flex-wrap items-end gap-3 rounded-2xl border border-gray-100 bg-white p-4"
     >
+      <div className="flex min-w-48 flex-1 flex-col gap-1">
+        <label htmlFor="search" className="text-xs font-medium text-gray-500">
+          {searchLabel}
+        </label>
+        <input
+          id="search"
+          name="search"
+          defaultValue={search}
+          placeholder={searchPlaceholder}
+          className={INPUT_CLASSES}
+        />
+      </div>
       <div className="flex flex-col gap-1">
         <label htmlFor="category" className="text-xs font-medium text-gray-500">
           Category

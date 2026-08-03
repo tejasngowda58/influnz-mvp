@@ -1,6 +1,6 @@
 import { DashboardShell } from "../../../_components/dashboard-shell";
 import { BackLink } from "../../../_components/back-link";
-import { CampaignForm } from "./campaign-form";
+import { CampaignForm } from "../_components/campaign-form";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 
@@ -18,8 +18,8 @@ export default async function NewCampaignPage() {
         <BackLink href="/dashboard/brand/campaigns" label="Back to campaigns" />
         <h1 className="mt-4 text-2xl font-semibold text-gray-900">New campaign</h1>
         <p className="mt-1 text-sm text-gray-600">
-          Describe the collaboration you&apos;re looking for. It&apos;ll go live for creators to
-          discover once saved.
+          Describe the collaboration you&apos;re looking for. An admin reviews every campaign
+          before it goes live for creators.
         </p>
         <div className="mt-6">
           <CampaignForm />

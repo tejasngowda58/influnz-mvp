@@ -3,6 +3,12 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+interface ApplyBody {
+  pitch?: string;
+  proposedBudget?: number;
+  proposedDeliverables?: string;
+}
+
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session?.user || session.user.role !== "CREATOR") {
@@ -11,7 +17,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const { id } = await params;
 
-  let body: { pitch?: string };
+  let body: ApplyBody;
   try {
     body = await request.json();
   } catch {
@@ -27,8 +33,24 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!campaign) {
     return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
   }
-  if (campaign.status !== "OPEN") {
+  if (campaign.status !== "APPROVED") {
     return NextResponse.json({ error: "This campaign is no longer accepting applications" }, { status: 409 });
+  }
+
+  let proposedBudget = campaign.budget;
+  let proposedDeliverables = campaign.deliverables;
+
+  if (campaign.negotiable) {
+    if (body.proposedBudget != null) {
+      const budgetNumber = Number(body.proposedBudget);
+      if (!Number.isFinite(budgetNumber) || budgetNumber <= 0) {
+        return NextResponse.json({ error: "proposedBudget must be a positive number" }, { status: 400 });
+      }
+      proposedBudget = Math.round(budgetNumber);
+    }
+    if (body.proposedDeliverables?.trim()) {
+      proposedDeliverables = body.proposedDeliverables.trim();
+    }
   }
 
   try {
@@ -37,6 +59,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         campaignId: campaign.id,
         creatorId: creatorProfile.id,
         pitch: body.pitch?.trim() || null,
+        proposedBudget,
+        proposedDeliverables,
       },
     });
 

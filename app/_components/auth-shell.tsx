@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { Logo } from "./ui/logo";
 
 interface AuthShellProps {
@@ -35,6 +36,13 @@ export function AuthShell({ eyebrow, title, pitch, children }: AuthShellProps) {
         <div className="w-full max-w-md">
           <Link href="/" className="mb-8 block w-fit lg:hidden">
             <Logo />
+          </Link>
+          <Link
+            href="/"
+            className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-orange-600"
+          >
+            <ArrowLeft className="h-4 w-4" strokeWidth={2} />
+            Back to home
           </Link>
           {children}
         </div>

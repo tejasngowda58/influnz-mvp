@@ -4,6 +4,8 @@ import { DashboardShell } from "../../_components/dashboard-shell";
 import { BackLink } from "../../_components/back-link";
 import { Card } from "@/app/_components/ui/card";
 import { ApplicationStatusBadge } from "../../_components/status-badge";
+import { Badge } from "@/app/_components/ui/badge";
+import { NEGOTIATION_TURN } from "@/lib/application-status";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatBudget, formatDate } from "@/lib/format";
@@ -54,11 +56,16 @@ export default async function CreatorApplicationsPage() {
                 <div>
                   <p className="font-semibold text-gray-900">{application.campaign.title}</p>
                   <p className="mt-1 text-sm text-gray-500">
-                    {application.campaign.brand.companyName} · {formatBudget(application.campaign.budget)} ·{" "}
+                    {application.campaign.brand.companyName} · {formatBudget(application.proposedBudget)} ·{" "}
                     Applied {formatDate(application.createdAt)}
                   </p>
                 </div>
-                <ApplicationStatusBadge status={application.status} />
+                <div className="flex items-center gap-2">
+                  {NEGOTIATION_TURN[application.status] === "CREATOR" && (
+                    <Badge tone="blue">Your turn</Badge>
+                  )}
+                  <ApplicationStatusBadge status={application.status} />
+                </div>
               </Card>
             </Link>
           ))}

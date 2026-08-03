@@ -9,12 +9,12 @@ export function CampaignStatusToggle({
   status,
 }: {
   campaignId: string;
-  status: "OPEN" | "CLOSED";
+  status: "APPROVED" | "CLOSED";
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const nextStatus = status === "OPEN" ? "CLOSED" : "OPEN";
+  const nextStatus = status === "APPROVED" ? "CLOSED" : "APPROVED";
 
   async function toggle() {
     setError(null);
@@ -45,7 +45,7 @@ export function CampaignStatusToggle({
   return (
     <div className="flex flex-col items-end gap-1">
       <Button type="button" variant="ghost" size="sm" disabled={loading} onClick={toggle}>
-        {loading ? "Saving..." : status === "OPEN" ? "Close campaign" : "Reopen campaign"}
+        {loading ? "Saving..." : status === "APPROVED" ? "Close campaign" : "Reopen campaign"}
       </Button>
       {error && <p className="text-xs text-red-600">{error}</p>}
     </div>

@@ -22,6 +22,7 @@ interface CreateCampaignBody {
   deliverables?: string;
   targetAudience?: string;
   deadline?: string;
+  negotiable?: boolean;
 }
 
 export async function POST(request: Request) {
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { title, description, category, city, budget, deliverables, targetAudience, deadline } = body;
+  const { title, description, category, city, budget, deliverables, targetAudience, deadline, negotiable } = body;
 
   if (!title || !description || !category || !deliverables || !deadline || budget == null) {
     return NextResponse.json(
@@ -80,6 +81,7 @@ export async function POST(request: Request) {
         deliverables,
         targetAudience: targetAudience?.trim() || null,
         deadline: deadlineDate,
+        negotiable: Boolean(negotiable),
       },
     });
 

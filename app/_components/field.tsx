@@ -80,6 +80,32 @@ export function TextAreaField({
   );
 }
 
+interface CheckboxFieldProps {
+  label: string;
+  description?: string;
+  id: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}
+
+export function CheckboxField({ label, description, id, checked, onChange }: CheckboxFieldProps) {
+  return (
+    <label htmlFor={id} className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-3.5">
+      <input
+        id={id}
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+        className="mt-0.5 h-4 w-4 flex-none accent-orange-600"
+      />
+      <span className="flex flex-col gap-0.5">
+        <span className="text-sm font-medium text-gray-700">{label}</span>
+        {description && <span className="text-xs text-gray-500">{description}</span>}
+      </span>
+    </label>
+  );
+}
+
 interface SelectFieldOption {
   value: string;
   label: string;

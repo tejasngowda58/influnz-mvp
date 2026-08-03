@@ -33,7 +33,7 @@ export default function LandingPage() {
   return (
     <div className="flex flex-1 flex-col bg-white">
       <header className="sticky top-0 z-10 border-b border-gray-100 bg-white/80 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <Logo />
           <nav className="flex items-center gap-3">
             <LinkButton href="/login" variant="ghost" size="sm">
@@ -53,7 +53,7 @@ export default function LandingPage() {
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(234,88,12,0.08),transparent_55%)]"
           />
-          <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-6 px-6 py-20 text-center sm:py-28 md:py-32">
+          <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-6 px-4 py-20 text-center sm:px-6 sm:py-28 md:py-32 lg:px-8">
             <Badge>For Instagram creators &amp; brands</Badge>
             <h1 className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
               Where Creators Meet Brands
@@ -97,7 +97,7 @@ export default function LandingPage() {
 
         {/* Trust strip */}
         <section className="border-y border-gray-100 bg-gray-50">
-          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-6 py-10 text-center sm:grid-cols-3">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-10 sm:px-6 lg:px-8 text-center sm:grid-cols-3">
             <div>
               <p className="text-2xl font-semibold text-gray-900">{CONTENT_CATEGORIES.length}</p>
               <p className="mt-1 text-sm text-gray-600">content categories to match on</p>
@@ -118,7 +118,7 @@ export default function LandingPage() {
 
         {/* How it works */}
         <section>
-          <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
+          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
             <h2 className="text-center text-3xl font-semibold tracking-tight text-gray-900">
               How it works
             </h2>
@@ -162,7 +162,7 @@ export default function LandingPage() {
 
         {/* Categories */}
         <section className="border-t border-gray-100 bg-gray-50">
-          <div className="mx-auto max-w-6xl px-6 py-16 text-center sm:py-20">
+          <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
             <h2 className="text-3xl font-semibold tracking-tight text-gray-900">
               Every kind of content, one platform
             </h2>
@@ -182,7 +182,7 @@ export default function LandingPage() {
       </main>
 
       <footer className="border-t border-gray-100">
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-6 py-10 text-sm text-gray-500 sm:flex-row sm:justify-between">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-4 px-4 py-10 sm:px-6 lg:px-8 text-sm text-gray-500 sm:flex-row sm:justify-between">
           <Logo className="text-base" />
           <div className="flex gap-6">
             <Link href="/login" className="transition-colors hover:text-orange-600">

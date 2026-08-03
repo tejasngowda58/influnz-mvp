@@ -5,6 +5,7 @@ import { BackLink } from "../../../_components/back-link";
 import { Card } from "@/app/_components/ui/card";
 import { Badge } from "@/app/_components/ui/badge";
 import { ApplicationStatusBadge } from "../../../_components/status-badge";
+import { NegotiationPanel } from "../../../_components/negotiation-panel";
 import { ApplyForm } from "./apply-form";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
@@ -28,7 +29,7 @@ export default async function CreatorCampaignDetailPage({
     include: { brand: { select: { companyName: true } } },
   });
 
-  if (!campaign) {
+  if (!campaign || (campaign.status !== "APPROVED" && campaign.status !== "CLOSED")) {
     notFound();
   }
 
@@ -44,7 +45,10 @@ export default async function CreatorCampaignDetailPage({
       <Card className="flex flex-col gap-4 p-8">
         <div>
           <p className="text-sm font-medium text-orange-600">{campaign.brand.companyName}</p>
-          <h1 className="mt-1 text-2xl font-semibold text-gray-900">{campaign.title}</h1>
+          <div className="mt-1 flex items-center gap-2">
+            <h1 className="text-2xl font-semibold text-gray-900">{campaign.title}</h1>
+            {campaign.negotiable && <Badge tone="blue">Negotiable</Badge>}
+          </div>
           <p className="mt-2 max-w-2xl text-sm text-gray-600">{campaign.description}</p>
         </div>
 
@@ -90,23 +94,40 @@ export default async function CreatorCampaignDetailPage({
             <p className="text-sm text-gray-600">This campaign is no longer accepting applications.</p>
           </div>
         ) : existingApplication ? (
-          <div>
-            <h2 className="text-sm font-semibold text-gray-900">Your application</h2>
-            <div className="mt-2 flex items-center gap-2">
-              <ApplicationStatusBadge status={existingApplication.status} />
-              <p className="text-sm text-gray-600">
-                Applied on {formatDate(existingApplication.createdAt)}
-              </p>
+          <div className="flex flex-col gap-4">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900">Your application</h2>
+              <div className="mt-2 flex items-center gap-2">
+                <ApplicationStatusBadge status={existingApplication.status} />
+                <p className="text-sm text-gray-600">
+                  Applied on {formatDate(existingApplication.createdAt)}
+                </p>
+              </div>
+              {existingApplication.pitch && (
+                <p className="mt-3 text-sm text-gray-700">{existingApplication.pitch}</p>
+              )}
             </div>
-            {existingApplication.pitch && (
-              <p className="mt-3 text-sm text-gray-700">{existingApplication.pitch}</p>
-            )}
+            <NegotiationPanel
+              applicationId={existingApplication.id}
+              status={existingApplication.status}
+              viewerRole="CREATOR"
+              campaignNegotiable={campaign.negotiable}
+              proposedBudget={existingApplication.proposedBudget}
+              proposedDeliverables={existingApplication.proposedDeliverables}
+              round={existingApplication.round}
+              lastOfferBy={existingApplication.lastOfferBy}
+            />
           </div>
         ) : (
           <div>
             <h2 className="text-sm font-semibold text-gray-900">Apply to this campaign</h2>
             <div className="mt-4">
-              <ApplyForm campaignId={campaign.id} />
+              <ApplyForm
+                campaignId={campaign.id}
+                negotiable={campaign.negotiable}
+                campaignBudget={campaign.budget}
+                campaignDeliverables={campaign.deliverables}
+              />
             </div>
           </div>
         )}

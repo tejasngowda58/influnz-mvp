@@ -41,7 +41,13 @@ export default function LoginPage() {
     const session = await getSession();
     const role = session?.user?.role;
 
-    router.push(role === "CREATOR" ? "/dashboard/creator" : "/dashboard/brand");
+    if (role === "CREATOR") {
+      router.push("/dashboard/creator");
+    } else if (role === "ADMIN") {
+      router.push("/dashboard/admin");
+    } else {
+      router.push("/dashboard/brand");
+    }
   }
 
   return (

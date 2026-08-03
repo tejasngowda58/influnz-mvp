@@ -2,48 +2,127 @@ import { NextResponse } from "next/server";
 import type { ApplicationStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { ALLOWED_TRANSITIONS } from "@/lib/application-status";
+import {
+  ALLOWED_TRANSITIONS,
+  NEGOTIATION_ACTIONS,
+  NEGOTIATION_TURN,
+  nextStatusForAction,
+  type NegotiationAction,
+} from "@/lib/application-status";
+
+interface PatchApplicationBody {
+  action?: NegotiationAction;
+  proposedBudget?: number;
+  proposedDeliverables?: string;
+  negotiationMessage?: string;
+  status?: ApplicationStatus;
+}
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "BRAND") {
+  if (!session?.user || (session.user.role !== "BRAND" && session.user.role !== "CREATOR")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const role = session.user.role;
+  const userId = session.user.id;
 
   const { id } = await params;
 
-  let body: { status?: string };
+  let body: PatchApplicationBody;
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const nextStatus = body.status as ApplicationStatus | undefined;
-  if (!nextStatus || !(nextStatus in ALLOWED_TRANSITIONS)) {
-    return NextResponse.json({ error: "Invalid status" }, { status: 400 });
-  }
-
   const application = await prisma.application.findUnique({
     where: { id },
-    include: { campaign: { include: { brand: true } } },
+    include: { campaign: { include: { brand: true } }, creator: true },
   });
 
-  if (!application || application.campaign.brand.userId !== session.user.id) {
+  if (!application) {
     return NextResponse.json({ error: "Application not found" }, { status: 404 });
   }
 
-  if (!ALLOWED_TRANSITIONS[application.status].includes(nextStatus)) {
-    return NextResponse.json(
-      { error: `Cannot move from ${application.status} to ${nextStatus}` },
-      { status: 409 },
-    );
+  const isBrandOwner = application.campaign.brand.userId === userId;
+  const isCreatorOwner = application.creator.userId === userId;
+
+  if (role === "BRAND" && !isBrandOwner) {
+    return NextResponse.json({ error: "Application not found" }, { status: 404 });
+  }
+  if (role === "CREATOR" && !isCreatorOwner) {
+    return NextResponse.json({ error: "Application not found" }, { status: 404 });
   }
 
-  const updated = await prisma.application.update({
-    where: { id },
-    data: { status: nextStatus },
-  });
+  // Negotiation actions: Accept / Counter / Decline, turn-based.
+  if (body.action) {
+    const turn = NEGOTIATION_TURN[application.status];
+    if (!turn || turn !== role) {
+      return NextResponse.json({ error: "It's not your turn on this application" }, { status: 409 });
+    }
 
-  return NextResponse.json({ application: updated });
+    const availableActions = NEGOTIATION_ACTIONS[application.status] ?? [];
+    if (!availableActions.includes(body.action)) {
+      return NextResponse.json({ error: "That action isn't available right now" }, { status: 409 });
+    }
+
+    const nextStatus = nextStatusForAction(application.status, body.action);
+    if (!nextStatus) {
+      return NextResponse.json({ error: "That action isn't available right now" }, { status: 409 });
+    }
+
+    if (body.action === "COUNTER") {
+      if (!application.campaign.negotiable) {
+        return NextResponse.json(
+          { error: "This campaign's terms aren't negotiable" },
+          { status: 409 },
+        );
+      }
+      if (body.proposedBudget == null || !body.proposedDeliverables?.trim()) {
+        return NextResponse.json(
+          { error: "proposedBudget and proposedDeliverables are required to counter" },
+          { status: 400 },
+        );
+      }
+      const budgetNumber = Number(body.proposedBudget);
+      if (!Number.isFinite(budgetNumber) || budgetNumber <= 0) {
+        return NextResponse.json({ error: "proposedBudget must be a positive number" }, { status: 400 });
+      }
+
+      const updated = await prisma.application.update({
+        where: { id },
+        data: {
+          status: nextStatus,
+          proposedBudget: Math.round(budgetNumber),
+          proposedDeliverables: body.proposedDeliverables.trim(),
+          negotiationMessage: body.negotiationMessage?.trim() || null,
+          round: application.round + 1,
+          lastOfferBy: role,
+        },
+      });
+      return NextResponse.json({ application: updated });
+    }
+
+    // ACCEPT or DECLINE — terms lock at whatever is currently proposed, no field changes needed.
+    const updated = await prisma.application.update({ where: { id }, data: { status: nextStatus } });
+    return NextResponse.json({ application: updated });
+  }
+
+  // Simple forward-only pipeline once terms are agreed (Confirmed -> Content Submitted -> Approved). Brand-only.
+  if (body.status) {
+    if (role !== "BRAND") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const allowed = ALLOWED_TRANSITIONS[application.status] ?? [];
+    if (!allowed.includes(body.status)) {
+      return NextResponse.json(
+        { error: `Cannot move from ${application.status} to ${body.status}` },
+        { status: 409 },
+      );
+    }
+    const updated = await prisma.application.update({ where: { id }, data: { status: body.status } });
+    return NextResponse.json({ application: updated });
+  }
+
+  return NextResponse.json({ error: "Nothing to update" }, { status: 400 });
 }

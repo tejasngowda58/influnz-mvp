@@ -1,12 +1,13 @@
-import { AtSign, Tag, MapPin, Phone, Users, Megaphone, Wallet, MessageSquare } from "lucide-react";
+import { Megaphone, Wallet, MessageSquare } from "lucide-react";
 import { DashboardShell } from "../_components/dashboard-shell";
 import { EmptyStateCard } from "../_components/empty-state-card";
 import { StatCard } from "../_components/stat-card";
-import { ProfileCard } from "../_components/profile-card";
+import { CreatorProfileCard } from "../_components/creator-profile-card";
+import { Card } from "@/app/_components/ui/card";
 import { LinkButton } from "@/app/_components/ui/button";
+import { EditProfileForm } from "./edit-profile-form";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
-import { formatEnumLabel } from "@/lib/format";
 
 export default async function CreatorDashboardPage() {
   const session = await requireRole("CREATOR");
@@ -19,14 +20,14 @@ export default async function CreatorDashboardPage() {
       instagramHandle: true,
       contentCategory: true,
       city: true,
-      phone: true,
       followerCount: true,
+      bio: true,
     },
   });
 
   const [openCampaigns, myApplications] = profile
     ? await Promise.all([
-        prisma.campaign.count({ where: { status: "OPEN", category: profile.contentCategory } }),
+        prisma.campaign.count({ where: { status: "APPROVED", category: profile.contentCategory } }),
         prisma.application.count({ where: { creatorId: profile.id } }),
       ])
     : [0, 0];
@@ -48,26 +49,34 @@ export default async function CreatorDashboardPage() {
       </div>
 
       {profile && (
-        <ProfileCard
-          title="Your creator profile"
-          fields={[
-            { label: "Instagram", value: profile.instagramHandle, icon: AtSign },
-            { label: "Category", value: formatEnumLabel(profile.contentCategory), icon: Tag },
-            { label: "City", value: profile.city, icon: MapPin },
-            { label: "Phone", value: profile.phone, icon: Phone },
-            ...(profile.followerCount != null
-              ? [
-                  {
-                    label: "Followers",
-                    value: new Intl.NumberFormat("en-US", { notation: "compact" }).format(
-                      profile.followerCount,
-                    ),
-                    icon: Users,
-                  },
-                ]
-              : []),
-          ]}
-        />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div>
+            <h2 className="mb-3 text-sm font-semibold text-gray-900">
+              How brands see your profile
+            </h2>
+            <CreatorProfileCard
+              name={profile.name}
+              instagramHandle={profile.instagramHandle}
+              category={profile.contentCategory}
+              city={profile.city}
+              followerCount={profile.followerCount}
+              bio={profile.bio}
+            />
+          </div>
+          <Card className="h-fit p-6">
+            <h2 className="text-sm font-semibold text-gray-900">Edit your profile</h2>
+            <p className="mt-1 text-sm text-gray-600">
+              Add a bio and keep your follower count up to date so brands know who they&apos;re
+              shortlisting.
+            </p>
+            <div className="mt-4">
+              <EditProfileForm
+                bio={profile.bio ?? ""}
+                followerCount={profile.followerCount != null ? String(profile.followerCount) : ""}
+              />
+            </div>
+          </Card>
+        </div>
       )}
 
       <div>

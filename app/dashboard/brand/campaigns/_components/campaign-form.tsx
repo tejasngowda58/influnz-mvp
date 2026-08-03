@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Field, SelectField, TextAreaField } from "@/app/_components/field";
+import { CheckboxField, Field, SelectField, TextAreaField } from "@/app/_components/field";
 import { Button } from "@/app/_components/ui/button";
 import { Card } from "@/app/_components/ui/card";
 import { CONTENT_CATEGORIES } from "@/lib/content-categories";
@@ -16,11 +16,12 @@ interface FormState {
   deliverables: string;
   targetAudience: string;
   deadline: string;
+  negotiable: boolean;
 }
 
 type FormErrors = Partial<Record<keyof FormState, string>>;
 
-const initialFormState: FormState = {
+const emptyFormState: FormState = {
   title: "",
   description: "",
   category: "",
@@ -29,11 +30,18 @@ const initialFormState: FormState = {
   deliverables: "",
   targetAudience: "",
   deadline: "",
+  negotiable: false,
 };
 
-export function CampaignForm() {
+interface CampaignFormProps {
+  campaignId?: string;
+  initialValues?: FormState;
+}
+
+export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
   const router = useRouter();
-  const [form, setForm] = useState<FormState>(initialFormState);
+  const isEditing = Boolean(campaignId);
+  const [form, setForm] = useState<FormState>(initialValues ?? emptyFormState);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -72,14 +80,17 @@ export function CampaignForm() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/campaigns", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          budget: Number(form.budget),
-        }),
-      });
+      const response = await fetch(
+        isEditing ? `/api/campaigns/${campaignId}` : "/api/campaigns",
+        {
+          method: isEditing ? "PATCH" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...form,
+            budget: Number(form.budget),
+          }),
+        },
+      );
 
       const data = await response.json();
 
@@ -90,6 +101,7 @@ export function CampaignForm() {
       }
 
       router.push(`/dashboard/brand/campaigns/${data.campaign.id}`);
+      router.refresh();
     } catch {
       setSubmitError("Something went wrong. Please try again.");
       setLoading(false);
@@ -166,11 +178,24 @@ export function CampaignForm() {
           onChange={(value) => updateField("deadline", value)}
           error={errors.deadline}
         />
+        <CheckboxField
+          label="Open to negotiation"
+          description="Let creators propose a different budget or deliverables instead of the listed terms."
+          id="negotiable"
+          checked={form.negotiable}
+          onChange={(checked) => updateField("negotiable", checked)}
+        />
 
         {submitError && <p className="text-sm text-red-600">{submitError}</p>}
 
         <Button type="submit" disabled={loading} className="mt-2 w-full">
-          {loading ? "Publishing..." : "Publish campaign"}
+          {loading
+            ? isEditing
+              ? "Resubmitting..."
+              : "Publishing..."
+            : isEditing
+              ? "Resubmit for review"
+              : "Submit for review"}
         </Button>
       </form>
     </Card>
