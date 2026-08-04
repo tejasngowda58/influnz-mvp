@@ -149,7 +149,9 @@ export default async function BrandCampaignDetailPage({
                       <ApplicationStatusBadge status={application.status} />
                     </div>
                     <p className="mt-1 text-sm text-gray-500">
-                      @{application.creator.instagramHandle.replace(/^@/, "")} ·{" "}
+                      {application.creator.instagramHandle
+                        ? `@${application.creator.instagramHandle.replace(/^@/, "")} · `
+                        : "Instagram not connected · "}
                       {formatEnumLabel(application.creator.contentCategory)} · {application.creator.city}
                     </p>
                     {application.pitch && (

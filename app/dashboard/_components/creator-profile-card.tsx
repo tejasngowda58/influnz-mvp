@@ -13,7 +13,9 @@ function getInitials(name: string) {
 
 interface CreatorProfileCardProps {
   name: string;
-  instagramHandle: string;
+  instagramHandle: string | null;
+  instagramProfilePictureUrl?: string | null;
+  verified?: boolean;
   category: string;
   city: string;
   followerCount: number | null;
@@ -24,13 +26,15 @@ interface CreatorProfileCardProps {
 export function CreatorProfileCard({
   name,
   instagramHandle,
+  instagramProfilePictureUrl,
+  verified,
   category,
   city,
   followerCount,
   bio,
   children,
 }: CreatorProfileCardProps) {
-  const handle = instagramHandle.replace(/^@/, "");
+  const handle = instagramHandle?.replace(/^@/, "") ?? null;
   const followerLabel =
     followerCount != null
       ? new Intl.NumberFormat("en-US", { notation: "compact" }).format(followerCount)
@@ -43,21 +47,39 @@ export function CreatorProfileCard({
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.25),transparent_55%)]"
         />
+        {instagramProfilePictureUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element -- unpredictable Instagram CDN host, not worth an images.remotePatterns allowlist
+          <img
+            src={instagramProfilePictureUrl}
+            alt=""
+            width={96}
+            height={96}
+            className="absolute -bottom-12 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full border-4 border-white object-cover shadow-sm"
+          />
+        ) : (
+          <div className="absolute -bottom-12 left-1/2 flex h-24 w-24 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-orange-50 text-2xl font-semibold text-orange-600 shadow-sm">
+            {getInitials(name)}
+          </div>
+        )}
       </div>
 
-      <div className="flex flex-col items-center px-6">
-        <div className="-mt-12 flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-orange-50 text-2xl font-semibold text-orange-600 shadow-sm">
-          {getInitials(name)}
+      <div className="flex flex-col items-center px-6 pt-14">
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-semibold text-gray-900">{name}</h1>
+          {verified && <Badge tone="green">Verified</Badge>}
         </div>
-        <h1 className="mt-3 text-xl font-semibold text-gray-900">{name}</h1>
-        <a
-          href={`https://instagram.com/${handle}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-gray-500 hover:text-orange-600"
-        >
-          @{handle}
-        </a>
+        {handle ? (
+          <a
+            href={`https://instagram.com/${handle}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-500 hover:text-orange-600"
+          >
+            @{handle}
+          </a>
+        ) : (
+          <span className="text-sm text-gray-400">Instagram not connected</span>
+        )}
 
         <div className="mt-4 flex flex-wrap justify-center gap-2 pb-6">
           <Badge tone="orange">{formatEnumLabel(category)}</Badge>

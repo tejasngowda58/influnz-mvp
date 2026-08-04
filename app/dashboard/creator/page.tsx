@@ -6,11 +6,18 @@ import { CreatorProfileCard } from "../_components/creator-profile-card";
 import { Card } from "@/app/_components/ui/card";
 import { LinkButton } from "@/app/_components/ui/button";
 import { EditProfileForm } from "./edit-profile-form";
+import { InstagramConnectionCard } from "./instagram-connection-card";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
+import { maybeRefreshInstagramToken } from "@/lib/instagram-refresh";
 
-export default async function CreatorDashboardPage() {
+export default async function CreatorDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ instagram?: string; instagram_error?: string }>;
+}) {
   const session = await requireRole("CREATOR");
+  const { instagram, instagram_error: instagramError } = await searchParams;
 
   const profile = await prisma.creatorProfile.findUnique({
     where: { userId: session.user.id },
@@ -22,8 +29,16 @@ export default async function CreatorDashboardPage() {
       city: true,
       followerCount: true,
       bio: true,
+      instagramProfilePictureUrl: true,
+      instagramConnectedAt: true,
+      instagramAccessToken: true,
+      instagramTokenExpiresAt: true,
     },
   });
+
+  if (profile) {
+    await maybeRefreshInstagramToken(profile);
+  }
 
   const [openCampaigns, myApplications] = profile
     ? await Promise.all([
@@ -49,6 +64,16 @@ export default async function CreatorDashboardPage() {
       </div>
 
       {profile && (
+        <InstagramConnectionCard
+          instagramHandle={profile.instagramHandle}
+          instagramProfilePictureUrl={profile.instagramProfilePictureUrl}
+          instagramConnectedAt={profile.instagramConnectedAt}
+          connectedNotice={instagram === "connected"}
+          errorCode={instagramError}
+        />
+      )}
+
+      {profile && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div>
             <h2 className="mb-3 text-sm font-semibold text-gray-900">
@@ -57,6 +82,8 @@ export default async function CreatorDashboardPage() {
             <CreatorProfileCard
               name={profile.name}
               instagramHandle={profile.instagramHandle}
+              instagramProfilePictureUrl={profile.instagramProfilePictureUrl}
+              verified={Boolean(profile.instagramConnectedAt)}
               category={profile.contentCategory}
               city={profile.city}
               followerCount={profile.followerCount}
@@ -66,14 +93,10 @@ export default async function CreatorDashboardPage() {
           <Card className="h-fit p-6">
             <h2 className="text-sm font-semibold text-gray-900">Edit your profile</h2>
             <p className="mt-1 text-sm text-gray-600">
-              Add a bio and keep your follower count up to date so brands know who they&apos;re
-              shortlisting.
+              Add a bio so brands know why you&apos;re a great fit for a collab.
             </p>
             <div className="mt-4">
-              <EditProfileForm
-                bio={profile.bio ?? ""}
-                followerCount={profile.followerCount != null ? String(profile.followerCount) : ""}
-              />
+              <EditProfileForm bio={profile.bio ?? ""} />
             </div>
           </Card>
         </div>

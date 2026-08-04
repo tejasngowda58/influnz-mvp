@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 
 interface UpdateCreatorProfileBody {
   bio?: string;
-  followerCount?: number | null;
 }
 
 export async function PATCH(request: Request) {
@@ -20,17 +19,10 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (body.followerCount != null && !(Number(body.followerCount) >= 0)) {
-    return NextResponse.json({ error: "followerCount must be a non-negative number" }, { status: 400 });
-  }
-
   const creatorProfile = await prisma.creatorProfile.update({
     where: { userId: session.user.id },
     data: {
       ...(body.bio !== undefined ? { bio: body.bio.trim() || null } : {}),
-      ...(body.followerCount !== undefined
-        ? { followerCount: body.followerCount === null ? null : Math.round(Number(body.followerCount)) }
-        : {}),
     },
   });
 

@@ -41,6 +41,8 @@ export default async function BrandCreatorProfilePage({
       <CreatorProfileCard
         name={creator.name}
         instagramHandle={creator.instagramHandle}
+        instagramProfilePictureUrl={creator.instagramProfilePictureUrl}
+        verified={Boolean(creator.instagramConnectedAt)}
         category={creator.contentCategory}
         city={creator.city}
         followerCount={creator.followerCount}

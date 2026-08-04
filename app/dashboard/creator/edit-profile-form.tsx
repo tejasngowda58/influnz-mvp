@@ -2,18 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Field, TextAreaField } from "@/app/_components/field";
+import { TextAreaField } from "@/app/_components/field";
 import { Button } from "@/app/_components/ui/button";
 
 interface EditProfileFormProps {
   bio: string;
-  followerCount: string;
 }
 
-export function EditProfileForm({ bio: initialBio, followerCount: initialFollowerCount }: EditProfileFormProps) {
+export function EditProfileForm({ bio: initialBio }: EditProfileFormProps) {
   const router = useRouter();
   const [bio, setBio] = useState(initialBio);
-  const [followerCount, setFollowerCount] = useState(initialFollowerCount);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -22,22 +20,13 @@ export function EditProfileForm({ bio: initialBio, followerCount: initialFollowe
     event.preventDefault();
     setError(null);
     setSuccess(false);
-
-    if (followerCount.trim() && !(Number(followerCount) >= 0)) {
-      setError("Enter a valid follower count");
-      return;
-    }
-
     setLoading(true);
 
     try {
       const response = await fetch("/api/creator-profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          bio,
-          followerCount: followerCount.trim() ? Number(followerCount) : null,
-        }),
+        body: JSON.stringify({ bio }),
       });
       const data = await response.json();
 
@@ -65,17 +54,6 @@ export function EditProfileForm({ bio: initialBio, followerCount: initialFollowe
         value={bio}
         onChange={(value) => {
           setBio(value);
-          setSuccess(false);
-        }}
-      />
-      <Field
-        label="Follower count"
-        id="followerCount"
-        type="number"
-        placeholder="e.g. 12000"
-        value={followerCount}
-        onChange={(value) => {
-          setFollowerCount(value);
           setSuccess(false);
         }}
       />

@@ -15,10 +15,8 @@ interface FormState {
   name: string;
   email: string;
   phone: string;
-  instagramHandle: string;
   contentCategory: string;
   city: string;
-  followerCount: string;
   password: string;
 }
 
@@ -28,10 +26,8 @@ const initialFormState: FormState = {
   name: "",
   email: "",
   phone: "",
-  instagramHandle: "",
   contentCategory: "",
   city: "",
-  followerCount: "",
   password: "",
 };
 
@@ -56,12 +52,8 @@ export default function CreatorSignupPage() {
       nextErrors.email = "Enter a valid email address";
     }
     if (!form.phone.trim()) nextErrors.phone = "Phone number is required";
-    if (!form.instagramHandle.trim()) nextErrors.instagramHandle = "Instagram handle is required";
     if (!form.contentCategory) nextErrors.contentCategory = "Select a content category";
     if (!form.city.trim()) nextErrors.city = "City is required";
-    if (form.followerCount.trim() && !(Number(form.followerCount) >= 0)) {
-      nextErrors.followerCount = "Enter a valid follower count";
-    }
     if (!form.password) {
       nextErrors.password = "Password is required";
     } else if (form.password.length < 8) {
@@ -87,10 +79,7 @@ export default function CreatorSignupPage() {
       const response = await fetch("/api/signup/creator", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          followerCount: form.followerCount.trim() ? Number(form.followerCount) : undefined,
-        }),
+        body: JSON.stringify(form),
       });
 
       const data = await response.json();
@@ -131,7 +120,7 @@ export default function CreatorSignupPage() {
         Sign up as a Creator
       </h1>
       <p className="mt-2 text-sm text-gray-600">
-        Create your creator profile and start connecting with brands.
+        Create your account, then connect your Instagram to complete your profile.
       </p>
 
       <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-4">
@@ -162,26 +151,6 @@ export default function CreatorSignupPage() {
             onChange={(value) => updateField("phone", value)}
             error={errors.phone}
           />
-          <Field
-            label="Instagram handle"
-            id="instagramHandle"
-            type="text"
-            placeholder="@yourhandle"
-            value={form.instagramHandle}
-            onChange={(value) => updateField("instagramHandle", value)}
-            error={errors.instagramHandle}
-          />
-
-          <Field
-            label="Follower count (optional)"
-            id="followerCount"
-            type="number"
-            placeholder="e.g. 12000"
-            value={form.followerCount}
-            onChange={(value) => updateField("followerCount", value)}
-            error={errors.followerCount}
-          />
-
           <SelectField
             label="Content category"
             id="contentCategory"

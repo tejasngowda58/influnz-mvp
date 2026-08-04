@@ -194,6 +194,9 @@ export default function LandingPage() {
             <Link href="/signup/brand" className="transition-colors hover:text-orange-600">
               For Brands
             </Link>
+            <Link href="/privacy" className="transition-colors hover:text-orange-600">
+              Privacy
+            </Link>
           </div>
           <span>&copy; {new Date().getFullYear()} Influnz. All rights reserved.</span>
         </div>

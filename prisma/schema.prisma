@@ -58,17 +58,22 @@ model User {
 }
 
 model CreatorProfile {
-  id              String          @id @default(uuid())
-  userId          String          @unique
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name            String
-  phone           String
-  instagramHandle String
-  contentCategory ContentCategory
-  city            String
-  followerCount   Int?
-  bio             String?
-  applications    Application[]
+  id                          String          @id @default(uuid())
+  userId                      String          @unique
+  user                        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                        String
+  phone                       String
+  instagramHandle             String?
+  contentCategory             ContentCategory
+  city                        String
+  followerCount               Int?
+  bio                         String?
+  instagramUserId             String?         @unique
+  instagramProfilePictureUrl  String?
+  instagramAccessToken        String?
+  instagramTokenExpiresAt     DateTime?
+  instagramConnectedAt        DateTime?
+  applications                Application[]
 }
 
 model BrandProfile {
