@@ -17,7 +17,6 @@ interface CreatorSignupBody {
   name?: string;
   email?: string;
   phone?: string;
-  instagramHandle?: string;
   contentCategory?: string;
   city?: string;
   password?: string;
@@ -31,11 +30,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { name, email, phone, instagramHandle, contentCategory, city, password } = body;
+  const { name, email, phone, contentCategory, city, password } = body;
 
-  if (!name || !email || !phone || !instagramHandle || !contentCategory || !city || !password) {
+  if (!name || !email || !phone || !contentCategory || !city || !password) {
     return NextResponse.json(
-      { error: "name, email, phone, instagramHandle, contentCategory, city, and password are all required" },
+      { error: "name, email, phone, contentCategory, city, and password are all required" },
       { status: 400 },
     );
   }
@@ -65,7 +64,6 @@ export async function POST(request: Request) {
             create: {
               name,
               phone,
-              instagramHandle,
               contentCategory: contentCategory as ContentCategory,
               city,
             },

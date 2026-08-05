@@ -9,6 +9,17 @@
   --color-primary-light: #fff7ed; /* orange-50 */
   --color-primary-dark: #c2410c; /* orange-700 */
 
+  /* Semantic tokens layered on the same neutral/orange base */
+  --color-surface: #ffffff;
+  --color-surface-muted: #fafaf9; /* stone-50 */
+  --color-border: #f1f0ef; /* stone-100 */
+  --color-muted: #78716c; /* stone-500 */
+  --color-muted-foreground: #57534e; /* stone-600 */
+  --color-success: #16a34a; /* green-600 */
+  --color-success-light: #f0fdf4; /* green-50 */
+  --color-danger: #dc2626; /* red-600 */
+  --color-danger-light: #fef2f2; /* red-50 */
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

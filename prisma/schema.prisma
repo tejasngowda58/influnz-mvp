@@ -23,6 +23,30 @@ enum ContentCategory {
   OTHER
 }
 
+enum CampaignStatus {
+  PENDING_REVIEW
+  APPROVED
+  CHANGES_REQUESTED
+  REJECTED
+  CLOSED
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SHORTLISTED
+  BRAND_COUNTERED
+  CREATOR_COUNTERED
+  CONFIRMED
+  CONTENT_SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum OfferSide {
+  CREATOR
+  BRAND
+}
+
 model User {
   id             String          @id @default(uuid())
   email          String          @unique
@@ -34,24 +58,72 @@ model User {
 }
 
 model CreatorProfile {
-  id              String          @id @default(uuid())
-  userId          String          @unique
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name            String
-  phone           String
-  instagramHandle String
-  contentCategory ContentCategory
-  city            String
+  id                          String          @id @default(uuid())
+  userId                      String          @unique
+  user                        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                        String
+  phone                       String
+  instagramHandle             String?
+  contentCategory             ContentCategory
+  city                        String
+  followerCount               Int?
+  bio                         String?
+  instagramUserId             String?         @unique
+  instagramProfilePictureUrl  String?
+  instagramAccessToken        String?
+  instagramTokenExpiresAt     DateTime?
+  instagramConnectedAt        DateTime?
+  applications                Application[]
 }
 
 model BrandProfile {
-  id               String @id @default(uuid())
-  userId           String @unique
-  user             User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String     @id @default(uuid())
+  userId           String     @unique
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   name             String
   companyName      String
   workEmail        String
   companyWebsite   String
   industryCategory String
   city             String
+  campaigns        Campaign[]
+}
+
+model Campaign {
+  id             String         @id @default(uuid())
+  brandId        String
+  brand          BrandProfile   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  title          String
+  description    String
+  category       ContentCategory
+  city           String?
+  budget         Int
+  deliverables   String
+  targetAudience String?
+  deadline       DateTime
+  negotiable     Boolean        @default(false)
+  status         CampaignStatus @default(PENDING_REVIEW)
+  adminComment   String?
+  reviewedAt     DateTime?
+  createdAt      DateTime       @default(now())
+  applications   Application[]
+}
+
+model Application {
+  id         String            @id @default(uuid())
+  campaignId String
+  campaign   Campaign          @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  creatorId  String
+  creator    CreatorProfile    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  pitch      String?
+  proposedBudget       Int
+  proposedDeliverables String
+  negotiationMessage   String?
+  round                Int               @default(1)
+  lastOfferBy          OfferSide         @default(CREATOR)
+  status     ApplicationStatus @default(APPLIED)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  @@unique([campaignId, creatorId])
 }

@@ -1,30 +1,136 @@
+<<<<<<< HEAD
 import { LogoutButton } from "../_components/logout-button";
 import { requireRole } from "@/lib/auth";
+=======
+import { Megaphone, Wallet, MessageSquare } from "lucide-react";
+import { DashboardShell } from "../_components/dashboard-shell";
+import { EmptyStateCard } from "../_components/empty-state-card";
+import { StatCard } from "../_components/stat-card";
+import { CreatorProfileCard } from "../_components/creator-profile-card";
+import { Card } from "@/app/_components/ui/card";
+import { LinkButton } from "@/app/_components/ui/button";
+import { EditProfileForm } from "./edit-profile-form";
+import { InstagramConnectionCard } from "./instagram-connection-card";
+import { requireRole } from "@/lib/require-role";
+>>>>>>> 479d4f16994fa4f8fc56ee4b86b08ddc55d59f44
 import { prisma } from "@/lib/prisma";
+import { maybeRefreshInstagramToken } from "@/lib/instagram-refresh";
 
-export default async function CreatorDashboardPage() {
+export default async function CreatorDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ instagram?: string; instagram_error?: string }>;
+}) {
   const session = await requireRole("CREATOR");
+  const { instagram, instagram_error: instagramError } = await searchParams;
 
   const profile = await prisma.creatorProfile.findUnique({
     where: { userId: session.user.id },
-    select: { name: true },
+    select: {
+      id: true,
+      name: true,
+      instagramHandle: true,
+      contentCategory: true,
+      city: true,
+      followerCount: true,
+      bio: true,
+      instagramProfilePictureUrl: true,
+      instagramConnectedAt: true,
+      instagramAccessToken: true,
+      instagramTokenExpiresAt: true,
+    },
   });
 
+  if (profile) {
+    await maybeRefreshInstagramToken(profile);
+  }
+
+  const [openCampaigns, myApplications] = profile
+    ? await Promise.all([
+        prisma.campaign.count({ where: { status: "APPROVED", category: profile.contentCategory } }),
+        prisma.application.count({ where: { creatorId: profile.id } }),
+      ])
+    : [0, 0];
+
   return (
-    <main className="flex flex-1 flex-col gap-6 px-6 py-10 sm:px-10">
+    <DashboardShell role="Creator" name={profile?.name}>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Welcome{profile?.name ? `, ${profile.name}` : ""}
-        </h1>
-        <LogoutButton />
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Welcome{profile?.name ? `, ${profile.name}` : ""}
+          </h1>
+          <p className="mt-1 text-sm text-gray-600">
+            Here&apos;s an overview of your creator account on Influnz.
+          </p>
+        </div>
+        <LinkButton href="/dashboard/creator/campaigns" size="sm">
+          Browse campaigns
+        </LinkButton>
       </div>
-      <div className="rounded-2xl border border-gray-100 bg-orange-50/50 p-6">
-        <p className="text-sm font-medium text-orange-600">Coming soon</p>
-        <p className="mt-2 text-sm text-gray-600">
-          Your campaigns, earnings, and collaboration requests will appear
-          here.
-        </p>
+
+      {profile && (
+        <InstagramConnectionCard
+          instagramHandle={profile.instagramHandle}
+          instagramProfilePictureUrl={profile.instagramProfilePictureUrl}
+          instagramConnectedAt={profile.instagramConnectedAt}
+          connectedNotice={instagram === "connected"}
+          errorCode={instagramError}
+        />
+      )}
+
+      {profile && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div>
+            <h2 className="mb-3 text-sm font-semibold text-gray-900">
+              How brands see your profile
+            </h2>
+            <CreatorProfileCard
+              name={profile.name}
+              instagramHandle={profile.instagramHandle}
+              instagramProfilePictureUrl={profile.instagramProfilePictureUrl}
+              verified={Boolean(profile.instagramConnectedAt)}
+              category={profile.contentCategory}
+              city={profile.city}
+              followerCount={profile.followerCount}
+              bio={profile.bio}
+            />
+          </div>
+          <Card className="h-fit p-6">
+            <h2 className="text-sm font-semibold text-gray-900">Edit your profile</h2>
+            <p className="mt-1 text-sm text-gray-600">
+              Add a bio so brands know why you&apos;re a great fit for a collab.
+            </p>
+            <div className="mt-4">
+              <EditProfileForm bio={profile.bio ?? ""} />
+            </div>
+          </Card>
+        </div>
+      )}
+
+      <div>
+        <h2 className="text-sm font-semibold text-gray-900">What&apos;s next</h2>
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <StatCard
+            href="/dashboard/creator/campaigns"
+            icon={Megaphone}
+            label="Campaigns"
+            value={openCampaigns}
+            description="Open campaigns in your category, ready to apply to."
+          />
+          <StatCard
+            href="/dashboard/creator/applications"
+            icon={MessageSquare}
+            label="Applications"
+            value={myApplications}
+            description="Campaigns you've applied to and their current status."
+          />
+          <EmptyStateCard
+            icon={Wallet}
+            title="Earnings"
+            description="Track payouts and pending payments from your collaborations."
+          />
+        </div>
       </div>
-    </main>
+    </DashboardShell>
   );
 }
