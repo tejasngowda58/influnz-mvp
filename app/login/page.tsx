@@ -5,12 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn, getSession } from "next-auth/react";
 import { Field } from "../_components/field";
-<<<<<<< HEAD
-import { getDashboardPath } from "@/lib/dashboard-path";
-=======
 import { AuthShell } from "../_components/auth-shell";
 import { Button } from "../_components/ui/button";
->>>>>>> 479d4f16994fa4f8fc56ee4b86b08ddc55d59f44
 
 export default function LoginPage() {
   const router = useRouter();
@@ -45,15 +41,6 @@ export default function LoginPage() {
     const session = await getSession();
     const role = session?.user?.role;
 
-<<<<<<< HEAD
-    if (!role) {
-      setError("Something went wrong. Please try again.");
-      setLoading(false);
-      return;
-    }
-
-    router.push(getDashboardPath(role));
-=======
     if (role === "CREATOR") {
       router.push("/dashboard/creator");
     } else if (role === "ADMIN") {
@@ -61,7 +48,6 @@ export default function LoginPage() {
     } else {
       router.push("/dashboard/brand");
     }
->>>>>>> 479d4f16994fa4f8fc56ee4b86b08ddc55d59f44
   }
 
   return (

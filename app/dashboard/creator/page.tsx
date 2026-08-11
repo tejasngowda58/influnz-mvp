@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import { LogoutButton } from "../_components/logout-button";
-import { requireRole } from "@/lib/auth";
-=======
 import { Megaphone, Wallet, MessageSquare } from "lucide-react";
 import { DashboardShell } from "../_components/dashboard-shell";
 import { EmptyStateCard } from "../_components/empty-state-card";
@@ -12,7 +8,6 @@ import { LinkButton } from "@/app/_components/ui/button";
 import { EditProfileForm } from "./edit-profile-form";
 import { InstagramConnectionCard } from "./instagram-connection-card";
 import { requireRole } from "@/lib/require-role";
->>>>>>> 479d4f16994fa4f8fc56ee4b86b08ddc55d59f44
 import { prisma } from "@/lib/prisma";
 import { maybeRefreshInstagramToken } from "@/lib/instagram-refresh";
 
