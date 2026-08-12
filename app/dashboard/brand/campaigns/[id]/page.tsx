@@ -9,10 +9,12 @@ import { LinkButton } from "@/app/_components/ui/button";
 import { CampaignStatusBadge } from "../../../_components/campaign-status-badge";
 import { ApplicationStatusBadge } from "../../../_components/status-badge";
 import { NegotiationPanel } from "../../../_components/negotiation-panel";
+import { StatusBanner } from "../../../_components/status-banner";
 import { CampaignStatusToggle } from "./campaign-status-toggle";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatBudget, formatDate, formatEnumLabel } from "@/lib/format";
+import { NEGOTIATION_TURN } from "@/lib/application-status";
 
 export default async function BrandCampaignDetailPage({
   params,
@@ -43,6 +45,15 @@ export default async function BrandCampaignDetailPage({
     notFound();
   }
 
+  const sortedApplications = [...campaign.applications].sort((a, b) => {
+    const aNeedsResponse = NEGOTIATION_TURN[a.status] === "BRAND" ? 0 : 1;
+    const bNeedsResponse = NEGOTIATION_TURN[b.status] === "BRAND" ? 0 : 1;
+    return aNeedsResponse - bNeedsResponse;
+  });
+  const needsResponseCount = campaign.applications.filter(
+    (application) => NEGOTIATION_TURN[application.status] === "BRAND",
+  ).length;
+
   return (
     <DashboardShell role="Brand" name={brandProfile?.name}>
       <BackLink href="/dashboard/brand/campaigns" label="Back to campaigns" />
@@ -62,30 +73,24 @@ export default async function BrandCampaignDetailPage({
         </div>
 
         {campaign.status === "CHANGES_REQUESTED" && (
-          <div className="rounded-xl border border-orange-100 bg-orange-50/50 p-4">
-            <h3 className="text-xs font-medium tracking-wide text-orange-600 uppercase">
-              Admin requested changes
-            </h3>
-            <p className="mt-1 text-sm text-gray-700">{campaign.adminComment}</p>
+          <StatusBanner tone="orange" title="Admin requested changes">
+            <p>{campaign.adminComment}</p>
             <LinkButton href={`/dashboard/brand/campaigns/${campaign.id}/edit`} size="sm" className="mt-3">
               Edit &amp; resubmit
             </LinkButton>
-          </div>
+          </StatusBanner>
         )}
 
         {campaign.status === "REJECTED" && (
-          <div className="rounded-xl border border-red-100 bg-red-50/50 p-4">
-            <h3 className="text-xs font-medium tracking-wide text-red-600 uppercase">
-              Rejected by admin
-            </h3>
-            <p className="mt-1 text-sm text-gray-700">{campaign.adminComment}</p>
-          </div>
+          <StatusBanner tone="red" title="Rejected by admin">
+            <p>{campaign.adminComment}</p>
+          </StatusBanner>
         )}
 
         {campaign.status === "PENDING_REVIEW" && (
-          <p className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600">
-            This campaign is waiting on admin review before it goes live for creators.
-          </p>
+          <StatusBanner tone="gray" title="Pending review">
+            <p>This campaign is waiting on admin review before it goes live for creators.</p>
+          </StatusBanner>
         )}
 
         <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-gray-100 pt-4 text-sm text-gray-500">
@@ -124,10 +129,13 @@ export default async function BrandCampaignDetailPage({
       </Card>
 
       <div>
-        <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-          <Users className="h-4 w-4" strokeWidth={1.75} />
-          Applications ({campaign.applications.length})
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+            <Users className="h-4 w-4" strokeWidth={1.75} />
+            Applications ({campaign.applications.length})
+          </h2>
+          {needsResponseCount > 0 && <Badge tone="blue">{needsResponseCount} need your response</Badge>}
+        </div>
 
         {campaign.applications.length === 0 ? (
           <p className="mt-4 rounded-2xl border border-dashed border-gray-200 py-10 text-center text-sm text-gray-500">
@@ -135,8 +143,13 @@ export default async function BrandCampaignDetailPage({
           </p>
         ) : (
           <div className="mt-4 flex flex-col gap-3">
-            {campaign.applications.map((application) => (
-              <Card key={application.id} className="flex flex-col gap-4 p-5">
+            {sortedApplications.map((application) => (
+              <Card
+                key={application.id}
+                className={`flex flex-col gap-4 p-5 ${
+                  NEGOTIATION_TURN[application.status] === "BRAND" ? "border-blue-200" : ""
+                }`}
+              >
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">

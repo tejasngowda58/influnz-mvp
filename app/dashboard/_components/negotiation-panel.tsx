@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ApplicationStatus } from "@prisma/client";
+import { Bell, Clock, Loader2 } from "lucide-react";
 import { Field, TextAreaField } from "@/app/_components/field";
 import { Button } from "@/app/_components/ui/button";
+import { Badge } from "@/app/_components/ui/badge";
 import {
   ALLOWED_TRANSITIONS,
   MAX_NEGOTIATION_ROUNDS,
@@ -26,6 +28,27 @@ interface NegotiationPanelProps {
   lastOfferBy: NegotiationActor;
 }
 
+function ActionButton({
+  actionKey,
+  variant,
+  loading,
+  onClick,
+  children,
+}: {
+  actionKey: string;
+  variant: "primary" | "outline" | "danger";
+  loading: string | null;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <Button type="button" variant={variant} size="sm" disabled={loading !== null} onClick={onClick}>
+      {loading === actionKey && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+      {children}
+    </Button>
+  );
+}
+
 export function NegotiationPanel({
   applicationId,
   status,
@@ -42,17 +65,18 @@ export function NegotiationPanel({
   const [counterDeliverables, setCounterDeliverables] = useState(proposedDeliverables);
   const [counterMessage, setCounterMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<string | null>(null);
 
   const turn = NEGOTIATION_TURN[status];
   const isMyTurn = turn === viewerRole;
   const actions = (NEGOTIATION_ACTIONS[status] ?? []).filter(
     (action) => action !== "COUNTER" || campaignNegotiable,
   );
+  const isNegotiating = status === "APPLIED" || status === "BRAND_COUNTERED" || status === "CREATOR_COUNTERED";
 
-  async function patch(body: Record<string, unknown>) {
+  async function patch(key: string, body: Record<string, unknown>) {
     setError(null);
-    setLoading(true);
+    setLoading(key);
     try {
       const response = await fetch(`/api/applications/${applicationId}`, {
         method: "PATCH",
@@ -62,16 +86,14 @@ export function NegotiationPanel({
       const data = await response.json();
       if (!response.ok) {
         setError(data.error ?? "Something went wrong. Please try again.");
-        setLoading(false);
+        setLoading(null);
         return;
       }
       setShowCounterForm(false);
       router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");
-      setLoading(false);
-    } finally {
-      setLoading(false);
+      setLoading(null);
     }
   }
 
@@ -86,7 +108,7 @@ export function NegotiationPanel({
       setError("Deliverables can't be empty");
       return;
     }
-    patch({
+    patch("COUNTER", {
       action: "COUNTER",
       proposedBudget: budgetNumber,
       proposedDeliverables: counterDeliverables.trim(),
@@ -94,18 +116,31 @@ export function NegotiationPanel({
     });
   }
 
-  const isNegotiating = status === "APPLIED" || status === "BRAND_COUNTERED" || status === "CREATOR_COUNTERED";
-
   const termsSummary = (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
       <span className="font-semibold text-gray-900">{formatBudget(proposedBudget)}</span>
       <span>{proposedDeliverables}</span>
-      {isNegotiating && (
-        <span className="text-xs text-gray-400">
-          Round {round} of {MAX_NEGOTIATION_ROUNDS + 1} · last offered by{" "}
-          {lastOfferBy === "CREATOR" ? "creator" : "brand"}
-        </span>
-      )}
+    </div>
+  );
+
+  const turnBanner = isNegotiating && (
+    <div
+      className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 ${
+        isMyTurn ? "bg-blue-50" : "bg-gray-50"
+      }`}
+    >
+      <span
+        className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
+          isMyTurn ? "text-blue-700" : "text-gray-500"
+        }`}
+      >
+        {isMyTurn ? <Bell className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
+        {isMyTurn ? "Your turn to respond" : `Waiting on ${viewerRole === "BRAND" ? "creator" : "brand"}`}
+      </span>
+      <Badge tone="gray">
+        Round {round} of {MAX_NEGOTIATION_ROUNDS + 1} · last offered by{" "}
+        {lastOfferBy === "CREATOR" ? "creator" : "brand"}
+      </Badge>
     </div>
   );
 
@@ -128,16 +163,15 @@ export function NegotiationPanel({
         <div className="flex flex-col items-end gap-2">
           <div className="flex flex-wrap justify-end gap-2">
             {nextStatuses.map((nextStatus) => (
-              <Button
+              <ActionButton
                 key={nextStatus}
-                type="button"
+                actionKey={nextStatus}
                 variant="outline"
-                size="sm"
-                disabled={loading}
-                onClick={() => patch({ status: nextStatus })}
+                loading={loading}
+                onClick={() => patch(nextStatus, { status: nextStatus })}
               >
                 {STATUS_ACTION_LABELS[nextStatus]}
-              </Button>
+              </ActionButton>
             ))}
           </div>
           {error && <p className="text-xs text-red-600">{error}</p>}
@@ -160,43 +194,42 @@ export function NegotiationPanel({
   // Negotiation phase.
   return (
     <div className="flex flex-col gap-3">
+      {turnBanner}
       {termsSummary}
-
-      {!isMyTurn && (
-        <p className="text-sm text-gray-500">
-          Waiting for the {viewerRole === "BRAND" ? "creator" : "brand"} to respond.
-        </p>
-      )}
 
       {isMyTurn && !showCounterForm && (
         <div className="flex flex-col items-end gap-2">
           <div className="flex flex-wrap justify-end gap-2">
             {actions.includes("ACCEPT") && (
-              <Button type="button" size="sm" disabled={loading} onClick={() => patch({ action: "ACCEPT" })}>
+              <ActionButton
+                actionKey="ACCEPT"
+                variant="primary"
+                loading={loading}
+                onClick={() => patch("ACCEPT", { action: "ACCEPT" })}
+              >
                 Accept
-              </Button>
+              </ActionButton>
             )}
             {actions.includes("COUNTER") && (
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                disabled={loading}
+                disabled={loading !== null}
                 onClick={() => setShowCounterForm(true)}
               >
                 Counter
               </Button>
             )}
             {actions.includes("DECLINE") && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                disabled={loading}
-                onClick={() => patch({ action: "DECLINE" })}
+              <ActionButton
+                actionKey="DECLINE"
+                variant="danger"
+                loading={loading}
+                onClick={() => patch("DECLINE", { action: "DECLINE" })}
               >
                 Decline
-              </Button>
+              </ActionButton>
             )}
           </div>
           {error && <p className="text-xs text-red-600">{error}</p>}
@@ -204,7 +237,11 @@ export function NegotiationPanel({
       )}
 
       {isMyTurn && showCounterForm && (
-        <form onSubmit={submitCounter} className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
+        <form
+          onSubmit={submitCounter}
+          className="flex flex-col gap-3 rounded-xl border border-orange-200 bg-orange-50/40 p-4"
+        >
+          <p className="text-xs font-medium text-orange-700">Proposing new terms</p>
           <Field
             label="Your proposed budget"
             id={`counter-budget-${applicationId}`}
@@ -232,8 +269,9 @@ export function NegotiationPanel({
             <Button type="button" variant="ghost" size="sm" onClick={() => setShowCounterForm(false)}>
               Cancel
             </Button>
-            <Button type="submit" size="sm" disabled={loading}>
-              {loading ? "Sending..." : "Send counter-offer"}
+            <Button type="submit" size="sm" disabled={loading !== null}>
+              {loading === "COUNTER" && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              Send counter-offer
             </Button>
           </div>
         </form>

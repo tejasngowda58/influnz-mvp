@@ -1,8 +1,6 @@
-import { LinkButton } from "@/app/_components/ui/button";
+import { Button, LinkButton } from "@/app/_components/ui/button";
 import { CONTENT_CATEGORIES } from "@/lib/content-categories";
-
-const INPUT_CLASSES =
-  "rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-orange-600";
+import { INPUT_CLASSES } from "@/lib/ui-classes";
 
 interface FilterBarProps {
   action: string;
@@ -66,12 +64,9 @@ export function FilterBar({
           className={INPUT_CLASSES}
         />
       </div>
-      <button
-        type="submit"
-        className="rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-600 transition-colors hover:bg-orange-100"
-      >
+      <Button type="submit" variant="outline" size="sm">
         Filter
-      </button>
+      </Button>
       {hasFilters && (
         <LinkButton href={action} variant="ghost" size="sm">
           Clear

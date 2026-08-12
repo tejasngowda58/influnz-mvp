@@ -60,7 +60,11 @@ export function ApplyForm({ campaignId, negotiable, campaignBudget, campaignDeli
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
       {negotiable ? (
-        <>
+        <div className="flex flex-col gap-4 rounded-xl border border-orange-100 bg-orange-50/40 p-4">
+          <p className="text-xs font-medium text-orange-700">
+            Pre-filled with the brand&apos;s listed terms — edit these if you&apos;d like to propose
+            something different.
+          </p>
           <Field
             label="Your proposed budget"
             id="proposedBudget"
@@ -75,7 +79,7 @@ export function ApplyForm({ campaignId, negotiable, campaignBudget, campaignDeli
             onChange={setProposedDeliverables}
             rows={2}
           />
-        </>
+        </div>
       ) : (
         <p className="text-sm text-gray-500">
           This campaign&apos;s budget and deliverables are fixed — apply below to be considered.

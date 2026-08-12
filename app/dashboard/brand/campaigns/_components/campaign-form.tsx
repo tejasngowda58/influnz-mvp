@@ -110,85 +110,102 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
 
   return (
     <Card className="p-8">
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-        <Field
-          label="Title"
-          id="title"
-          type="text"
-          placeholder="Summer skincare launch"
-          value={form.title}
-          onChange={(value) => updateField("title", value)}
-          error={errors.title}
-        />
-        <TextAreaField
-          label="Description"
-          id="description"
-          placeholder="What's the campaign about?"
-          value={form.description}
-          onChange={(value) => updateField("description", value)}
-          error={errors.description}
-        />
-        <SelectField
-          label="Category"
-          id="category"
-          value={form.category}
-          onChange={(value) => updateField("category", value)}
-          options={CONTENT_CATEGORIES}
-          placeholder="Select a category"
-          error={errors.category}
-        />
-        <Field
-          label="City (optional)"
-          id="city"
-          type="text"
-          placeholder="Leave blank if location doesn't matter"
-          value={form.city}
-          onChange={(value) => updateField("city", value)}
-        />
-        <Field
-          label="Budget"
-          id="budget"
-          type="number"
-          placeholder="500"
-          value={form.budget}
-          onChange={(value) => updateField("budget", value)}
-          error={errors.budget}
-        />
-        <TextAreaField
-          label="Deliverables"
-          id="deliverables"
-          placeholder="e.g. 2 Instagram Reels + 3 Stories"
-          value={form.deliverables}
-          onChange={(value) => updateField("deliverables", value)}
-          error={errors.deliverables}
-        />
-        <Field
-          label="Target audience (optional)"
-          id="targetAudience"
-          type="text"
-          placeholder="e.g. Women 18-30 interested in skincare"
-          value={form.targetAudience}
-          onChange={(value) => updateField("targetAudience", value)}
-        />
-        <Field
-          label="Deadline"
-          id="deadline"
-          type="date"
-          value={form.deadline}
-          onChange={(value) => updateField("deadline", value)}
-          error={errors.deadline}
-        />
-        <CheckboxField
-          label="Open to negotiation"
-          description="Let creators propose a different budget or deliverables instead of the listed terms."
-          id="negotiable"
-          checked={form.negotiable}
-          onChange={(checked) => updateField("negotiable", checked)}
-        />
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
+        <div className="flex flex-col gap-4">
+          <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            Campaign details
+          </h2>
+          <Field
+            label="Title"
+            id="title"
+            type="text"
+            placeholder="Summer skincare launch"
+            value={form.title}
+            onChange={(value) => updateField("title", value)}
+            error={errors.title}
+          />
+          <TextAreaField
+            label="Description"
+            id="description"
+            placeholder="What's the campaign about?"
+            value={form.description}
+            onChange={(value) => updateField("description", value)}
+            error={errors.description}
+          />
+          <SelectField
+            label="Category"
+            id="category"
+            value={form.category}
+            onChange={(value) => updateField("category", value)}
+            options={CONTENT_CATEGORIES}
+            placeholder="Select a category"
+            error={errors.category}
+          />
+        </div>
+
+        <div className="flex flex-col gap-4 border-t border-gray-100 pt-6">
+          <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            Budget &amp; timeline
+          </h2>
+          <Field
+            label="Budget"
+            id="budget"
+            type="number"
+            placeholder="500"
+            value={form.budget}
+            onChange={(value) => updateField("budget", value)}
+            error={errors.budget}
+          />
+          <TextAreaField
+            label="Deliverables"
+            id="deliverables"
+            placeholder="e.g. 2 Instagram Reels + 3 Stories"
+            value={form.deliverables}
+            onChange={(value) => updateField("deliverables", value)}
+            error={errors.deliverables}
+          />
+          <Field
+            label="Deadline"
+            id="deadline"
+            type="date"
+            value={form.deadline}
+            onChange={(value) => updateField("deadline", value)}
+            error={errors.deadline}
+          />
+          <CheckboxField
+            label="Open to negotiation"
+            description="Let creators propose a different budget or deliverables instead of the listed terms."
+            id="negotiable"
+            checked={form.negotiable}
+            onChange={(checked) => updateField("negotiable", checked)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-4 border-t border-gray-100 pt-6">
+          <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            Targeting (optional)
+          </h2>
+          <Field
+            label="City"
+            id="city"
+            type="text"
+            placeholder="Leave blank if location doesn't matter"
+            value={form.city}
+            onChange={(value) => updateField("city", value)}
+          />
+          <Field
+            label="Target audience"
+            id="targetAudience"
+            type="text"
+            placeholder="e.g. Women 18-30 interested in skincare"
+            value={form.targetAudience}
+            onChange={(value) => updateField("targetAudience", value)}
+          />
+        </div>
 
         {submitError && <p className="text-sm text-red-600">{submitError}</p>}
 
-        <Button type="submit" disabled={loading} className="mt-2 w-full">
+        <Button type="submit" disabled={loading} className="w-full">
           {loading
             ? isEditing
               ? "Resubmitting..."
