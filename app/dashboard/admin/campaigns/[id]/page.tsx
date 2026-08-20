@@ -6,9 +6,11 @@ import { CampaignStatusBadge } from "../../../_components/campaign-status-badge"
 import { Card } from "@/app/_components/ui/card";
 import { Badge } from "@/app/_components/ui/badge";
 import { AdminReviewActions } from "./admin-review-actions";
+import { ActivityTimeline } from "../../../_components/activity-timeline";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatBudget, formatDate, formatEnumLabel } from "@/lib/format";
+import { ACTOR_DISPLAY_SELECT, resolveActorDisplayName } from "@/lib/activity-log";
 
 export default async function AdminCampaignDetailPage({
   params,
@@ -26,6 +28,21 @@ export default async function AdminCampaignDetailPage({
   if (!campaign) {
     notFound();
   }
+
+  const activities = await prisma.campaignActivity.findMany({
+    where: { campaignId: id },
+    orderBy: { createdAt: "asc" },
+    include: { actor: { select: ACTOR_DISPLAY_SELECT } },
+  });
+
+  const timelineEntries = activities.map((activity) => ({
+    id: activity.id,
+    actorRole: activity.actorRole,
+    actorName: resolveActorDisplayName(activity.actor),
+    actionType: activity.actionType,
+    details: activity.details,
+    createdAt: activity.createdAt,
+  }));
 
   return (
     <DashboardShell role="Admin">
@@ -113,6 +130,13 @@ export default async function AdminCampaignDetailPage({
           </div>
         </Card>
       )}
+
+      <Card className="p-6">
+        <h2 className="text-sm font-semibold text-gray-900">Activity timeline</h2>
+        <div className="mt-4">
+          <ActivityTimeline entries={timelineEntries} />
+        </div>
+      </Card>
     </DashboardShell>
   );
 }

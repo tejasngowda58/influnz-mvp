@@ -47,14 +47,31 @@ enum OfferSide {
   BRAND
 }
 
+enum ActivityActionType {
+  CAMPAIGN_CREATED
+  CAMPAIGN_SUBMITTED_FOR_REVIEW
+  ADMIN_APPROVED
+  ADMIN_REQUESTED_CHANGES
+  ADMIN_REJECTED
+  CREATOR_INTEREST_SUBMITTED
+  COUNTER_OFFER_SENT
+  COUNTER_OFFER_ACCEPTED
+  COUNTER_OFFER_DECLINED
+  TERMS_AGREED
+  STATUS_CHANGED
+  DISPUTE_RAISED
+  DISPUTE_RESOLVED
+}
+
 model User {
-  id             String          @id @default(uuid())
-  email          String          @unique
-  passwordHash   String
-  role           UserRole
-  createdAt      DateTime        @default(now())
-  creatorProfile CreatorProfile?
-  brandProfile   BrandProfile?
+  id                String             @id @default(uuid())
+  email             String             @unique
+  passwordHash      String
+  role              UserRole
+  createdAt         DateTime           @default(now())
+  creatorProfile    CreatorProfile?
+  brandProfile      BrandProfile?
+  campaignActivities CampaignActivity[]
 }
 
 model CreatorProfile {
@@ -107,6 +124,7 @@ model Campaign {
   reviewedAt     DateTime?
   createdAt      DateTime       @default(now())
   applications   Application[]
+  activities     CampaignActivity[]
 }
 
 model Application {
@@ -124,6 +142,25 @@ model Application {
   status     ApplicationStatus @default(APPLIED)
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
+  activities CampaignActivity[]
 
   @@unique([campaignId, creatorId])
+}
+
+model CampaignActivity {
+  id            String             @id @default(uuid())
+  campaignId    String
+  campaign      Campaign           @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  applicationId String?
+  application   Application?       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  actorId       String
+  actor         User               @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  actorRole     UserRole
+  actionType    ActivityActionType
+  details       Json?
+  createdAt     DateTime           @default(now())
+
+  @@index([campaignId])
+  @@index([actionType])
+  @@index([createdAt])
 }

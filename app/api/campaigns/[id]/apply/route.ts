@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logCampaignActivity } from "@/lib/activity-log";
 
 interface ApplyBody {
   pitch?: string;
@@ -54,14 +55,35 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   try {
-    const application = await prisma.application.create({
-      data: {
-        campaignId: campaign.id,
-        creatorId: creatorProfile.id,
-        pitch: body.pitch?.trim() || null,
-        proposedBudget,
-        proposedDeliverables,
-      },
+    const application = await prisma.$transaction(async (tx) => {
+      const created = await tx.application.create({
+        data: {
+          campaignId: campaign.id,
+          creatorId: creatorProfile.id,
+          pitch: body.pitch?.trim() || null,
+          proposedBudget,
+          proposedDeliverables,
+        },
+      });
+
+      await logCampaignActivity(
+        {
+          campaignId: campaign.id,
+          applicationId: created.id,
+          actorId: session.user.id,
+          actorRole: "CREATOR",
+          actionType: "CREATOR_INTEREST_SUBMITTED",
+          details: {
+            changes: [
+              { field: "budget", oldValue: campaign.budget, newValue: proposedBudget },
+              { field: "deliverables", oldValue: campaign.deliverables, newValue: proposedDeliverables },
+            ],
+          },
+        },
+        tx,
+      );
+
+      return created;
     });
 
     return NextResponse.json({ application }, { status: 201 });

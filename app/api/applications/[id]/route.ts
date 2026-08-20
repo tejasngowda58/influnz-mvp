@@ -9,6 +9,8 @@ import {
   nextStatusForAction,
   type NegotiationAction,
 } from "@/lib/application-status";
+import { logCampaignActivity } from "@/lib/activity-log";
+import { formatBudget } from "@/lib/format";
 
 interface PatchApplicationBody {
   action?: NegotiationAction;
@@ -89,22 +91,81 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         return NextResponse.json({ error: "proposedBudget must be a positive number" }, { status: 400 });
       }
 
-      const updated = await prisma.application.update({
-        where: { id },
-        data: {
-          status: nextStatus,
-          proposedBudget: Math.round(budgetNumber),
-          proposedDeliverables: body.proposedDeliverables.trim(),
-          negotiationMessage: body.negotiationMessage?.trim() || null,
-          round: application.round + 1,
-          lastOfferBy: role,
-        },
+      const newBudget = Math.round(budgetNumber);
+      const newDeliverables = body.proposedDeliverables.trim();
+
+      const updated = await prisma.$transaction(async (tx) => {
+        const result = await tx.application.update({
+          where: { id },
+          data: {
+            status: nextStatus,
+            proposedBudget: newBudget,
+            proposedDeliverables: newDeliverables,
+            negotiationMessage: body.negotiationMessage?.trim() || null,
+            round: application.round + 1,
+            lastOfferBy: role,
+          },
+        });
+
+        await logCampaignActivity(
+          {
+            campaignId: application.campaignId,
+            applicationId: application.id,
+            actorId: userId,
+            actorRole: role,
+            actionType: "COUNTER_OFFER_SENT",
+            details: {
+              changes: [
+                { field: "budget", oldValue: application.proposedBudget, newValue: newBudget },
+                {
+                  field: "deliverables",
+                  oldValue: application.proposedDeliverables,
+                  newValue: newDeliverables,
+                },
+              ],
+            },
+          },
+          tx,
+        );
+
+        return result;
       });
       return NextResponse.json({ application: updated });
     }
 
     // ACCEPT or DECLINE — terms lock at whatever is currently proposed, no field changes needed.
-    const updated = await prisma.application.update({ where: { id }, data: { status: nextStatus } });
+    const updated = await prisma.$transaction(async (tx) => {
+      const result = await tx.application.update({ where: { id }, data: { status: nextStatus } });
+
+      if (nextStatus === "CONFIRMED") {
+        await logCampaignActivity(
+          {
+            campaignId: application.campaignId,
+            applicationId: application.id,
+            actorId: userId,
+            actorRole: role,
+            actionType: "TERMS_AGREED",
+            details: {
+              note: `${formatBudget(application.proposedBudget)} for ${application.proposedDeliverables}`,
+            },
+          },
+          tx,
+        );
+      } else {
+        await logCampaignActivity(
+          {
+            campaignId: application.campaignId,
+            applicationId: application.id,
+            actorId: userId,
+            actorRole: role,
+            actionType: "COUNTER_OFFER_DECLINED",
+          },
+          tx,
+        );
+      }
+
+      return result;
+    });
     return NextResponse.json({ application: updated });
   }
 
@@ -120,7 +181,28 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         { status: 409 },
       );
     }
-    const updated = await prisma.application.update({ where: { id }, data: { status: body.status } });
+    const previousStatus = application.status;
+    const nextApplicationStatus = body.status;
+    const updated = await prisma.$transaction(async (tx) => {
+      const result = await tx.application.update({
+        where: { id },
+        data: { status: nextApplicationStatus },
+      });
+      await logCampaignActivity(
+        {
+          campaignId: application.campaignId,
+          applicationId: application.id,
+          actorId: userId,
+          actorRole: role,
+          actionType: "STATUS_CHANGED",
+          details: {
+            changes: [{ field: "status", oldValue: previousStatus, newValue: nextApplicationStatus }],
+          },
+        },
+        tx,
+      );
+      return result;
+    });
     return NextResponse.json({ application: updated });
   }
 

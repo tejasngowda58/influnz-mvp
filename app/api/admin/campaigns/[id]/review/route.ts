@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import type { ActivityActionType } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logCampaignActivity } from "@/lib/activity-log";
 
 type ReviewAction = "APPROVE" | "REQUEST_CHANGES" | "REJECT";
 
@@ -8,6 +10,12 @@ const RESULT_STATUS: Record<ReviewAction, "APPROVED" | "CHANGES_REQUESTED" | "RE
   APPROVE: "APPROVED",
   REQUEST_CHANGES: "CHANGES_REQUESTED",
   REJECT: "REJECTED",
+};
+
+const RESULT_ACTIVITY: Record<ReviewAction, ActivityActionType> = {
+  APPROVE: "ADMIN_APPROVED",
+  REQUEST_CHANGES: "ADMIN_REQUESTED_CHANGES",
+  REJECT: "ADMIN_REJECTED",
 };
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -47,13 +55,31 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "This campaign isn't awaiting review" }, { status: 409 });
   }
 
-  const updated = await prisma.campaign.update({
-    where: { id },
-    data: {
-      status: RESULT_STATUS[body.action],
-      adminComment: body.comment?.trim() || null,
-      reviewedAt: new Date(),
-    },
+  const action = body.action;
+  const comment = body.comment?.trim() || null;
+
+  const updated = await prisma.$transaction(async (tx) => {
+    const result = await tx.campaign.update({
+      where: { id },
+      data: {
+        status: RESULT_STATUS[action],
+        adminComment: comment,
+        reviewedAt: new Date(),
+      },
+    });
+
+    await logCampaignActivity(
+      {
+        campaignId: id,
+        actorId: session.user.id,
+        actorRole: "ADMIN",
+        actionType: RESULT_ACTIVITY[action],
+        details: comment ? { note: comment } : undefined,
+      },
+      tx,
+    );
+
+    return result;
   });
 
   return NextResponse.json({ campaign: updated });

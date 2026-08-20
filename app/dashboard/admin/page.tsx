@@ -1,6 +1,7 @@
 import { CheckCircle2, Clock, MessageSquareWarning, XCircle } from "lucide-react";
 import { DashboardShell } from "../_components/dashboard-shell";
 import { StatCard } from "../_components/stat-card";
+import { LinkButton } from "@/app/_components/ui/button";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 
@@ -16,11 +17,16 @@ export default async function AdminDashboardPage() {
 
   return (
     <DashboardShell role="Admin">
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Campaign review</h1>
-        <p className="mt-1 text-sm text-gray-600">
-          Approve, request changes on, or reject campaigns before they reach creators.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">Campaign review</h1>
+          <p className="mt-1 text-sm text-gray-600">
+            Approve, request changes on, or reject campaigns before they reach creators.
+          </p>
+        </div>
+        <LinkButton href="/dashboard/admin/activity" variant="outline" size="sm">
+          Activity log
+        </LinkButton>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

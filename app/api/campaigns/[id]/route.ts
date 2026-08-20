@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { ContentCategory } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logCampaignActivity } from "@/lib/activity-log";
 
 const CONTENT_CATEGORIES: ContentCategory[] = [
   "FASHION",
@@ -58,7 +59,22 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       );
     }
 
-    const updated = await prisma.campaign.update({ where: { id }, data: { status: body.status } });
+    const previousStatus = campaign.status;
+    const nextStatus = body.status;
+    const updated = await prisma.$transaction(async (tx) => {
+      const result = await tx.campaign.update({ where: { id }, data: { status: nextStatus } });
+      await logCampaignActivity(
+        {
+          campaignId: id,
+          actorId: session.user.id,
+          actorRole: "BRAND",
+          actionType: "STATUS_CHANGED",
+          details: { changes: [{ field: "status", oldValue: previousStatus, newValue: nextStatus }] },
+        },
+        tx,
+      );
+      return result;
+    });
     return NextResponse.json({ campaign: updated });
   }
 
@@ -96,22 +112,39 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "deadline must be a valid date" }, { status: 400 });
   }
 
-  const updated = await prisma.campaign.update({
-    where: { id },
-    data: {
-      title,
-      description,
-      category: category as ContentCategory,
-      city: city?.trim() || null,
-      budget: Math.round(budgetNumber),
-      deliverables,
-      targetAudience: targetAudience?.trim() || null,
-      deadline: deadlineDate,
-      negotiable: Boolean(negotiable),
-      status: "PENDING_REVIEW",
-      adminComment: null,
-      reviewedAt: null,
-    },
+  const updated = await prisma.$transaction(async (tx) => {
+    const result = await tx.campaign.update({
+      where: { id },
+      data: {
+        title,
+        description,
+        category: category as ContentCategory,
+        city: city?.trim() || null,
+        budget: Math.round(budgetNumber),
+        deliverables,
+        targetAudience: targetAudience?.trim() || null,
+        deadline: deadlineDate,
+        negotiable: Boolean(negotiable),
+        status: "PENDING_REVIEW",
+        adminComment: null,
+        reviewedAt: null,
+      },
+    });
+
+    await logCampaignActivity(
+      {
+        campaignId: id,
+        actorId: session.user.id,
+        actorRole: "BRAND",
+        actionType: "CAMPAIGN_SUBMITTED_FOR_REVIEW",
+        details: {
+          changes: [{ field: "budget", oldValue: campaign.budget, newValue: result.budget }],
+        },
+      },
+      tx,
+    );
+
+    return result;
   });
 
   return NextResponse.json({ campaign: updated });

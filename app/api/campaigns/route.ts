@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { ContentCategory } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logCampaignActivity } from "@/lib/activity-log";
 
 const CONTENT_CATEGORIES: ContentCategory[] = [
   "FASHION",
@@ -70,19 +71,33 @@ export async function POST(request: Request) {
   }
 
   try {
-    const campaign = await prisma.campaign.create({
-      data: {
-        brandId: brandProfile.id,
-        title,
-        description,
-        category: category as ContentCategory,
-        city: city?.trim() || null,
-        budget: Math.round(budgetNumber),
-        deliverables,
-        targetAudience: targetAudience?.trim() || null,
-        deadline: deadlineDate,
-        negotiable: Boolean(negotiable),
-      },
+    const campaign = await prisma.$transaction(async (tx) => {
+      const created = await tx.campaign.create({
+        data: {
+          brandId: brandProfile.id,
+          title,
+          description,
+          category: category as ContentCategory,
+          city: city?.trim() || null,
+          budget: Math.round(budgetNumber),
+          deliverables,
+          targetAudience: targetAudience?.trim() || null,
+          deadline: deadlineDate,
+          negotiable: Boolean(negotiable),
+        },
+      });
+
+      await logCampaignActivity(
+        {
+          campaignId: created.id,
+          actorId: session.user.id,
+          actorRole: "BRAND",
+          actionType: "CAMPAIGN_CREATED",
+        },
+        tx,
+      );
+
+      return created;
     });
 
     return NextResponse.json({ campaign }, { status: 201 });
