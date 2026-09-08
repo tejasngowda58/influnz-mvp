@@ -5,6 +5,7 @@ import { BackLink } from "../../_components/back-link";
 import { Card } from "@/app/_components/ui/card";
 import { ApplicationStatusBadge } from "../../_components/status-badge";
 import { MetaRow } from "../../_components/meta-row";
+import { EmptyState } from "../../_components/empty-state";
 import { Badge } from "@/app/_components/ui/badge";
 import { NEGOTIATION_TURN } from "@/lib/application-status";
 import { requireRole } from "@/lib/require-role";
@@ -40,15 +41,12 @@ export default async function CreatorApplicationsPage() {
       </div>
 
       {applications.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
-            <MessageSquare className="h-6 w-6" strokeWidth={1.75} />
-          </span>
-          <p className="text-sm font-medium text-strong">No applications yet</p>
-          <p className="max-w-sm text-sm text-muted">
-            Browse open campaigns and apply to the ones that fit your content.
-          </p>
-        </div>
+        <EmptyState
+          icon={MessageSquare}
+          title="No applications yet"
+          body="Apply to a campaign and it shows up here, so you can follow it from offer through to payment without chasing anyone."
+          action={{ label: "Browse open campaigns", href: "/dashboard/creator/campaigns" }}
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {applications.map((application) => (

@@ -4,6 +4,8 @@ import { DashboardShell } from "../../_components/dashboard-shell";
 import { BackLink } from "../../_components/back-link";
 import { StatCard } from "../../_components/stat-card";
 import { Card } from "@/app/_components/ui/card";
+import { Badge } from "@/app/_components/ui/badge";
+import { EmptyState } from "../../_components/empty-state";
 import { Button, LinkButton } from "@/app/_components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime, formatEnumLabel } from "@/lib/format";
@@ -59,6 +61,27 @@ export default async function AdminActivityPage({
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const hasFilters = Boolean(params.actionType || params.from || params.to || params.search || params.anomaly);
+
+  // Grouped by campaign so the page reads as a set of evidence trails rather
+  // than one undifferentiated log. Campaign order follows the newest event.
+  const grouped: {
+    campaignId: string;
+    campaignTitle: string;
+    entries: typeof activities;
+  }[] = [];
+
+  for (const activity of activities) {
+    const existing = grouped.find((group) => group.campaignId === activity.campaign.id);
+    if (existing) {
+      existing.entries.push(activity);
+    } else {
+      grouped.push({
+        campaignId: activity.campaign.id,
+        campaignTitle: activity.campaign.title,
+        entries: [activity],
+      });
+    }
+  }
 
   return (
     <DashboardShell role="Admin">
@@ -150,49 +173,54 @@ export default async function AdminActivityPage({
       </form>
 
       {activities.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
-            <History className="h-6 w-6" strokeWidth={1.75} />
-          </span>
-          <p className="text-sm font-medium text-strong">No activity matches those filters</p>
-        </div>
+        <EmptyState
+          icon={History}
+          title={hasFilters ? "No activity matches those filters" : "No activity recorded yet"}
+          body={
+            hasFilters
+              ? "Try widening the date range, or clearing the action type to see everything on the platform."
+              : "Every campaign submission, review decision, offer, counter-offer, payment and dispute lands here as it happens. It is the evidence trail behind any decision you have to make."
+          }
+        />
       ) : (
-        <Card className="overflow-x-auto p-0">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-line text-xs font-medium text-muted/70">
-              <tr>
-                <th className="px-4 py-3">Campaign</th>
-                <th className="px-4 py-3">Actor</th>
-                <th className="px-4 py-3">Action</th>
-                <th className="px-4 py-3">Summary</th>
-                <th className="px-4 py-3">When</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-line">
-              {activities.map((activity) => (
-                <tr key={activity.id}>
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/dashboard/admin/campaigns/${activity.campaign.id}`}
-                      className="font-medium text-strong hover:text-ember"
-                    >
-                      {activity.campaign.title}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-muted">
-                    {resolveActorDisplayName(activity.actor)}
-                    <span className="ml-1 text-xs text-muted/70">({formatEnumLabel(activity.actorRole)})</span>
-                  </td>
-                  <td className="px-4 py-3 text-muted">{formatEnumLabel(activity.actionType)}</td>
-                  <td className="px-4 py-3 text-muted">{summarizeActivityDetails(activity.details)}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-muted/70">
-                    {formatDateTime(activity.createdAt)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card>
+        <div className="flex flex-col gap-4">
+          {grouped.map((group) => (
+            <Card key={group.campaignId} radius="surface" className="overflow-hidden">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-paper px-5 py-3">
+                <Link
+                  href={`/dashboard/admin/campaigns/${group.campaignId}`}
+                  className="font-semibold text-strong hover:text-ember"
+                >
+                  {group.campaignTitle}
+                </Link>
+                <span className="text-xs text-muted">
+                  {group.entries.length} {group.entries.length === 1 ? "event" : "events"} on this page
+                </span>
+              </div>
+
+              <ol className="divide-y divide-line">
+                {group.entries.map((activity) => (
+                  <li
+                    key={activity.id}
+                    className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3 text-sm"
+                  >
+                    <span className="font-medium text-strong">
+                      {resolveActorDisplayName(activity.actor)}
+                    </span>
+                    <Badge tone={activity.actorRole === "ADMIN" ? "held" : "neutral"}>
+                      {formatEnumLabel(activity.actorRole)}
+                    </Badge>
+                    <span className="text-muted">{formatEnumLabel(activity.actionType)}</span>
+                    <span className="text-muted/80">{summarizeActivityDetails(activity.details)}</span>
+                    <span className="ml-auto whitespace-nowrap text-xs text-muted/70">
+                      {formatDateTime(activity.createdAt)}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </Card>
+          ))}
+        </div>
       )}
 
       {totalPages > 1 && (

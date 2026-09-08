@@ -7,6 +7,7 @@ import { requireSession } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/format";
 import { MarkNotificationsRead } from "./mark-notifications-read";
+import { EmptyState } from "../_components/empty-state";
 
 const ROLE_HOME = {
   CREATOR: "/dashboard/creator",
@@ -43,16 +44,11 @@ export default async function NotificationsPage() {
       </div>
 
       {notifications.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
-            <Inbox className="h-6 w-6" strokeWidth={1.75} />
-          </span>
-          <p className="text-sm font-medium text-strong">Nothing here yet</p>
-          <p className="max-w-sm text-sm text-muted">
-            You&apos;ll hear from us when a campaign is reviewed, someone applies, terms are agreed,
-            or money moves.
-          </p>
-        </div>
+        <EmptyState
+          icon={Inbox}
+          title="Nothing here yet"
+          body="You'll hear from us when a campaign is reviewed, someone applies, terms are agreed, money moves, or a deadline is about to pass."
+        />
       ) : (
         <div className="flex flex-col gap-2">
           {notifications.map((notification) => {

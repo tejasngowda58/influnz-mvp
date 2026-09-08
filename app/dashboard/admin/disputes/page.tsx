@@ -5,6 +5,7 @@ import { DashboardShell } from "../../_components/dashboard-shell";
 import { Card } from "@/app/_components/ui/card";
 import { Badge, type BadgeTone } from "@/app/_components/ui/badge";
 import { MetaRow } from "../../_components/meta-row";
+import { EmptyState } from "../../_components/empty-state";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/format";
@@ -80,17 +81,11 @@ export default async function AdminDisputesPage({
       </div>
 
       {disputes.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-settled/5 text-settled">
-            <Scale className="h-6 w-6" strokeWidth={1.75} />
-          </span>
-          <p className="text-sm font-medium text-strong">
-            {activeTab === "OPEN" ? "No disputes waiting on you" : "No disputes yet"}
-          </p>
-          <p className="max-w-sm text-sm text-muted">
-            Disputes appear here the moment either side raises one on a funded deal.
-          </p>
-        </div>
+        <EmptyState
+          icon={Scale}
+          title={activeTab === "OPEN" ? "No disputes waiting on you" : "No disputes yet"}
+          body="Either side can dispute a deal while money is still held in escrow. Raising one freezes the money and puts it here for a decision."
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {disputes.map((dispute) => (

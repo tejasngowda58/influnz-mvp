@@ -4,6 +4,7 @@ import { DashboardShell } from "../../_components/dashboard-shell";
 import { BackLink } from "../../_components/back-link";
 import { FilterBar } from "../../_components/filter-bar";
 import { CreatorCard } from "../../_components/creator-card";
+import { EmptyState } from "../../_components/empty-state";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 
@@ -56,13 +57,11 @@ export default async function CreatorDirectoryPage({
       />
 
       {creators.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
-            <Users className="h-6 w-6" strokeWidth={1.75} />
-          </span>
-          <p className="text-sm font-medium text-strong">No creators match those filters</p>
-          <p className="max-w-sm text-sm text-muted">Try a different search, category, or city.</p>
-        </div>
+        <EmptyState
+          icon={Users}
+          title="No creators match those filters"
+          body="Every creator here has an Influnz account, and verified ones have had their follower count pulled from Instagram directly. Widen the category or city to see more."
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {creators.map((creator) => (

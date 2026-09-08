@@ -4,6 +4,7 @@ import { EmptyStateCard } from "../_components/empty-state-card";
 import { StatCard } from "../_components/stat-card";
 import { ProfileCard } from "../_components/profile-card";
 import { LinkButton } from "@/app/_components/ui/button";
+import { Card } from "@/app/_components/ui/card";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 
@@ -22,15 +23,16 @@ export default async function BrandDashboardPage() {
     },
   });
 
-  const [liveCampaigns, pendingReviewCampaigns, pendingApplications] = profile
+  const [liveCampaigns, pendingReviewCampaigns, pendingApplications, totalCampaigns] = profile
     ? await Promise.all([
         prisma.campaign.count({ where: { brandId: profile.id, status: "APPROVED" } }),
         prisma.campaign.count({ where: { brandId: profile.id, status: "PENDING_REVIEW" } }),
         prisma.application.count({
           where: { status: { in: ["APPLIED", "CREATOR_COUNTERED"] }, campaign: { brandId: profile.id } },
         }),
+        prisma.campaign.count({ where: { brandId: profile.id } }),
       ])
-    : [0, 0, 0];
+    : [0, 0, 0, 0];
 
   return (
     <DashboardShell role="Brand" name={profile?.name}>
@@ -52,6 +54,54 @@ export default async function BrandDashboardPage() {
           </LinkButton>
         </div>
       </div>
+
+      {profile && totalCampaigns === 0 && (
+        <Card radius="surface" className="flex flex-col gap-5 p-6">
+          <div>
+            <h2 className="font-display text-lg text-strong">How a campaign works here</h2>
+            <p className="mt-1 text-sm text-muted">
+              Four steps, and the money only moves at the last one.
+            </p>
+          </div>
+
+          <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                title: "Post a campaign",
+                body: "Budget, deliverables, deadline, and how many creators you need.",
+              },
+              {
+                title: "We review it",
+                body: "An Influnz admin checks it before any creator sees it.",
+              },
+              {
+                title: "Negotiate",
+                body: "Creators apply and can counter. Two rounds, then terms settle.",
+              },
+              {
+                title: "Fund escrow",
+                body: "We hold the fee until you approve the work, so nobody works on a promise.",
+              },
+            ].map((step, index) => (
+              <li key={step.title} className="flex gap-3">
+                <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full border border-ember/30 bg-ember-tint text-xs font-bold text-ember">
+                  {index + 1}
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-strong">{step.title}</p>
+                  <p className="mt-0.5 text-sm leading-relaxed text-muted">{step.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <div>
+            <LinkButton href="/dashboard/brand/campaigns/new" size="sm">
+              Post your first campaign
+            </LinkButton>
+          </div>
+        </Card>
+      )}
 
       {profile && (
         <ProfileCard

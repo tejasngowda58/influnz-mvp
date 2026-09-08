@@ -3,6 +3,7 @@ import type { CampaignStatus } from "@prisma/client";
 import { Megaphone } from "lucide-react";
 import { DashboardShell } from "../../_components/dashboard-shell";
 import { CampaignCard } from "../../_components/campaign-card";
+import { EmptyState } from "../../_components/empty-state";
 import { BackLink } from "../../_components/back-link";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
@@ -73,24 +74,20 @@ export default async function BrandCampaignsPage({
       </div>
 
       {campaigns.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
-            <Megaphone className="h-6 w-6" strokeWidth={1.75} />
-          </span>
-          <p className="text-sm font-medium text-strong">
-            {activeView === "history" ? "No campaign history yet" : "No campaigns yet"}
-          </p>
-          <p className="max-w-sm text-sm text-muted">
-            {activeView === "history"
-              ? "Completed and rejected campaigns will show up here once they wrap."
-              : "Create your first campaign so creators can find and apply to it."}
-          </p>
-          {activeView === "active" && (
-            <LinkButton href="/dashboard/brand/campaigns/new" className="mt-2">
-              New campaign
-            </LinkButton>
-          )}
-        </div>
+        <EmptyState
+          icon={Megaphone}
+          title={activeView === "history" ? "No campaign history yet" : "No campaigns yet"}
+          body={
+            activeView === "history"
+              ? "Campaigns land here once they close — either because you filled every slot or because they were turned down at review."
+              : "Post a campaign and an Influnz admin reviews it before any creator sees it. Once it is live, creators apply and you negotiate from your dashboard."
+          }
+          action={
+            activeView === "active"
+              ? { label: "New campaign", href: "/dashboard/brand/campaigns/new" }
+              : undefined
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {campaigns.map((campaign) => (

@@ -4,6 +4,7 @@ import { ClipboardList } from "lucide-react";
 import { DashboardShell } from "../../_components/dashboard-shell";
 import { CampaignStatusBadge } from "../../_components/campaign-status-badge";
 import { MetaRow } from "../../_components/meta-row";
+import { EmptyState } from "../../_components/empty-state";
 import { Card } from "@/app/_components/ui/card";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
@@ -63,12 +64,11 @@ export default async function AdminCampaignsPage({
       </div>
 
       {campaigns.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
-            <ClipboardList className="h-6 w-6" strokeWidth={1.75} />
-          </span>
-          <p className="text-sm font-medium text-strong">No campaigns here</p>
-        </div>
+        <EmptyState
+          icon={ClipboardList}
+          title="Nothing in this queue"
+          body="Campaigns arrive here the moment a brand submits one. Nothing reaches creators until somebody on this side approves it."
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {campaigns.map((campaign) => (
