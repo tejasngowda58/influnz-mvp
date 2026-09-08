@@ -16,7 +16,7 @@ interface CreatorCardProps {
   id: string;
   name: string;
   instagramHandle: string | null;
-  instagramProfilePictureUrl?: string | null;
+  photoUrl?: string | null;
   verified?: boolean;
   category: string;
   city: string;
@@ -27,7 +27,7 @@ export function CreatorCard({
   id,
   name,
   instagramHandle,
-  instagramProfilePictureUrl,
+  photoUrl,
   verified,
   category,
   city,
@@ -39,10 +39,10 @@ export function CreatorCard({
     <Link href={`/dashboard/brand/creators/${id}`} className="block">
       <Card className="flex flex-col gap-3 p-6 transition-colors hover:border-line-strong">
         <div className="flex items-center gap-3">
-          {instagramProfilePictureUrl ? (
+          {photoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- unpredictable Instagram CDN host, not worth an images.remotePatterns allowlist
             <img
-              src={instagramProfilePictureUrl}
+              src={photoUrl}
               alt=""
               width={40}
               height={40}

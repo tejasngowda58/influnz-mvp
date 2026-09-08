@@ -71,7 +71,7 @@ export default async function CreatorDirectoryPage({
               id={creator.id}
               name={creator.name}
               instagramHandle={creator.instagramHandle}
-              instagramProfilePictureUrl={creator.instagramProfilePictureUrl}
+              photoUrl={creator.instagramProfilePictureUrl ?? creator.avatarUrl}
               verified={Boolean(creator.instagramConnectedAt)}
               category={creator.contentCategory}
               city={creator.city}

@@ -2,9 +2,8 @@ import { Megaphone, Wallet, MessageSquare } from "lucide-react";
 import { DashboardShell } from "../_components/dashboard-shell";
 import { EmptyStateCard } from "../_components/empty-state-card";
 import { StatCard } from "../_components/stat-card";
-import { CreatorProfileCard } from "../_components/creator-profile-card";
 import { LinkButton } from "@/app/_components/ui/button";
-import { EditProfileDialog } from "./edit-profile-dialog";
+import { OwnProfile } from "./own-profile";
 import { InstagramConnectionCard } from "./instagram-connection-card";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
@@ -28,6 +27,7 @@ export default async function CreatorDashboardPage({
       city: true,
       followerCount: true,
       bio: true,
+      avatarUrl: true,
       instagramProfilePictureUrl: true,
       instagramConnectedAt: true,
       instagramAccessToken: true,
@@ -62,7 +62,7 @@ export default async function CreatorDashboardPage({
         </LinkButton>
       </div>
 
-      {profile && (
+      {profile?.instagramConnectedAt && (
         <InstagramConnectionCard
           instagramHandle={profile.instagramHandle}
           instagramProfilePictureUrl={profile.instagramProfilePictureUrl}
@@ -73,27 +73,17 @@ export default async function CreatorDashboardPage({
       )}
 
       {profile && (
-        <div>
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-sm font-semibold text-strong">Your profile</h2>
-              <p className="mt-0.5 text-sm text-muted">
-                This is exactly what brands see when browsing the creator directory.
-              </p>
-            </div>
-            <EditProfileDialog bio={profile.bio ?? ""} followerCount={profile.followerCount} />
-          </div>
-          <CreatorProfileCard
-            name={profile.name}
-            instagramHandle={profile.instagramHandle}
-            instagramProfilePictureUrl={profile.instagramProfilePictureUrl}
-            verified={Boolean(profile.instagramConnectedAt)}
-            category={profile.contentCategory}
-            city={profile.city}
-            followerCount={profile.followerCount}
-            bio={profile.bio}
-          />
-        </div>
+        <OwnProfile
+          name={profile.name}
+          instagramHandle={profile.instagramHandle}
+          instagramProfilePictureUrl={profile.instagramProfilePictureUrl}
+          avatarUrl={profile.avatarUrl}
+          category={profile.contentCategory}
+          city={profile.city}
+          followerCount={profile.followerCount}
+          bio={profile.bio}
+          instagramConnected={Boolean(profile.instagramConnectedAt)}
+        />
       )}
 
       <div>
