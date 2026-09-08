@@ -144,15 +144,22 @@ export function NegotiationPanel({
     </div>
   );
 
-  // Post-negotiation, simple forward-only pipeline (Confirmed -> Content Submitted -> Approved), brand-only.
-  if (status === "CONFIRMED" || status === "CONTENT_SUBMITTED") {
+  // Post-negotiation pipeline. CONFIRMED has no manual action any more: escrow
+  // funding is what moves a deal forward, so the panel just explains the wait.
+  if (status === "CONFIRMED" || status === "FUNDED" || status === "CONTENT_SUBMITTED") {
     const nextStatuses = ALLOWED_TRANSITIONS[status] ?? [];
     if (viewerRole !== "BRAND" || nextStatuses.length === 0) {
       return (
         <div className="flex flex-col gap-2">
           {termsSummary}
           <p className="text-sm text-gray-500">
-            {status === "CONFIRMED" ? "Terms agreed — awaiting content." : "Content submitted, awaiting approval."}
+            {status === "CONFIRMED"
+              ? viewerRole === "BRAND"
+                ? "Terms agreed — fund escrow to start the work."
+                : "Terms agreed — waiting for the brand to fund escrow."
+              : status === "FUNDED"
+                ? "Funded — work in progress."
+                : "Content submitted, awaiting approval."}
           </p>
         </div>
       );
@@ -180,12 +187,16 @@ export function NegotiationPanel({
     );
   }
 
-  if (status === "APPROVED" || status === "REJECTED") {
+  if (status === "APPROVED" || status === "RELEASED" || status === "REJECTED") {
     return (
       <div className="flex flex-col gap-2">
         {termsSummary}
         <p className="text-sm text-gray-500">
-          {status === "APPROVED" ? "Collaboration approved." : "This application was declined."}
+          {status === "REJECTED"
+            ? "This application was declined."
+            : status === "RELEASED"
+              ? "Collaboration complete and paid out."
+              : "Collaboration approved."}
         </p>
       </div>
     );

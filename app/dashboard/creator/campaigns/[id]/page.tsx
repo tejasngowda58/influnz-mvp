@@ -6,10 +6,12 @@ import { Card } from "@/app/_components/ui/card";
 import { Badge } from "@/app/_components/ui/badge";
 import { ApplicationStatusBadge } from "../../../_components/status-badge";
 import { NegotiationPanel } from "../../../_components/negotiation-panel";
+import { EscrowPanel } from "../../../_components/escrow-panel";
 import { ApplyForm } from "./apply-form";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatBudget, formatDate, formatEnumLabel } from "@/lib/format";
+import { isRazorpayConfigured } from "@/lib/razorpay";
 
 export default async function CreatorCampaignDetailPage({
   params,
@@ -36,6 +38,7 @@ export default async function CreatorCampaignDetailPage({
   const existingApplication = creatorProfile
     ? await prisma.application.findUnique({
         where: { campaignId_creatorId: { campaignId: campaign.id, creatorId: creatorProfile.id } },
+        include: { escrow: true, disputes: { select: { status: true } } },
       })
     : null;
 
@@ -107,6 +110,17 @@ export default async function CreatorCampaignDetailPage({
                 <p className="mt-3 text-sm text-gray-700">{existingApplication.pitch}</p>
               )}
             </div>
+            <EscrowPanel
+              applicationId={existingApplication.id}
+              viewerRole="CREATOR"
+              applicationStatus={existingApplication.status}
+              escrow={existingApplication.escrow}
+              contentSubmittedAt={existingApplication.contentSubmittedAt}
+              hasOpenDispute={existingApplication.disputes.some(
+                (dispute) => dispute.status === "OPEN" || dispute.status === "UNDER_REVIEW",
+              )}
+              paymentsEnabled={isRazorpayConfigured()}
+            />
             <NegotiationPanel
               applicationId={existingApplication.id}
               status={existingApplication.status}

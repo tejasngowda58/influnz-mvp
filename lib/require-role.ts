@@ -15,3 +15,14 @@ export async function requireRole(role: UserRole) {
 
   return session;
 }
+
+/** For pages any signed-in role may see, like the notification inbox. */
+export async function requireSession() {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
+  return session;
+}

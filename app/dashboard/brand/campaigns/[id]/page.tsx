@@ -9,12 +9,14 @@ import { LinkButton } from "@/app/_components/ui/button";
 import { CampaignStatusBadge } from "../../../_components/campaign-status-badge";
 import { ApplicationStatusBadge } from "../../../_components/status-badge";
 import { NegotiationPanel } from "../../../_components/negotiation-panel";
+import { EscrowPanel } from "../../../_components/escrow-panel";
 import { StatusBanner } from "../../../_components/status-banner";
 import { CampaignStatusToggle } from "./campaign-status-toggle";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatBudget, formatDate, formatEnumLabel } from "@/lib/format";
 import { NEGOTIATION_TURN } from "@/lib/application-status";
+import { isRazorpayConfigured } from "@/lib/razorpay";
 
 export default async function BrandCampaignDetailPage({
   params,
@@ -35,7 +37,11 @@ export default async function BrandCampaignDetailPage({
         include: {
           applications: {
             orderBy: { createdAt: "desc" },
-            include: { creator: true },
+            include: {
+              creator: true,
+              escrow: true,
+              disputes: { select: { status: true } },
+            },
           },
         },
       })
@@ -54,8 +60,9 @@ export default async function BrandCampaignDetailPage({
     (application) => NEGOTIATION_TURN[application.status] === "BRAND",
   ).length;
   const approvedCount = campaign.applications.filter(
-    (application) => application.status === "APPROVED",
+    (application) => application.status === "APPROVED" || application.status === "RELEASED",
   ).length;
+  const paymentsEnabled = isRazorpayConfigured();
   const quotaReached = approvedCount >= campaign.creatorsNeeded;
 
   return (
@@ -189,6 +196,17 @@ export default async function BrandCampaignDetailPage({
                     )}
                   </div>
                 </div>
+                <EscrowPanel
+                  applicationId={application.id}
+                  viewerRole="BRAND"
+                  applicationStatus={application.status}
+                  escrow={application.escrow}
+                  contentSubmittedAt={application.contentSubmittedAt}
+                  hasOpenDispute={application.disputes.some(
+                    (dispute) => dispute.status === "OPEN" || dispute.status === "UNDER_REVIEW",
+                  )}
+                  paymentsEnabled={paymentsEnabled}
+                />
                 <NegotiationPanel
                   applicationId={application.id}
                   status={application.status}

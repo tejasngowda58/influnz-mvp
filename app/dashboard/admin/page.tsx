@@ -24,9 +24,14 @@ export default async function AdminDashboardPage() {
             Approve, request changes on, or reject campaigns before they reach creators.
           </p>
         </div>
-        <LinkButton href="/dashboard/admin/activity" variant="outline" size="sm">
-          Activity log
-        </LinkButton>
+        <div className="flex gap-3">
+          <LinkButton href="/dashboard/admin/disputes" variant="outline" size="sm">
+            Disputes
+          </LinkButton>
+          <LinkButton href="/dashboard/admin/activity" variant="outline" size="sm">
+            Activity log
+          </LinkButton>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
