@@ -1,31 +1,95 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: #ffffff;
-  --color-foreground: #171717;
+/*
+ * Influnz design tokens.
+ *
+ * Two moods, one system: the public surface (landing, auth) is expressive and
+ * built on `ink`; the dashboard is calm and dense on `paper`. The dashboard is
+ * handling other people's money, so it never tries to be exciting.
+ *
+ * Elevation in the dashboard comes from borders and background steps, not drop
+ * shadows — only modals float. Radius carries hierarchy instead of every
+ * surface sharing one rounded-2xl.
+ */
+@theme {
+  /* --- brand ------------------------------------------------------------ */
+  /* Deep indigo-violet. Carries weight without being near-black. */
+  --color-ink: #1a1730;
+  --color-ink-soft: #2b2545;
+  --color-ink-line: #3a3358;
 
-  /* Brand palette: orange primary on a neutral gray/white base */
-  --color-primary: #ea580c; /* orange-600 */
-  --color-primary-light: #fff7ed; /* orange-50 */
-  --color-primary-dark: #c2410c; /* orange-700 */
+  /* The action accent. Means "primary action", never decoration. */
+  --color-ember: #e8590c;
+  --color-ember-dark: #c94a06;
+  --color-ember-tint: #fff2e9;
 
-  /* Semantic tokens layered on the same neutral/orange base */
+  /* --- neutrals, tinted toward the base so surfaces feel deliberate ----- */
+  --color-paper: #fbfafc;
   --color-surface: #ffffff;
-  --color-surface-muted: #fafaf9; /* stone-50 */
-  --color-border: #f1f0ef; /* stone-100 */
-  --color-muted: #78716c; /* stone-500 */
-  --color-muted-foreground: #57534e; /* stone-600 */
-  --color-success: #16a34a; /* green-600 */
-  --color-success-light: #f0fdf4; /* green-50 */
-  --color-danger: #dc2626; /* red-600 */
-  --color-danger-light: #fef2f2; /* red-50 */
+  --color-line: #e7e4ee;
+  --color-line-strong: #d6d2e2;
+  --color-muted: #6b6580;
+  --color-strong: #221e38;
 
+  /* --- status language --------------------------------------------------
+   * Money states must be distinguishable from turn states at a glance, so
+   * they get their own hues rather than sharing generic badge tones.
+   */
+  --color-held: #2563a8; /* money in escrow — custody, not "info" */
+  --color-yours: #e8590c; /* awaiting your move — same as the primary action */
+  --color-theirs: #6b6580; /* awaiting them — recedes */
+  --color-settled: #157a5b; /* approved / released */
+  --color-frozen: #b4530a; /* disputed — serious, not an error */
+  --color-stopped: #a8324a; /* rejected / refunded */
+
+  /* --- radius by hierarchy --------------------------------------------- */
+  --radius-surface: 20px;
+  --radius-card: 14px;
+  --radius-control: 10px;
+  --radius-inset: 8px;
+
+  /* --- type ------------------------------------------------------------- */
   --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-bricolage);
   --font-mono: var(--font-geist-mono);
+
+  --text-hero: 2.75rem;
+  --text-hero--line-height: 1.05;
+  --text-hero--letter-spacing: -0.02em;
+  --text-display: 2rem;
+  --text-display--line-height: 1.15;
+  --text-display--letter-spacing: -0.015em;
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.4;
 }
 
 body {
-  background: var(--color-background);
-  color: var(--color-foreground);
+  background: var(--color-paper);
+  color: var(--color-strong);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Focus is always visible — keyboard users are not a special case. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Motion in the dashboard only ever confirms an action. Honour the setting. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
 }

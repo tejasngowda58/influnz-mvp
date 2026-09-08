@@ -70,7 +70,7 @@ export function RaiseDisputeDialog({ applicationId }: { applicationId: string })
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs font-medium text-gray-500 underline underline-offset-2 hover:text-red-600"
+        className="text-xs font-medium text-muted underline underline-offset-2 hover:text-stopped"
       >
         Raise a dispute
       </button>
@@ -83,14 +83,14 @@ export function RaiseDisputeDialog({ applicationId }: { applicationId: string })
       >
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="dispute-reason" className="text-sm font-medium text-gray-700">
+            <label htmlFor="dispute-reason" className="text-sm font-medium text-strong">
               What&apos;s the problem?
             </label>
             <select
               id="dispute-reason"
               value={reason}
               onChange={(event) => setReason(event.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+              className="w-full rounded-inset border border-line-strong bg-white px-4 py-2.5 text-sm text-strong focus:border-ember/50 focus:ring-2 focus:ring-ember/20 focus:outline-none"
             >
               {REASONS.map((option) => (
                 <option key={option} value={option}>
@@ -118,9 +118,9 @@ export function RaiseDisputeDialog({ applicationId }: { applicationId: string })
             onChange={setEvidence}
           />
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-stopped">{error}</p>}
 
-          <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
+          <div className="flex justify-end gap-3 border-t border-line pt-4">
             <Button
               type="button"
               variant="ghost"

@@ -13,9 +13,9 @@ interface DashboardShellProps {
 }
 
 const ROLE_BADGE_TONE = {
-  Creator: "orange",
-  Brand: "orange",
-  Admin: "blue",
+  Creator: "accent",
+  Brand: "accent",
+  Admin: "held",
 } as const;
 
 export async function DashboardShell({ role, name, children }: DashboardShellProps) {
@@ -26,8 +26,8 @@ export async function DashboardShell({ role, name, children }: DashboardShellPro
     : 0;
 
   return (
-    <div className="flex flex-1 flex-col bg-gray-50">
-      <header className="border-b border-gray-100 bg-white">
+    <div className="flex flex-1 flex-col bg-paper">
+      <header className="border-b border-line bg-white">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <Link href="/">
@@ -37,18 +37,18 @@ export async function DashboardShell({ role, name, children }: DashboardShellPro
           </div>
           <div className="flex items-center gap-4">
             {name && (
-              <span className="hidden text-sm font-medium text-gray-600 sm:inline">{name}</span>
+              <span className="hidden text-sm font-medium text-muted sm:inline">{name}</span>
             )}
             <Link
               href="/dashboard/notifications"
               aria-label={
                 unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"
               }
-              className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+              className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-strong/[0.06] hover:text-strong"
             >
               <Bell className="h-4 w-4" strokeWidth={1.75} />
               {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 inline-flex min-w-4 items-center justify-center rounded-full bg-orange-600 px-1 text-[10px] font-bold text-white">
+                <span className="absolute -top-0.5 -right-0.5 inline-flex min-w-4 items-center justify-center rounded-full bg-ember px-1 text-[10px] font-bold text-white">
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}

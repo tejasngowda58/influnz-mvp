@@ -31,7 +31,7 @@ export function DisconnectInstagramButton() {
       <Button type="button" variant="ghost" size="sm" disabled={loading} onClick={disconnect}>
         {loading ? "Disconnecting..." : "Disconnect"}
       </Button>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-stopped">{error}</p>}
     </div>
   );
 }

@@ -25,7 +25,7 @@ export function Field({
 }: FieldProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-gray-700">
+      <label htmlFor={id} className="text-sm font-medium text-strong">
         {label}
       </label>
       <input
@@ -37,7 +37,7 @@ export function Field({
         onChange={(event) => onChange(event.target.value)}
         className={INPUT_CLASSES}
       />
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-stopped">{error}</p>}
     </div>
   );
 }
@@ -63,7 +63,7 @@ export function TextAreaField({
 }: TextAreaFieldProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-gray-700">
+      <label htmlFor={id} className="text-sm font-medium text-strong">
         {label}
       </label>
       <textarea
@@ -74,7 +74,7 @@ export function TextAreaField({
         onChange={(event) => onChange(event.target.value)}
         className={`${INPUT_CLASSES} resize-none`}
       />
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-stopped">{error}</p>}
     </div>
   );
 }
@@ -89,7 +89,7 @@ interface CheckboxFieldProps {
 
 export function CheckboxField({ label, description, id, checked, onChange }: CheckboxFieldProps) {
   return (
-    <label htmlFor={id} className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-3.5">
+    <label htmlFor={id} className="flex cursor-pointer items-start gap-3 rounded-inset border border-line-strong p-3.5">
       <input
         id={id}
         type="checkbox"
@@ -98,8 +98,8 @@ export function CheckboxField({ label, description, id, checked, onChange }: Che
         className="mt-0.5 h-4 w-4 flex-none accent-orange-600"
       />
       <span className="flex flex-col gap-0.5">
-        <span className="text-sm font-medium text-gray-700">{label}</span>
-        {description && <span className="text-xs text-gray-500">{description}</span>}
+        <span className="text-sm font-medium text-strong">{label}</span>
+        {description && <span className="text-xs text-muted">{description}</span>}
       </span>
     </label>
   );
@@ -131,7 +131,7 @@ export function SelectField({
 }: SelectFieldProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-gray-700">
+      <label htmlFor={id} className="text-sm font-medium text-strong">
         {label}
       </label>
       <select
@@ -149,7 +149,7 @@ export function SelectField({
           </option>
         ))}
       </select>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-stopped">{error}</p>}
     </div>
   );
 }

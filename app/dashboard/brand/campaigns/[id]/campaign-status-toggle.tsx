@@ -47,7 +47,7 @@ export function CampaignStatusToggle({
       <Button type="button" variant="ghost" size="sm" disabled={loading} onClick={toggle}>
         {loading ? "Saving..." : status === "APPROVED" ? "Close campaign" : "Reopen campaign"}
       </Button>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-stopped">{error}</p>}
     </div>
   );
 }

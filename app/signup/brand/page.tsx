@@ -123,10 +123,10 @@ export default function BrandSignupPage() {
       title="Find authentic creators for your next campaign"
       pitch="Search and filter creators by niche, city, and audience, then manage every collaboration and payout from one dashboard."
     >
-      <h1 className="text-2xl font-semibold text-gray-900">
+      <h1 className="text-2xl font-semibold text-strong">
         Sign up as a Brand
       </h1>
-      <p className="mt-2 text-sm text-gray-600">
+      <p className="mt-2 text-sm text-muted">
         Create your brand profile and start discovering creators.
       </p>
 
@@ -195,20 +195,20 @@ export default function BrandSignupPage() {
             error={errors.password}
           />
 
-          {submitError && <p className="text-sm text-red-600">{submitError}</p>}
+          {submitError && <p className="text-sm text-stopped">{submitError}</p>}
 
           <Button type="submit" disabled={loading} className="mt-2 w-full">
             {loading ? "Creating account..." : "Sign up as Brand"}
           </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-600">
+      <p className="mt-6 text-center text-sm text-muted">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-orange-600 hover:text-orange-700">
+        <Link href="/login" className="font-medium text-ember hover:text-ember-dark">
           Log in
         </Link>{" "}
         &middot;{" "}
-        <Link href="/signup/creator" className="font-medium text-orange-600 hover:text-orange-700">
+        <Link href="/signup/creator" className="font-medium text-ember hover:text-ember-dark">
           Sign up as a creator
         </Link>
       </p>

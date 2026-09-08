@@ -15,16 +15,16 @@ const STATUS_LABELS: Record<ApplicationStatus, string> = {
 };
 
 const STATUS_TONES: Record<ApplicationStatus, BadgeTone> = {
-  APPLIED: "gray",
-  SHORTLISTED: "orange",
-  BRAND_COUNTERED: "blue",
-  CREATOR_COUNTERED: "blue",
-  CONFIRMED: "orange",
-  FUNDED: "blue",
-  CONTENT_SUBMITTED: "orange",
-  APPROVED: "green",
-  RELEASED: "green",
-  REJECTED: "red",
+  APPLIED: "neutral",
+  SHORTLISTED: "accent",
+  BRAND_COUNTERED: "theirs",
+  CREATOR_COUNTERED: "theirs",
+  CONFIRMED: "yours",
+  FUNDED: "held",
+  CONTENT_SUBMITTED: "yours",
+  APPROVED: "settled",
+  RELEASED: "settled",
+  REJECTED: "stopped",
 };
 
 export function ApplicationStatusBadge({ status }: { status: ApplicationStatus }) {

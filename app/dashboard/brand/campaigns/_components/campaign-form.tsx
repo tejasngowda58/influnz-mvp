@@ -120,7 +120,7 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
     <Card className="p-8">
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
         <div className="flex flex-col gap-4">
-          <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+          <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
             Campaign details
           </h2>
           <Field
@@ -151,8 +151,8 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
           />
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-gray-100 pt-6">
-          <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+        <div className="flex flex-col gap-4 border-t border-line pt-6">
+          <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
             Budget &amp; timeline
           </h2>
           <Field
@@ -198,8 +198,8 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
           />
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-gray-100 pt-6">
-          <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+        <div className="flex flex-col gap-4 border-t border-line pt-6">
+          <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
             Targeting (optional)
           </h2>
           <Field
@@ -220,7 +220,7 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
           />
         </div>
 
-        {submitError && <p className="text-sm text-red-600">{submitError}</p>}
+        {submitError && <p className="text-sm text-stopped">{submitError}</p>}
 
         <Button type="submit" disabled={loading} className="w-full">
           {loading

@@ -42,8 +42,8 @@ export default async function BrowseCampaignsPage({
     <DashboardShell role="Creator" name={creatorProfile?.name}>
       <div className="flex flex-col gap-4">
         <BackLink href="/dashboard/creator" label="Back to dashboard" />
-        <h1 className="text-2xl font-semibold text-gray-900">Open campaigns</h1>
-        <p className="mt-1 text-sm text-gray-600">
+        <h1 className="text-2xl font-semibold text-strong">Open campaigns</h1>
+        <p className="mt-1 text-sm text-muted">
           Search by campaign or brand name, and browse paid collaborations to apply to.
         </p>
       </div>
@@ -58,12 +58,12 @@ export default async function BrowseCampaignsPage({
       />
 
       {campaigns.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-gray-200 py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
             <Megaphone className="h-6 w-6" strokeWidth={1.75} />
           </span>
-          <p className="text-sm font-medium text-gray-900">No open campaigns match those filters</p>
-          <p className="max-w-sm text-sm text-gray-600">Try a different search, category, or city.</p>
+          <p className="text-sm font-medium text-strong">No open campaigns match those filters</p>
+          <p className="max-w-sm text-sm text-muted">Try a different search, category, or city.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

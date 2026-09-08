@@ -43,16 +43,16 @@ export function InstagramConnectionCard({
               className="h-12 w-12 rounded-full object-cover"
             />
           ) : (
-            <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+            <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
               <AtSign className="h-5 w-5" strokeWidth={1.75} />
             </span>
           )}
           <div>
             <div className="flex items-center gap-2">
-              <p className="font-semibold text-gray-900">@{instagramHandle}</p>
-              <Badge tone="green">Verified</Badge>
+              <p className="font-semibold text-strong">@{instagramHandle}</p>
+              <Badge tone="settled">Verified</Badge>
             </div>
-            <p className="text-sm text-gray-500">Synced {formatDate(instagramConnectedAt)}</p>
+            <p className="text-sm text-muted">Synced {formatDate(instagramConnectedAt)}</p>
           </div>
         </div>
         <DisconnectInstagramButton />
@@ -61,22 +61,22 @@ export function InstagramConnectionCard({
   }
 
   return (
-    <Card className="flex flex-col gap-3 border-orange-100 bg-orange-50/40 p-6">
+    <Card className="flex flex-col gap-3 border-ember/20 bg-ember-tint p-6">
       <div className="flex items-center gap-3">
-        <span className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-full bg-orange-100 text-orange-600">
+        <span className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-full bg-ember-tint text-ember">
           <ShieldCheck className="h-5 w-5" strokeWidth={1.75} />
         </span>
         <div>
-          <h2 className="font-semibold text-gray-900">Connect your Instagram</h2>
-          <p className="text-sm text-gray-600">
+          <h2 className="font-semibold text-strong">Connect your Instagram</h2>
+          <p className="text-sm text-muted">
             Verify your account and pull your real handle, follower count, and photo automatically.
           </p>
         </div>
       </div>
       {connectedNotice && (
-        <p className="text-sm font-medium text-green-700">Instagram connected!</p>
+        <p className="text-sm font-medium text-settled">Instagram connected!</p>
       )}
-      {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
+      {errorMessage && <p className="text-sm text-stopped">{errorMessage}</p>}
       <ConnectInstagramButton />
     </Card>
   );

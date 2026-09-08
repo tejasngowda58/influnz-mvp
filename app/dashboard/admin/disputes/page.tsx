@@ -10,11 +10,11 @@ import { formatDateTime } from "@/lib/format";
 import { formatPaise } from "@/lib/money";
 
 export const DISPUTE_TONES: Record<DisputeStatus, BadgeTone> = {
-  OPEN: "red",
-  UNDER_REVIEW: "orange",
-  RESOLVED_CREATOR: "green",
-  RESOLVED_BRAND: "green",
-  SPLIT: "blue",
+  OPEN: "stopped",
+  UNDER_REVIEW: "frozen",
+  RESOLVED_CREATOR: "settled",
+  RESOLVED_BRAND: "settled",
+  SPLIT: "held",
 };
 
 export const DISPUTE_LABELS: Record<DisputeStatus, string> = {
@@ -56,8 +56,8 @@ export default async function AdminDisputesPage({
   return (
     <DashboardShell role="Admin">
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Disputes</h1>
-        <p className="mt-1 text-sm text-gray-600">
+        <h1 className="text-2xl font-semibold text-strong">Disputes</h1>
+        <p className="mt-1 text-sm text-muted">
           Money stays frozen in escrow until you decide. Every decision is written to the activity log.
         </p>
       </div>
@@ -69,8 +69,8 @@ export default async function AdminDisputesPage({
             href={`/dashboard/admin/disputes?status=${tab.value}`}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
               activeTab === tab.value
-                ? "bg-orange-600 text-white"
-                : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                ? "bg-ember text-white"
+                : "border border-line-strong bg-white text-muted hover:bg-paper"
             }`}
           >
             {tab.label}
@@ -79,14 +79,14 @@ export default async function AdminDisputesPage({
       </div>
 
       {disputes.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-gray-200 py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-600">
+        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-settled/5 text-settled">
             <Scale className="h-6 w-6" strokeWidth={1.75} />
           </span>
-          <p className="text-sm font-medium text-gray-900">
+          <p className="text-sm font-medium text-strong">
             {activeTab === "OPEN" ? "No disputes waiting on you" : "No disputes yet"}
           </p>
-          <p className="max-w-sm text-sm text-gray-600">
+          <p className="max-w-sm text-sm text-muted">
             Disputes appear here the moment either side raises one on a funded deal.
           </p>
         </div>
@@ -94,21 +94,21 @@ export default async function AdminDisputesPage({
         <div className="flex flex-col gap-3">
           {disputes.map((dispute) => (
             <Link key={dispute.id} href={`/dashboard/admin/disputes/${dispute.id}`}>
-              <Card className="flex items-start justify-between gap-4 p-5 transition-shadow hover:shadow-md">
+              <Card className="flex items-start justify-between gap-4 p-5 transition-colors hover:border-line-strong">
                 <div className="min-w-0">
-                  <p className="font-semibold text-gray-900">{dispute.reason}</p>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="font-semibold text-strong">{dispute.reason}</p>
+                  <p className="mt-1 text-sm text-muted">
                     {dispute.application.campaign.title} ·{" "}
                     {dispute.application.campaign.brand.companyName} vs {dispute.application.creator.name}
                   </p>
-                  <p className="mt-1 text-xs text-gray-400">
+                  <p className="mt-1 text-xs text-muted/70">
                     Raised by {dispute.raisedByRole.toLowerCase()} · {formatDateTime(dispute.createdAt)}
                   </p>
                 </div>
                 <div className="flex flex-none flex-col items-end gap-2">
                   <Badge tone={DISPUTE_TONES[dispute.status]}>{DISPUTE_LABELS[dispute.status]}</Badge>
                   {dispute.application.escrow && (
-                    <span className="text-sm font-semibold text-gray-900">
+                    <span className="text-sm font-semibold text-strong">
                       {formatPaise(dispute.application.escrow.amount)}
                     </span>
                   )}

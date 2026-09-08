@@ -19,8 +19,8 @@ export default async function AdminDashboardPage() {
     <DashboardShell role="Admin">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Campaign review</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <h1 className="text-2xl font-semibold text-strong">Campaign review</h1>
+          <p className="mt-1 text-sm text-muted">
             Approve, request changes on, or reject campaigns before they reach creators.
           </p>
         </div>

@@ -49,11 +49,11 @@ export default async function BrandCreatorProfilePage({
         bio={creator.bio}
       >
         <div>
-          <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+          <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
             Applications to your campaigns
           </h2>
           {applicationsToYourCampaigns.length === 0 ? (
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-muted">
               This creator hasn&apos;t applied to any of your campaigns yet.
             </p>
           ) : (
@@ -62,11 +62,11 @@ export default async function BrandCreatorProfilePage({
                 <Link
                   key={application.id}
                   href={`/dashboard/brand/campaigns/${application.campaign.id}`}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-gray-100 px-4 py-3 transition-colors hover:border-orange-200 hover:bg-orange-50/50"
+                  className="flex items-center justify-between gap-3 rounded-inset border border-line px-4 py-3 transition-colors hover:border-ember/25 hover:bg-ember-tint"
                 >
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{application.campaign.title}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-strong">{application.campaign.title}</p>
+                    <p className="text-xs text-muted">
                       Applied {formatDate(application.createdAt)}
                     </p>
                   </div>

@@ -28,19 +28,19 @@ interface EscrowPanelProps {
 type Tone = "neutral" | "action" | "secured" | "warning" | "done";
 
 const TONE_CLASSES: Record<Tone, string> = {
-  neutral: "border-gray-200 bg-gray-50 text-gray-600",
-  action: "border-orange-200 bg-orange-50/60 text-orange-900",
-  secured: "border-blue-200 bg-blue-50/60 text-blue-900",
-  warning: "border-amber-200 bg-amber-50/70 text-amber-900",
-  done: "border-green-200 bg-green-50/60 text-green-900",
+  neutral: "border-line-strong bg-paper text-muted",
+  action: "border-ember/25 bg-ember-tint text-strong",
+  secured: "border-held/25 bg-held/5 text-strong",
+  warning: "border-frozen/25 bg-frozen/5 text-strong",
+  done: "border-settled/25 bg-settled/5 text-strong",
 };
 
 const ICON_CLASSES: Record<Tone, string> = {
-  neutral: "bg-gray-100 text-gray-500",
-  action: "bg-orange-100 text-orange-600",
-  secured: "bg-blue-100 text-blue-600",
-  warning: "bg-amber-100 text-amber-700",
-  done: "bg-green-100 text-green-700",
+  neutral: "bg-strong/[0.06] text-muted",
+  action: "bg-ember-tint text-ember",
+  secured: "bg-held/10 text-held",
+  warning: "bg-frozen/10 text-frozen",
+  done: "bg-settled/10 text-settled",
 };
 
 function Shell({
@@ -55,9 +55,9 @@ function Shell({
   children?: React.ReactNode;
 }) {
   return (
-    <div className={`flex gap-3 rounded-xl border p-4 ${TONE_CLASSES[tone]}`}>
+    <div className={`flex gap-3 rounded-inset border p-4 ${TONE_CLASSES[tone]}`}>
       <span
-        className={`inline-flex h-8 w-8 flex-none items-center justify-center rounded-lg ${ICON_CLASSES[tone]}`}
+        className={`inline-flex h-8 w-8 flex-none items-center justify-center rounded-inset ${ICON_CLASSES[tone]}`}
       >
         <Icon className="h-4 w-4" strokeWidth={2} />
       </span>
@@ -78,7 +78,7 @@ function AgreementLink({ applicationId }: { applicationId: string }) {
   return (
     <Link
       href={`/dashboard/contracts/${applicationId}`}
-      className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 underline underline-offset-2 hover:text-gray-800"
+      className="inline-flex items-center gap-1.5 text-xs font-medium text-muted underline underline-offset-2 hover:text-strong"
     >
       <FileText className="h-3 w-3" strokeWidth={2} />
       View the agreement
@@ -150,7 +150,7 @@ export function EscrowPanel({
             <FundEscrowButton applicationId={applicationId} />
           </div>
         ) : (
-          <p className="mt-1 text-xs font-medium text-orange-700">
+          <p className="mt-1 text-xs font-medium text-ember-dark">
             Payments aren&apos;t configured on this environment yet.
           </p>
         )}

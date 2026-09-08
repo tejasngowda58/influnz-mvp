@@ -31,20 +31,20 @@ export default async function CreatorApplicationsPage() {
       <div className="flex flex-col gap-4">
         <BackLink href="/dashboard/creator" label="Back to dashboard" />
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Your applications</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <h1 className="text-2xl font-semibold text-strong">Your applications</h1>
+          <p className="mt-1 text-sm text-muted">
             Track the status of every campaign you&apos;ve applied to.
           </p>
         </div>
       </div>
 
       {applications.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-gray-200 py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
             <MessageSquare className="h-6 w-6" strokeWidth={1.75} />
           </span>
-          <p className="text-sm font-medium text-gray-900">No applications yet</p>
-          <p className="max-w-sm text-sm text-gray-600">
+          <p className="text-sm font-medium text-strong">No applications yet</p>
+          <p className="max-w-sm text-sm text-muted">
             Browse open campaigns and apply to the ones that fit your content.
           </p>
         </div>
@@ -52,17 +52,17 @@ export default async function CreatorApplicationsPage() {
         <div className="flex flex-col gap-3">
           {applications.map((application) => (
             <Link key={application.id} href={`/dashboard/creator/campaigns/${application.campaign.id}`}>
-              <Card className="flex items-center justify-between gap-4 p-5 transition-shadow hover:shadow-md">
+              <Card className="flex items-center justify-between gap-4 p-5 transition-colors hover:border-line-strong">
                 <div>
-                  <p className="font-semibold text-gray-900">{application.campaign.title}</p>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="font-semibold text-strong">{application.campaign.title}</p>
+                  <p className="mt-1 text-sm text-muted">
                     {application.campaign.brand.companyName} · {formatBudget(application.proposedBudget)} ·{" "}
                     Applied {formatDate(application.createdAt)}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   {NEGOTIATION_TURN[application.status] === "CREATOR" && (
-                    <Badge tone="blue">Your turn</Badge>
+                    <Badge tone="yours">Your turn</Badge>
                   )}
                   <ApplicationStatusBadge status={application.status} />
                 </div>

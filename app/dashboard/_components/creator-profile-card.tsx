@@ -42,7 +42,7 @@ export function CreatorProfileCard({
 
   return (
     <Card className="mx-auto flex w-full max-w-xl flex-col overflow-hidden">
-      <div className="relative h-32 bg-gradient-to-br from-orange-500 to-orange-600">
+      <div className="relative h-32 bg-gradient-to-br from-ember to-ember-dark">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.25),transparent_55%)]"
@@ -54,10 +54,10 @@ export function CreatorProfileCard({
             alt=""
             width={96}
             height={96}
-            className="absolute -bottom-12 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full border-4 border-white object-cover shadow-sm"
+            className="absolute -bottom-12 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full border-4 border-white object-cover"
           />
         ) : (
-          <div className="absolute -bottom-12 left-1/2 flex h-24 w-24 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-orange-50 text-2xl font-semibold text-orange-600 shadow-sm">
+          <div className="absolute -bottom-12 left-1/2 flex h-24 w-24 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-ember-tint text-2xl font-semibold text-ember">
             {getInitials(name)}
           </div>
         )}
@@ -65,54 +65,54 @@ export function CreatorProfileCard({
 
       <div className="flex flex-col items-center px-6 pt-14">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold text-gray-900">{name}</h1>
-          {verified && <Badge tone="green">Verified</Badge>}
+          <h1 className="text-xl font-semibold text-strong">{name}</h1>
+          {verified && <Badge tone="settled">Verified</Badge>}
         </div>
         {handle ? (
           <a
             href={`https://instagram.com/${handle}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-gray-500 hover:text-orange-600"
+            className="text-sm text-muted hover:text-ember"
           >
             @{handle}
           </a>
         ) : (
-          <span className="text-sm text-gray-400">Instagram not connected</span>
+          <span className="text-sm text-muted/70">Instagram not connected</span>
         )}
 
         <div className="mt-4 flex flex-wrap justify-center gap-2 pb-6">
-          <Badge tone="orange">{formatEnumLabel(category)}</Badge>
-          <Badge tone="gray">{city}</Badge>
+          <Badge tone="accent">{formatEnumLabel(category)}</Badge>
+          <Badge tone="neutral">{city}</Badge>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 divide-x divide-gray-100 border-y border-gray-100">
+      <div className="grid grid-cols-3 divide-x divide-line border-y border-line">
         <div className="flex flex-col items-center gap-1 py-4">
-          <Users className="h-4 w-4 text-gray-400" strokeWidth={1.75} />
-          <p className="text-sm font-semibold text-gray-900">{followerLabel}</p>
-          <p className="text-xs text-gray-500">Followers</p>
+          <Users className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+          <p className="text-sm font-semibold text-strong">{followerLabel}</p>
+          <p className="text-xs text-muted">Followers</p>
         </div>
         <div className="flex flex-col items-center gap-1 py-4">
-          <Tag className="h-4 w-4 text-gray-400" strokeWidth={1.75} />
-          <p className="text-sm font-semibold text-gray-900">{formatEnumLabel(category)}</p>
-          <p className="text-xs text-gray-500">Category</p>
+          <Tag className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+          <p className="text-sm font-semibold text-strong">{formatEnumLabel(category)}</p>
+          <p className="text-xs text-muted">Category</p>
         </div>
         <div className="flex flex-col items-center gap-1 py-4">
-          <MapPin className="h-4 w-4 text-gray-400" strokeWidth={1.75} />
-          <p className="text-sm font-semibold text-gray-900">{city}</p>
-          <p className="text-xs text-gray-500">City</p>
+          <MapPin className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+          <p className="text-sm font-semibold text-strong">{city}</p>
+          <p className="text-xs text-muted">City</p>
         </div>
       </div>
 
       <div className="flex flex-col gap-2 p-6">
-        <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">About</h2>
-        <p className="text-sm whitespace-pre-line text-gray-700">
+        <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">About</h2>
+        <p className="text-sm whitespace-pre-line text-strong">
           {bio?.trim() || "This creator hasn't added a bio yet."}
         </p>
       </div>
 
-      {children && <div className="flex flex-col gap-4 border-t border-gray-100 p-6">{children}</div>}
+      {children && <div className="flex flex-col gap-4 border-t border-line p-6">{children}</div>}
     </Card>
   );
 }

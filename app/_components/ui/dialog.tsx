@@ -33,24 +33,24 @@ export function Dialog({ open, onClose, title, description, children }: DialogPr
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onClick={onClose} aria-hidden />
+      <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={onClose} aria-hidden />
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="dialog-title"
-        className="relative flex w-full max-w-md flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-xl"
+        className="relative flex w-full max-w-md flex-col rounded-surface border border-line bg-white p-6 shadow-xl"
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 id="dialog-title" className="text-lg font-semibold text-gray-900">
+            <h2 id="dialog-title" className="text-lg font-semibold text-strong">
               {title}
             </h2>
-            {description && <p className="mt-1 text-sm text-gray-600">{description}</p>}
+            {description && <p className="mt-1 text-sm text-muted">{description}</p>}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 flex-none items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+            className="flex h-8 w-8 flex-none items-center justify-center rounded-full text-muted/70 transition-colors hover:bg-strong/[0.06] hover:text-muted"
             aria-label="Close"
           >
             <X className="h-4 w-4" strokeWidth={1.75} />

@@ -31,8 +31,8 @@ export default async function EditCampaignPage({
     <DashboardShell role="Brand" name={brandProfile?.name}>
       <div className="mx-auto w-full max-w-2xl">
         <BackLink href={`/dashboard/brand/campaigns/${campaign.id}`} label="Back to campaign" />
-        <h1 className="mt-4 text-2xl font-semibold text-gray-900">Edit &amp; resubmit</h1>
-        <p className="mt-1 text-sm text-gray-600">
+        <h1 className="mt-4 text-2xl font-semibold text-strong">Edit &amp; resubmit</h1>
+        <p className="mt-1 text-sm text-muted">
           Update the campaign based on the admin&apos;s feedback below, then resubmit for review.
         </p>
 

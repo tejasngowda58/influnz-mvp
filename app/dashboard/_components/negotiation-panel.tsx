@@ -117,27 +117,27 @@ export function NegotiationPanel({
   }
 
   const termsSummary = (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
-      <span className="font-semibold text-gray-900">{formatBudget(proposedBudget)}</span>
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
+      <span className="font-semibold text-strong">{formatBudget(proposedBudget)}</span>
       <span>{proposedDeliverables}</span>
     </div>
   );
 
   const turnBanner = isNegotiating && (
     <div
-      className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 ${
-        isMyTurn ? "bg-blue-50" : "bg-gray-50"
+      className={`flex items-center justify-between gap-3 rounded-inset px-3 py-2 ${
+        isMyTurn ? "bg-held/5" : "bg-paper"
       }`}
     >
       <span
         className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
-          isMyTurn ? "text-blue-700" : "text-gray-500"
+          isMyTurn ? "text-held" : "text-muted"
         }`}
       >
         {isMyTurn ? <Bell className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
         {isMyTurn ? "Your turn to respond" : `Waiting on ${viewerRole === "BRAND" ? "creator" : "brand"}`}
       </span>
-      <Badge tone="gray">
+      <Badge tone="neutral">
         Round {round} of {MAX_NEGOTIATION_ROUNDS + 1} · last offered by{" "}
         {lastOfferBy === "CREATOR" ? "creator" : "brand"}
       </Badge>
@@ -152,7 +152,7 @@ export function NegotiationPanel({
       return (
         <div className="flex flex-col gap-2">
           {termsSummary}
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted">
             {status === "CONFIRMED"
               ? viewerRole === "BRAND"
                 ? "Terms agreed — fund escrow to start the work."
@@ -181,7 +181,7 @@ export function NegotiationPanel({
               </ActionButton>
             ))}
           </div>
-          {error && <p className="text-xs text-red-600">{error}</p>}
+          {error && <p className="text-xs text-stopped">{error}</p>}
         </div>
       </div>
     );
@@ -191,7 +191,7 @@ export function NegotiationPanel({
     return (
       <div className="flex flex-col gap-2">
         {termsSummary}
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted">
           {status === "REJECTED"
             ? "This application was declined."
             : status === "RELEASED"
@@ -243,16 +243,16 @@ export function NegotiationPanel({
               </ActionButton>
             )}
           </div>
-          {error && <p className="text-xs text-red-600">{error}</p>}
+          {error && <p className="text-xs text-stopped">{error}</p>}
         </div>
       )}
 
       {isMyTurn && showCounterForm && (
         <form
           onSubmit={submitCounter}
-          className="flex flex-col gap-3 rounded-xl border border-orange-200 bg-orange-50/40 p-4"
+          className="flex flex-col gap-3 rounded-inset border border-ember/25 bg-ember-tint p-4"
         >
-          <p className="text-xs font-medium text-orange-700">Proposing new terms</p>
+          <p className="text-xs font-medium text-ember-dark">Proposing new terms</p>
           <Field
             label="Your proposed budget"
             id={`counter-budget-${applicationId}`}
@@ -275,7 +275,7 @@ export function NegotiationPanel({
             onChange={setCounterMessage}
             rows={2}
           />
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-stopped">{error}</p>}
           <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" size="sm" onClick={() => setShowCounterForm(false)}>
               Cancel

@@ -72,11 +72,11 @@ export default async function BrandCampaignDetailPage({
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-semibold text-gray-900">{campaign.title}</h1>
+              <h1 className="text-2xl font-semibold text-strong">{campaign.title}</h1>
               <CampaignStatusBadge status={campaign.status} />
-              {campaign.negotiable && <Badge tone="blue">Negotiable</Badge>}
+              {campaign.negotiable && <Badge tone="accent">Negotiable</Badge>}
             </div>
-            <p className="mt-2 max-w-2xl text-sm text-gray-600">{campaign.description}</p>
+            <p className="mt-2 max-w-2xl text-sm text-muted">{campaign.description}</p>
           </div>
           {(campaign.status === "APPROVED" || campaign.status === "CLOSED") && (
             <CampaignStatusToggle campaignId={campaign.id} status={campaign.status} />
@@ -113,7 +113,7 @@ export default async function BrandCampaignDetailPage({
           </StatusBanner>
         )}
 
-        <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-gray-100 pt-4 text-sm text-gray-500">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-4 text-sm text-muted">
           <span className="inline-flex items-center gap-1.5">
             <Tag className="h-4 w-4" strokeWidth={1.75} />
             {formatEnumLabel(campaign.category)}
@@ -136,17 +136,17 @@ export default async function BrandCampaignDetailPage({
           </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 border-t border-gray-100 pt-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:grid-cols-2">
           <div>
-            <h3 className="text-xs font-medium tracking-wide text-gray-400 uppercase">Deliverables</h3>
-            <p className="mt-1 text-sm text-gray-700">{campaign.deliverables}</p>
+            <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">Deliverables</h3>
+            <p className="mt-1 text-sm text-strong">{campaign.deliverables}</p>
           </div>
           {campaign.targetAudience && (
             <div>
-              <h3 className="text-xs font-medium tracking-wide text-gray-400 uppercase">
+              <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">
                 Target audience
               </h3>
-              <p className="mt-1 text-sm text-gray-700">{campaign.targetAudience}</p>
+              <p className="mt-1 text-sm text-strong">{campaign.targetAudience}</p>
             </div>
           )}
         </div>
@@ -154,15 +154,15 @@ export default async function BrandCampaignDetailPage({
 
       <div>
         <div className="flex items-center gap-2">
-          <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-strong">
             <Users className="h-4 w-4" strokeWidth={1.75} />
             Applications ({campaign.applications.length})
           </h2>
-          {needsResponseCount > 0 && <Badge tone="blue">{needsResponseCount} need your response</Badge>}
+          {needsResponseCount > 0 && <Badge tone="yours">{needsResponseCount} need your response</Badge>}
         </div>
 
         {campaign.applications.length === 0 ? (
-          <p className="mt-4 rounded-2xl border border-dashed border-gray-200 py-10 text-center text-sm text-gray-500">
+          <p className="mt-4 rounded-surface border border-dashed border-line-strong py-10 text-center text-sm text-muted">
             No applications yet.
           </p>
         ) : (
@@ -171,7 +171,7 @@ export default async function BrandCampaignDetailPage({
               <Card
                 key={application.id}
                 className={`flex flex-col gap-4 p-5 ${
-                  NEGOTIATION_TURN[application.status] === "BRAND" ? "border-blue-200" : ""
+                  NEGOTIATION_TURN[application.status] === "BRAND" ? "border-held/25" : ""
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -179,20 +179,20 @@ export default async function BrandCampaignDetailPage({
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/dashboard/brand/creators/${application.creator.id}`}
-                        className="font-semibold text-gray-900 hover:text-orange-600"
+                        className="font-semibold text-strong hover:text-ember"
                       >
                         {application.creator.name}
                       </Link>
                       <ApplicationStatusBadge status={application.status} />
                     </div>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-muted">
                       {application.creator.instagramHandle
                         ? `@${application.creator.instagramHandle.replace(/^@/, "")} · `
                         : "Instagram not connected · "}
                       {formatEnumLabel(application.creator.contentCategory)} · {application.creator.city}
                     </p>
                     {application.pitch && (
-                      <p className="mt-2 max-w-xl text-sm text-gray-700">{application.pitch}</p>
+                      <p className="mt-2 max-w-xl text-sm text-strong">{application.pitch}</p>
                     )}
                   </div>
                 </div>

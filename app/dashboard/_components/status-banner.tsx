@@ -1,17 +1,17 @@
 export type StatusBannerTone = "orange" | "red" | "gray" | "green";
 
 const TONE_CLASSES: Record<StatusBannerTone, string> = {
-  orange: "border-orange-100 bg-orange-50/50",
-  red: "border-red-100 bg-red-50/50",
-  gray: "border-gray-100 bg-gray-50",
-  green: "border-green-100 bg-green-50/50",
+  orange: "border-ember/20 bg-ember-tint",
+  red: "border-stopped/20 bg-stopped/5",
+  gray: "border-line bg-paper",
+  green: "border-settled/20 bg-settled/5",
 };
 
 const TITLE_CLASSES: Record<StatusBannerTone, string> = {
-  orange: "text-orange-600",
-  red: "text-red-600",
-  gray: "text-gray-500",
-  green: "text-green-700",
+  orange: "text-ember",
+  red: "text-stopped",
+  gray: "text-muted",
+  green: "text-settled",
 };
 
 interface StatusBannerProps {
@@ -22,9 +22,9 @@ interface StatusBannerProps {
 
 export function StatusBanner({ tone, title, children }: StatusBannerProps) {
   return (
-    <div className={`rounded-xl border p-4 ${TONE_CLASSES[tone]}`}>
+    <div className={`rounded-inset border p-4 ${TONE_CLASSES[tone]}`}>
       <h3 className={`text-xs font-medium tracking-wide uppercase ${TITLE_CLASSES[tone]}`}>{title}</h3>
-      <div className="mt-1 text-sm text-gray-700">{children}</div>
+      <div className="mt-1 text-sm text-strong">{children}</div>
     </div>
   );
 }

@@ -9,17 +9,17 @@ export default async function InstagramDataDeletionStatusPage({
 
   return (
     <main className="flex flex-1 items-center justify-center px-6 py-16 sm:py-24">
-      <div className="w-full max-w-md rounded-2xl border border-gray-100 bg-white p-8 text-center shadow-sm">
-        <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-600">
+      <div className="w-full max-w-md rounded-surface border border-line bg-white p-8 text-center">
+        <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-settled/5 text-settled">
           <CheckCircle2 className="h-6 w-6" strokeWidth={1.75} />
         </span>
-        <h1 className="mt-4 text-xl font-semibold text-gray-900">Data deletion complete</h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <h1 className="mt-4 text-xl font-semibold text-strong">Data deletion complete</h1>
+        <p className="mt-2 text-sm text-muted">
           Your Instagram connection data (handle, follower count, and access token) has been
           removed from Influnz.
         </p>
         {code && (
-          <p className="mt-4 text-xs text-gray-400">
+          <p className="mt-4 text-xs text-muted/70">
             Confirmation code: <span className="font-mono">{code}</span>
           </p>
         )}

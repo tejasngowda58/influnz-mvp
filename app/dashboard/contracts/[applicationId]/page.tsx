@@ -62,13 +62,13 @@ export default async function ContractPage({
       </div>
 
       <Card className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-8 print:border-0 print:shadow-none">
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-gray-100 pb-5">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line pb-5">
           <div>
-            <p className="text-xs font-semibold tracking-wide text-orange-600 uppercase">
+            <p className="text-xs font-semibold tracking-wide text-ember uppercase">
               Collaboration agreement
             </p>
-            <h1 className="mt-1 text-2xl font-semibold text-gray-900">{contract.campaignTitle}</h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <h1 className="mt-1 text-2xl font-semibold text-strong">{contract.campaignTitle}</h1>
+            <p className="mt-1 text-sm text-muted">
               Agreed {formatDateTime(contract.createdAt)} · Influnz reference{" "}
               {contract.id.slice(0, 8).toUpperCase()}
             </p>
@@ -80,14 +80,14 @@ export default async function ContractPage({
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
-            <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">Brand</h2>
-            <p className="mt-1 font-medium text-gray-900">{contract.brandCompanyName}</p>
-            <p className="text-sm text-gray-600">{contract.brandName}</p>
+            <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">Brand</h2>
+            <p className="mt-1 font-medium text-strong">{contract.brandCompanyName}</p>
+            <p className="text-sm text-muted">{contract.brandName}</p>
           </div>
           <div>
-            <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">Creator</h2>
-            <p className="mt-1 font-medium text-gray-900">{contract.creatorName}</p>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">Creator</h2>
+            <p className="mt-1 font-medium text-strong">{contract.creatorName}</p>
+            <p className="text-sm text-muted">
               {contract.creatorHandle
                 ? `@${contract.creatorHandle.replace(/^@/, "")}`
                 : "Instagram not connected"}
@@ -95,36 +95,36 @@ export default async function ContractPage({
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-gray-100 pt-5">
+        <div className="flex flex-col gap-4 border-t border-line pt-5">
           <div className="flex flex-wrap justify-between gap-4">
             <div>
-              <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">Fee</h2>
-              <p className="mt-1 text-xl font-semibold text-gray-900">
+              <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">Fee</h2>
+              <p className="mt-1 text-xl font-semibold text-strong">
                 {formatBudget(contract.budget)}
               </p>
             </div>
             <div>
-              <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
                 Delivery deadline
               </h2>
-              <p className="mt-1 text-xl font-semibold text-gray-900">
+              <p className="mt-1 text-xl font-semibold text-strong">
                 {formatDate(contract.deadline)}
               </p>
             </div>
           </div>
 
           <div>
-            <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
               Deliverables
             </h2>
-            <p className="mt-1 text-sm whitespace-pre-line text-gray-800">{contract.deliverables}</p>
+            <p className="mt-1 text-sm whitespace-pre-line text-strong">{contract.deliverables}</p>
           </div>
 
-          <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-            <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+          <div className="rounded-inset border border-line bg-paper p-4">
+            <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
               How payment works
             </h2>
-            <p className="mt-1 text-sm text-gray-700">
+            <p className="mt-1 text-sm text-strong">
               The brand funds the full fee into Influnz escrow before work begins. The creator
               delivers the agreed content by the deadline. The money is released to the creator when
               the brand approves the content, and automatically if the brand does not respond within
@@ -134,36 +134,36 @@ export default async function ContractPage({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 border-t border-gray-100 pt-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 border-t border-line pt-5 sm:grid-cols-2">
           {(
             [
               { label: "Brand accepted", at: contract.brandAcceptedAt, who: contract.brandCompanyName },
               { label: "Creator accepted", at: contract.creatorAcceptedAt, who: contract.creatorName },
             ] as const
           ).map((party) => (
-            <div key={party.label} className="rounded-xl border border-gray-100 p-4">
-              <h3 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <div key={party.label} className="rounded-inset border border-line p-4">
+              <h3 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
                 {party.label}
               </h3>
               {party.at ? (
-                <p className="mt-1 inline-flex items-center gap-1.5 text-sm font-medium text-green-700">
+                <p className="mt-1 inline-flex items-center gap-1.5 text-sm font-medium text-settled">
                   <CheckCircle2 className="h-4 w-4" strokeWidth={2} />
                   {formatDateTime(party.at)}
                 </p>
               ) : (
-                <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-gray-500">
+                <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted">
                   <Clock className="h-4 w-4" strokeWidth={1.75} />
                   Not yet accepted
                 </p>
               )}
-              <p className="mt-1 text-xs text-gray-500">{party.who}</p>
+              <p className="mt-1 text-xs text-muted">{party.who}</p>
             </div>
           ))}
         </div>
 
         {!isAdmin && !myAcceptance && (
-          <div className="border-t border-gray-100 pt-5 print:hidden">
-            <p className="mb-3 text-sm text-gray-600">
+          <div className="border-t border-line pt-5 print:hidden">
+            <p className="mb-3 text-sm text-muted">
               Accepting records a timestamp against your name. These terms cannot be edited
               afterwards — a change means agreeing a new deal.
             </p>
@@ -172,7 +172,7 @@ export default async function ContractPage({
         )}
 
         {bothAccepted && (
-          <p className="border-t border-gray-100 pt-5 text-sm font-medium text-green-700">
+          <p className="border-t border-line pt-5 text-sm font-medium text-settled">
             Both parties have accepted these terms.
           </p>
         )}

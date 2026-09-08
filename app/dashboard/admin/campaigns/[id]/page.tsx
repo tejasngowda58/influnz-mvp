@@ -56,15 +56,15 @@ export default async function AdminCampaignDetailPage({
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-semibold text-gray-900">{campaign.title}</h1>
+              <h1 className="text-2xl font-semibold text-strong">{campaign.title}</h1>
               <CampaignStatusBadge status={campaign.status} />
-              {campaign.negotiable && <Badge tone="blue">Negotiable</Badge>}
+              {campaign.negotiable && <Badge tone="accent">Negotiable</Badge>}
             </div>
-            <p className="mt-2 max-w-2xl text-sm text-gray-600">{campaign.description}</p>
+            <p className="mt-2 max-w-2xl text-sm text-muted">{campaign.description}</p>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-gray-100 pt-4 text-sm text-gray-500">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-4 text-sm text-muted">
           <span className="inline-flex items-center gap-1.5">
             <Tag className="h-4 w-4" strokeWidth={1.75} />
             {formatEnumLabel(campaign.category)}
@@ -87,44 +87,44 @@ export default async function AdminCampaignDetailPage({
           </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 border-t border-gray-100 pt-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:grid-cols-2">
           <div>
-            <h3 className="text-xs font-medium tracking-wide text-gray-400 uppercase">Deliverables</h3>
-            <p className="mt-1 text-sm text-gray-700">{campaign.deliverables}</p>
+            <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">Deliverables</h3>
+            <p className="mt-1 text-sm text-strong">{campaign.deliverables}</p>
           </div>
           {campaign.targetAudience && (
             <div>
-              <h3 className="text-xs font-medium tracking-wide text-gray-400 uppercase">
+              <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">
                 Target audience
               </h3>
-              <p className="mt-1 text-sm text-gray-700">{campaign.targetAudience}</p>
+              <p className="mt-1 text-sm text-strong">{campaign.targetAudience}</p>
             </div>
           )}
         </div>
 
         {campaign.adminComment && (
-          <div className="rounded-xl border border-orange-100 bg-orange-50/50 p-4">
-            <h3 className="text-xs font-medium tracking-wide text-orange-600 uppercase">
+          <div className="rounded-inset border border-ember/20 bg-ember-tint p-4">
+            <h3 className="text-xs font-medium tracking-wide text-ember uppercase">
               Previous admin comment
             </h3>
-            <p className="mt-1 text-sm text-gray-700">{campaign.adminComment}</p>
+            <p className="mt-1 text-sm text-strong">{campaign.adminComment}</p>
           </div>
         )}
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-sm font-semibold text-gray-900">Brand</h2>
-        <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-600">
+        <h2 className="text-sm font-semibold text-strong">Brand</h2>
+        <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
           <span className="inline-flex items-center gap-1.5">
-            <Building2 className="h-4 w-4 text-gray-400" strokeWidth={1.75} />
+            <Building2 className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
             {campaign.brand.companyName}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <MapPin className="h-4 w-4 text-gray-400" strokeWidth={1.75} />
+            <MapPin className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
             {campaign.brand.city}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <Globe className="h-4 w-4 text-gray-400" strokeWidth={1.75} />
+            <Globe className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
             {campaign.brand.companyWebsite}
           </span>
         </div>
@@ -132,7 +132,7 @@ export default async function AdminCampaignDetailPage({
 
       {campaign.status === "PENDING_REVIEW" && (
         <Card className="p-6">
-          <h2 className="text-sm font-semibold text-gray-900">Review this campaign</h2>
+          <h2 className="text-sm font-semibold text-strong">Review this campaign</h2>
           <div className="mt-4">
             <AdminReviewActions campaignId={campaign.id} />
           </div>
@@ -140,7 +140,7 @@ export default async function AdminCampaignDetailPage({
       )}
 
       <Card className="p-6">
-        <h2 className="text-sm font-semibold text-gray-900">Activity timeline</h2>
+        <h2 className="text-sm font-semibold text-strong">Activity timeline</h2>
         <div className="mt-4">
           <ActivityTimeline entries={timelineEntries} />
         </div>

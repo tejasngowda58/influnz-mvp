@@ -70,36 +70,36 @@ export default async function AdminDisputeDetailPage({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-semibold text-gray-900">{dispute.reason}</h1>
+              <h1 className="text-2xl font-semibold text-strong">{dispute.reason}</h1>
               <Badge tone={DISPUTE_TONES[dispute.status]}>{DISPUTE_LABELS[dispute.status]}</Badge>
             </div>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted">
               Raised by {dispute.raisedByRole.toLowerCase()} (
               {resolveActorDisplayName(dispute.raisedBy)}) · {formatDateTime(dispute.createdAt)}
             </p>
           </div>
           {application.escrow && (
             <div className="text-right">
-              <p className="text-xs font-medium tracking-wide text-gray-400 uppercase">Held in escrow</p>
-              <p className="text-xl font-semibold text-gray-900">
+              <p className="text-xs font-medium tracking-wide text-muted/70 uppercase">Held in escrow</p>
+              <p className="text-xl font-semibold text-strong">
                 {formatPaise(application.escrow.amount)}
               </p>
-              <p className="text-xs text-gray-500">Escrow is {application.escrow.status.toLowerCase()}</p>
+              <p className="text-xs text-muted">Escrow is {application.escrow.status.toLowerCase()}</p>
             </div>
           )}
         </div>
 
-        <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-          <h2 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">
+        <div className="rounded-inset border border-line bg-paper p-4">
+          <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
             What they said
           </h2>
-          <p className="mt-2 text-sm whitespace-pre-line text-gray-700">{dispute.description}</p>
+          <p className="mt-2 text-sm whitespace-pre-line text-strong">{dispute.description}</p>
           {dispute.evidence.length > 0 && (
             <div className="mt-3">
-              <h3 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">Evidence</h3>
+              <h3 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">Evidence</h3>
               <ul className="mt-1 flex flex-col gap-1">
                 {dispute.evidence.map((item) => (
-                  <li key={item} className="text-sm break-all text-orange-700 underline">
+                  <li key={item} className="text-sm break-all text-ember-dark underline">
                     {item}
                   </li>
                 ))}
@@ -109,12 +109,12 @@ export default async function AdminDisputeDetailPage({
         </div>
 
         {isSettled && dispute.resolution && (
-          <div className="rounded-xl border border-green-100 bg-green-50/60 p-4">
-            <h2 className="text-xs font-semibold tracking-wide text-green-700 uppercase">
+          <div className="rounded-inset border border-settled/20 bg-settled/5 p-4">
+            <h2 className="text-xs font-semibold tracking-wide text-settled uppercase">
               Decision
             </h2>
-            <p className="mt-2 text-sm text-gray-700">{dispute.resolution}</p>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-2 text-sm text-strong">{dispute.resolution}</p>
+            <p className="mt-1 text-xs text-muted">
               {DISPUTE_LABELS[dispute.status]}
               {dispute.resolvedBy ? ` by ${dispute.resolvedBy.email}` : ""}
               {dispute.resolvedAt ? ` · ${formatDateTime(dispute.resolvedAt)}` : ""}
@@ -125,31 +125,31 @@ export default async function AdminDisputeDetailPage({
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card className="flex flex-col gap-3 p-6">
-          <h2 className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900">
-            <FileText className="h-4 w-4 text-gray-400" strokeWidth={1.75} />
+          <h2 className="inline-flex items-center gap-2 text-sm font-semibold text-strong">
+            <FileText className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
             Agreed terms
           </h2>
           {application.contract ? (
             <dl className="flex flex-col gap-2 text-sm">
               <div className="flex justify-between gap-4">
-                <dt className="text-gray-500">Budget</dt>
-                <dd className="font-medium text-gray-900">
+                <dt className="text-muted">Budget</dt>
+                <dd className="font-medium text-strong">
                   {formatBudget(application.contract.budget)}
                 </dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-gray-500">Deadline</dt>
-                <dd className="font-medium text-gray-900">
+                <dt className="text-muted">Deadline</dt>
+                <dd className="font-medium text-strong">
                   {formatDate(application.contract.deadline)}
                 </dd>
               </div>
               <div>
-                <dt className="text-gray-500">Deliverables</dt>
-                <dd className="mt-1 text-gray-900">{application.contract.deliverables}</dd>
+                <dt className="text-muted">Deliverables</dt>
+                <dd className="mt-1 text-strong">{application.contract.deliverables}</dd>
               </div>
-              <div className="flex justify-between gap-4 border-t border-gray-100 pt-2">
-                <dt className="text-gray-500">Accepted</dt>
-                <dd className="text-right text-xs text-gray-600">
+              <div className="flex justify-between gap-4 border-t border-line pt-2">
+                <dt className="text-muted">Accepted</dt>
+                <dd className="text-right text-xs text-muted">
                   Brand{" "}
                   {application.contract.brandAcceptedAt
                     ? formatDate(application.contract.brandAcceptedAt)
@@ -163,7 +163,7 @@ export default async function AdminDisputeDetailPage({
               </div>
             </dl>
           ) : (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
               This deal predates contract snapshots. Falling back to the live application terms:{" "}
               {formatBudget(application.proposedBudget)} for {application.proposedDeliverables}.
             </p>
@@ -171,35 +171,35 @@ export default async function AdminDisputeDetailPage({
         </Card>
 
         <Card className="flex flex-col gap-3 p-6">
-          <h2 className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900">
-            <User className="h-4 w-4 text-gray-400" strokeWidth={1.75} />
+          <h2 className="inline-flex items-center gap-2 text-sm font-semibold text-strong">
+            <User className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
             The parties
           </h2>
           <div className="flex flex-col gap-3 text-sm">
             <div>
-              <p className="text-xs tracking-wide text-gray-400 uppercase">Brand</p>
-              <p className="font-medium text-gray-900">{application.campaign.brand.companyName}</p>
-              <p className="text-gray-500">{application.campaign.brand.workEmail}</p>
+              <p className="text-xs tracking-wide text-muted/70 uppercase">Brand</p>
+              <p className="font-medium text-strong">{application.campaign.brand.companyName}</p>
+              <p className="text-muted">{application.campaign.brand.workEmail}</p>
             </div>
             <div>
-              <p className="text-xs tracking-wide text-gray-400 uppercase">Creator</p>
+              <p className="text-xs tracking-wide text-muted/70 uppercase">Creator</p>
               <Link
                 href={`/dashboard/admin/campaigns/${application.campaignId}`}
-                className="font-medium text-gray-900 hover:text-orange-600"
+                className="font-medium text-strong hover:text-ember"
               >
                 {application.creator.name}
               </Link>
-              <p className="text-gray-500">
+              <p className="text-muted">
                 {application.creator.instagramHandle
                   ? `@${application.creator.instagramHandle.replace(/^@/, "")}`
                   : "Instagram not connected"}
               </p>
             </div>
             <div>
-              <p className="text-xs tracking-wide text-gray-400 uppercase">Campaign</p>
+              <p className="text-xs tracking-wide text-muted/70 uppercase">Campaign</p>
               <Link
                 href={`/dashboard/admin/campaigns/${application.campaignId}`}
-                className="font-medium text-gray-900 hover:text-orange-600"
+                className="font-medium text-strong hover:text-ember"
               >
                 {application.campaign.title}
               </Link>
@@ -211,11 +211,11 @@ export default async function AdminDisputeDetailPage({
       {!isSettled && application.escrow && (
         <Card className="flex flex-col gap-4 p-6">
           <div>
-            <h2 className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900">
-              <Lock className="h-4 w-4 text-gray-400" strokeWidth={1.75} />
+            <h2 className="inline-flex items-center gap-2 text-sm font-semibold text-strong">
+              <Lock className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
               Settle {formatPaise(application.escrow.amount)}
             </h2>
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-1 text-sm text-muted">
               Releasing pays the creator, refunding returns the money to the brand, and a split does
               both. Whichever you pick is final and recorded.
             </p>
@@ -229,8 +229,8 @@ export default async function AdminDisputeDetailPage({
       )}
 
       <Card className="p-6">
-        <h2 className="text-sm font-semibold text-gray-900">Evidence trail for this deal</h2>
-        <p className="mt-1 text-sm text-gray-600">
+        <h2 className="text-sm font-semibold text-strong">Evidence trail for this deal</h2>
+        <p className="mt-1 text-sm text-muted">
           Every recorded action on this application, oldest first.
         </p>
         <div className="mt-4">

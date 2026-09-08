@@ -34,7 +34,7 @@ export function AcceptContractButton({ applicationId }: { applicationId: string 
         {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
         Accept these terms
       </Button>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-stopped">{error}</p>}
     </div>
   );
 }

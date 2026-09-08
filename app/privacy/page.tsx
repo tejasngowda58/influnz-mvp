@@ -8,7 +8,7 @@ export const metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <div className="flex flex-1 flex-col bg-white">
-      <header className="border-b border-gray-100">
+      <header className="border-b border-line">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-5">
           <Link href="/">
             <Logo />
@@ -17,12 +17,12 @@ export default function PrivacyPolicyPage() {
       </header>
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-12 sm:py-16">
-        <h1 className="text-3xl font-semibold tracking-tight text-gray-900">Privacy Policy</h1>
-        <p className="mt-2 text-sm text-gray-500">Last updated: August 3, 2026</p>
+        <h1 className="text-3xl font-semibold tracking-tight text-strong">Privacy Policy</h1>
+        <p className="mt-2 text-sm text-muted">Last updated: August 3, 2026</p>
 
-        <div className="mt-8 flex flex-col gap-8 text-sm leading-6 text-gray-700">
+        <div className="mt-8 flex flex-col gap-8 text-sm leading-6 text-strong">
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">1. Who we are</h2>
+            <h2 className="text-lg font-semibold text-strong">1. Who we are</h2>
             <p className="mt-2">
               Influnz (&ldquo;we&rdquo;, &ldquo;us&rdquo;) operates a platform connecting Instagram content creators with
               brand managers for paid collaborations. This policy explains what information we
@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">2. Information we collect</h2>
+            <h2 className="text-lg font-semibold text-strong">2. Information we collect</h2>
             <p className="mt-2">When you create an account, we collect:</p>
             <ul className="mt-2 list-disc space-y-1 pl-5">
               <li>Name, email address, phone number, city, and a hashed password.</li>
@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">3. Instagram data specifically</h2>
+            <h2 className="text-lg font-semibold text-strong">3. Instagram data specifically</h2>
             <p className="mt-2">
               If you choose to connect your Instagram account, we use Meta&apos;s official Instagram
               API (with Instagram Login) to read your basic professional profile — username,
@@ -66,7 +66,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">4. How we use your information</h2>
+            <h2 className="text-lg font-semibold text-strong">4. How we use your information</h2>
             <p className="mt-2">
               We use the information above to operate the marketplace: matching creators with
               brand campaigns, displaying profiles, processing applications and negotiations, and
@@ -76,7 +76,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">5. Data retention and deletion</h2>
+            <h2 className="text-lg font-semibold text-strong">5. Data retention and deletion</h2>
             <p className="mt-2">
               You can disconnect your Instagram account at any time from your creator dashboard.
               To request deletion of your account or any personal data, email us at the address
@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">6. Security</h2>
+            <h2 className="text-lg font-semibold text-strong">6. Security</h2>
             <p className="mt-2">
               Passwords are hashed with bcrypt and never stored in plain text. Instagram access
               tokens are encrypted at rest. Access to your data is limited to what&apos;s needed to
@@ -95,12 +95,12 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">7. Contact us</h2>
+            <h2 className="text-lg font-semibold text-strong">7. Contact us</h2>
             <p className="mt-2">
               Questions about this policy or a request to delete your data can be sent to{" "}
               <a
                 href="mailto:tejasngowda58@gmail.com"
-                className="font-medium text-orange-600 hover:text-orange-700"
+                className="font-medium text-ember hover:text-ember-dark"
               >
                 tejasngowda58@gmail.com
               </a>

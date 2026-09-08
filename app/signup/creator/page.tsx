@@ -116,10 +116,10 @@ export default function CreatorSignupPage() {
       title="Get discovered, get paid"
       pitch="Build a profile that showcases your content and audience, get matched with brands looking for creators like you, and negotiate collaborations securely."
     >
-      <h1 className="text-2xl font-semibold text-gray-900">
+      <h1 className="text-2xl font-semibold text-strong">
         Sign up as a Creator
       </h1>
-      <p className="mt-2 text-sm text-gray-600">
+      <p className="mt-2 text-sm text-muted">
         Create your account, then connect your Instagram to complete your profile.
       </p>
 
@@ -180,20 +180,20 @@ export default function CreatorSignupPage() {
             error={errors.password}
           />
 
-          {submitError && <p className="text-sm text-red-600">{submitError}</p>}
+          {submitError && <p className="text-sm text-stopped">{submitError}</p>}
 
           <Button type="submit" disabled={loading} className="mt-2 w-full">
             {loading ? "Creating account..." : "Sign up as Creator"}
           </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-600">
+      <p className="mt-6 text-center text-sm text-muted">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-orange-600 hover:text-orange-700">
+        <Link href="/login" className="font-medium text-ember hover:text-ember-dark">
           Log in
         </Link>{" "}
         &middot;{" "}
-        <Link href="/signup/brand" className="font-medium text-orange-600 hover:text-orange-700">
+        <Link href="/signup/brand" className="font-medium text-ember hover:text-ember-dark">
           Sign up as a brand
         </Link>
       </p>

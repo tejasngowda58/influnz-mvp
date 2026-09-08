@@ -66,8 +66,8 @@ export default async function AdminActivityPage({
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Activity log</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <h1 className="text-2xl font-semibold text-strong">Activity log</h1>
+          <p className="mt-1 text-sm text-muted">
             Every campaign and negotiation event across the platform, for oversight and dispute review.
           </p>
         </div>
@@ -100,10 +100,10 @@ export default async function AdminActivityPage({
         />
       </div>
 
-      <form method="GET" action="/dashboard/admin/activity" className="flex flex-wrap items-end gap-3 rounded-2xl border border-gray-100 bg-white p-4">
+      <form method="GET" action="/dashboard/admin/activity" className="flex flex-wrap items-end gap-3 rounded-surface border border-line bg-white p-4">
         {params.anomaly && <input type="hidden" name="anomaly" value={params.anomaly} />}
         <div className="flex min-w-48 flex-1 flex-col gap-1">
-          <label htmlFor="search" className="text-xs font-medium text-gray-500">
+          <label htmlFor="search" className="text-xs font-medium text-muted">
             Search
           </label>
           <input
@@ -115,7 +115,7 @@ export default async function AdminActivityPage({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="actionType" className="text-xs font-medium text-gray-500">
+          <label htmlFor="actionType" className="text-xs font-medium text-muted">
             Action type
           </label>
           <select id="actionType" name="actionType" defaultValue={params.actionType ?? ""} className={INPUT_CLASSES}>
@@ -128,13 +128,13 @@ export default async function AdminActivityPage({
           </select>
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="from" className="text-xs font-medium text-gray-500">
+          <label htmlFor="from" className="text-xs font-medium text-muted">
             From
           </label>
           <input id="from" name="from" type="date" defaultValue={params.from} className={INPUT_CLASSES} />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="to" className="text-xs font-medium text-gray-500">
+          <label htmlFor="to" className="text-xs font-medium text-muted">
             To
           </label>
           <input id="to" name="to" type="date" defaultValue={params.to} className={INPUT_CLASSES} />
@@ -150,16 +150,16 @@ export default async function AdminActivityPage({
       </form>
 
       {activities.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-gray-200 py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
             <History className="h-6 w-6" strokeWidth={1.75} />
           </span>
-          <p className="text-sm font-medium text-gray-900">No activity matches those filters</p>
+          <p className="text-sm font-medium text-strong">No activity matches those filters</p>
         </div>
       ) : (
         <Card className="overflow-x-auto p-0">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-gray-100 text-xs font-medium tracking-wide text-gray-400 uppercase">
+            <thead className="border-b border-line text-xs font-medium tracking-wide text-muted/70 uppercase">
               <tr>
                 <th className="px-4 py-3">Campaign</th>
                 <th className="px-4 py-3">Actor</th>
@@ -168,24 +168,24 @@ export default async function AdminActivityPage({
                 <th className="px-4 py-3">When</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-line">
               {activities.map((activity) => (
                 <tr key={activity.id}>
                   <td className="px-4 py-3">
                     <Link
                       href={`/dashboard/admin/campaigns/${activity.campaign.id}`}
-                      className="font-medium text-gray-900 hover:text-orange-600"
+                      className="font-medium text-strong hover:text-ember"
                     >
                       {activity.campaign.title}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 text-muted">
                     {resolveActorDisplayName(activity.actor)}
-                    <span className="ml-1 text-xs text-gray-400">({formatEnumLabel(activity.actorRole)})</span>
+                    <span className="ml-1 text-xs text-muted/70">({formatEnumLabel(activity.actorRole)})</span>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{formatEnumLabel(activity.actionType)}</td>
-                  <td className="px-4 py-3 text-gray-600">{summarizeActivityDetails(activity.details)}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-gray-400">
+                  <td className="px-4 py-3 text-muted">{formatEnumLabel(activity.actionType)}</td>
+                  <td className="px-4 py-3 text-muted">{summarizeActivityDetails(activity.details)}</td>
+                  <td className="px-4 py-3 whitespace-nowrap text-muted/70">
                     {formatDateTime(activity.createdAt)}
                   </td>
                 </tr>
@@ -196,7 +196,7 @@ export default async function AdminActivityPage({
       )}
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between text-sm text-gray-500">
+        <div className="flex items-center justify-between text-sm text-muted">
           <span>
             Page {page} of {totalPages} · {total} total
           </span>

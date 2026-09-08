@@ -98,7 +98,7 @@ export function DisputeResolutionActions({
         />
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-stopped">{error}</p>}
 
       <div className="flex flex-wrap gap-2">
         <Button type="button" size="sm" disabled={loading} onClick={() => submit("RESOLVED_CREATOR")}>

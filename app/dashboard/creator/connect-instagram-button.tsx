@@ -12,7 +12,7 @@ export function ConnectInstagramButton() {
         Connect Instagram
       </Button>
       {comingSoon && (
-        <p className="text-sm font-medium text-orange-700">Coming soon — check back later.</p>
+        <p className="text-sm font-medium text-ember-dark">Coming soon — check back later.</p>
       )}
     </div>
   );

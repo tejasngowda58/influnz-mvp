@@ -25,10 +25,10 @@ export function FilterBar({
     <form
       method="GET"
       action={action}
-      className="flex flex-wrap items-end gap-3 rounded-2xl border border-gray-100 bg-white p-4"
+      className="flex flex-wrap items-end gap-3 rounded-surface border border-line bg-white p-4"
     >
       <div className="flex min-w-48 flex-1 flex-col gap-1">
-        <label htmlFor="search" className="text-xs font-medium text-gray-500">
+        <label htmlFor="search" className="text-xs font-medium text-muted">
           {searchLabel}
         </label>
         <input
@@ -40,7 +40,7 @@ export function FilterBar({
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="category" className="text-xs font-medium text-gray-500">
+        <label htmlFor="category" className="text-xs font-medium text-muted">
           Category
         </label>
         <select id="category" name="category" defaultValue={category} className={INPUT_CLASSES}>
@@ -53,7 +53,7 @@ export function FilterBar({
         </select>
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="city" className="text-xs font-medium text-gray-500">
+        <label htmlFor="city" className="text-xs font-medium text-muted">
           City
         </label>
         <input

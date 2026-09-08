@@ -86,7 +86,7 @@ export function FundEscrowButton({ applicationId }: { applicationId: string }) {
         name: "Influnz",
         description: `Escrow for ${data.campaignTitle}`,
         order_id: data.orderId,
-        theme: { color: "#ea580c" },
+        theme: { color: "#e8590c" },
         // The webhook is what actually funds escrow. This handler only tells
         // the person what to expect, so we never claim success the server
         // hasn't confirmed.
@@ -110,11 +110,11 @@ export function FundEscrowButton({ applicationId }: { applicationId: string }) {
   if (awaitingConfirmation) {
     return (
       <div className="flex flex-col gap-2">
-        <p className="inline-flex items-center gap-2 text-sm font-medium text-blue-700">
+        <p className="inline-flex items-center gap-2 text-sm font-medium text-held">
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
           Confirming your payment with Razorpay…
         </p>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-muted">
           This usually takes a few seconds. The creator is notified the moment it clears.
         </p>
         <Button type="button" variant="ghost" size="sm" onClick={() => router.refresh()}>
@@ -134,7 +134,7 @@ export function FundEscrowButton({ applicationId }: { applicationId: string }) {
         )}
         {loading ? "Opening payment…" : "Fund escrow"}
       </Button>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-stopped">{error}</p>}
     </div>
   );
 }

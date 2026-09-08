@@ -31,8 +31,8 @@ export default async function NotificationsPage() {
         <BackLink href={ROLE_HOME[session.user.role]} label="Back to dashboard" />
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Notifications</h1>
-            <p className="mt-1 text-sm text-gray-600">
+            <h1 className="text-2xl font-semibold text-strong">Notifications</h1>
+            <p className="mt-1 text-sm text-muted">
               {unreadCount > 0
                 ? `${unreadCount} unread`
                 : "You're up to date."}
@@ -43,12 +43,12 @@ export default async function NotificationsPage() {
       </div>
 
       {notifications.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-gray-200 py-16 text-center">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+        <div className="flex flex-col items-center gap-3 rounded-surface border border-dashed border-line-strong py-16 text-center">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
             <Inbox className="h-6 w-6" strokeWidth={1.75} />
           </span>
-          <p className="text-sm font-medium text-gray-900">Nothing here yet</p>
-          <p className="max-w-sm text-sm text-gray-600">
+          <p className="text-sm font-medium text-strong">Nothing here yet</p>
+          <p className="max-w-sm text-sm text-muted">
             You&apos;ll hear from us when a campaign is reviewed, someone applies, terms are agreed,
             or money moves.
           </p>
@@ -59,16 +59,16 @@ export default async function NotificationsPage() {
             const body = (
               <Card
                 className={`flex items-start gap-3 p-5 ${
-                  notification.readAt ? "" : "border-orange-200 bg-orange-50/40"
+                  notification.readAt ? "" : "border-ember/25 bg-ember-tint"
                 }`}
               >
                 {!notification.readAt && (
-                  <span className="mt-1.5 inline-block h-2 w-2 flex-none rounded-full bg-orange-500" />
+                  <span className="mt-1.5 inline-block h-2 w-2 flex-none rounded-full bg-ember" />
                 )}
                 <div className={notification.readAt ? "pl-5" : ""}>
-                  <p className="text-sm font-semibold text-gray-900">{notification.title}</p>
-                  <p className="mt-1 text-sm text-gray-600">{notification.body}</p>
-                  <p className="mt-1.5 text-xs text-gray-400">
+                  <p className="text-sm font-semibold text-strong">{notification.title}</p>
+                  <p className="mt-1 text-sm text-muted">{notification.body}</p>
+                  <p className="mt-1.5 text-xs text-muted/70">
                     {formatDateTime(notification.createdAt)}
                   </p>
                 </div>
@@ -76,7 +76,7 @@ export default async function NotificationsPage() {
             );
 
             return notification.linkUrl ? (
-              <Link key={notification.id} href={notification.linkUrl} className="transition-shadow hover:shadow-md">
+              <Link key={notification.id} href={notification.linkUrl} className="transition-colors hover:border-line-strong">
                 {body}
               </Link>
             ) : (

@@ -37,7 +37,7 @@ export function CreatorCard({
 
   return (
     <Link href={`/dashboard/brand/creators/${id}`} className="block">
-      <Card className="flex flex-col gap-3 p-6 transition-shadow hover:shadow-md">
+      <Card className="flex flex-col gap-3 p-6 transition-colors hover:border-line-strong">
         <div className="flex items-center gap-3">
           {instagramProfilePictureUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- unpredictable Instagram CDN host, not worth an images.remotePatterns allowlist
@@ -49,19 +49,19 @@ export function CreatorCard({
               className="h-10 w-10 flex-none rounded-full object-cover"
             />
           ) : (
-            <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-orange-50 text-sm font-semibold text-orange-600">
+            <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-ember-tint text-sm font-semibold text-ember">
               {getInitials(name)}
             </div>
           )}
           <div>
             <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-gray-900">{name}</h3>
-              {verified && <Badge tone="green">Verified</Badge>}
+              <h3 className="font-semibold text-strong">{name}</h3>
+              {verified && <Badge tone="settled">Verified</Badge>}
             </div>
-            <p className="text-sm text-gray-500">{handle ? `@${handle}` : "Instagram not connected"}</p>
+            <p className="text-sm text-muted">{handle ? `@${handle}` : "Instagram not connected"}</p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-gray-500">
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-muted">
           <span className="inline-flex items-center gap-1">
             <Tag className="h-3.5 w-3.5" strokeWidth={1.75} />
             {formatEnumLabel(category)}

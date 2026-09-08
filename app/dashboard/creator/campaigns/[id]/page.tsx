@@ -47,15 +47,15 @@ export default async function CreatorCampaignDetailPage({
       <BackLink href="/dashboard/creator/campaigns" label="Back to campaigns" />
       <Card className="flex flex-col gap-4 p-8">
         <div>
-          <p className="text-sm font-medium text-orange-600">{campaign.brand.companyName}</p>
+          <p className="text-sm font-medium text-ember">{campaign.brand.companyName}</p>
           <div className="mt-1 flex items-center gap-2">
-            <h1 className="text-2xl font-semibold text-gray-900">{campaign.title}</h1>
-            {campaign.negotiable && <Badge tone="blue">Negotiable</Badge>}
+            <h1 className="text-2xl font-semibold text-strong">{campaign.title}</h1>
+            {campaign.negotiable && <Badge tone="accent">Negotiable</Badge>}
           </div>
-          <p className="mt-2 max-w-2xl text-sm text-gray-600">{campaign.description}</p>
+          <p className="mt-2 max-w-2xl text-sm text-muted">{campaign.description}</p>
         </div>
 
-        <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-gray-100 pt-4 text-sm text-gray-500">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-4 text-sm text-muted">
           <span className="inline-flex items-center gap-1.5">
             <Tag className="h-4 w-4" strokeWidth={1.75} />
             {formatEnumLabel(campaign.category)}
@@ -74,17 +74,17 @@ export default async function CreatorCampaignDetailPage({
           </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 border-t border-gray-100 pt-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:grid-cols-2">
           <div>
-            <h3 className="text-xs font-medium tracking-wide text-gray-400 uppercase">Deliverables</h3>
-            <p className="mt-1 text-sm text-gray-700">{campaign.deliverables}</p>
+            <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">Deliverables</h3>
+            <p className="mt-1 text-sm text-strong">{campaign.deliverables}</p>
           </div>
           {campaign.targetAudience && (
             <div>
-              <h3 className="text-xs font-medium tracking-wide text-gray-400 uppercase">
+              <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">
                 Target audience
               </h3>
-              <p className="mt-1 text-sm text-gray-700">{campaign.targetAudience}</p>
+              <p className="mt-1 text-sm text-strong">{campaign.targetAudience}</p>
             </div>
           )}
         </div>
@@ -93,21 +93,21 @@ export default async function CreatorCampaignDetailPage({
       <Card className="p-8">
         {campaign.status === "CLOSED" && !existingApplication ? (
           <div className="flex items-center gap-3">
-            <Badge tone="gray">Closed</Badge>
-            <p className="text-sm text-gray-600">This campaign is no longer accepting applications.</p>
+            <Badge tone="neutral">Closed</Badge>
+            <p className="text-sm text-muted">This campaign is no longer accepting applications.</p>
           </div>
         ) : existingApplication ? (
           <div className="flex flex-col gap-4">
             <div>
-              <h2 className="text-sm font-semibold text-gray-900">Your application</h2>
+              <h2 className="text-sm font-semibold text-strong">Your application</h2>
               <div className="mt-2 flex items-center gap-2">
                 <ApplicationStatusBadge status={existingApplication.status} />
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted">
                   Applied on {formatDate(existingApplication.createdAt)}
                 </p>
               </div>
               {existingApplication.pitch && (
-                <p className="mt-3 text-sm text-gray-700">{existingApplication.pitch}</p>
+                <p className="mt-3 text-sm text-strong">{existingApplication.pitch}</p>
               )}
             </div>
             <EscrowPanel
@@ -134,7 +134,7 @@ export default async function CreatorCampaignDetailPage({
           </div>
         ) : (
           <div>
-            <h2 className="text-sm font-semibold text-gray-900">Apply to this campaign</h2>
+            <h2 className="text-sm font-semibold text-strong">Apply to this campaign</h2>
             <div className="mt-4">
               <ApplyForm
                 campaignId={campaign.id}

@@ -56,8 +56,8 @@ export default function LoginPage() {
       title="Pick up right where you left off"
       pitch="Log in to manage your collaborations, track applications, and stay on top of every conversation between creators and brands."
     >
-      <h1 className="text-2xl font-semibold text-gray-900">Log in</h1>
-      <p className="mt-2 text-sm text-gray-600">
+      <h1 className="text-2xl font-semibold text-strong">Log in</h1>
+      <p className="mt-2 text-sm text-muted">
         Welcome back. Enter your credentials to continue.
       </p>
       <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-4">
@@ -77,18 +77,18 @@ export default function LoginPage() {
           value={password}
           onChange={setPassword}
         />
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-stopped">{error}</p>}
         <Button type="submit" disabled={loading} className="mt-2 w-full">
           {loading ? "Logging in..." : "Log in"}
         </Button>
       </form>
-      <p className="mt-6 text-center text-sm text-gray-600">
+      <p className="mt-6 text-center text-sm text-muted">
         New to Influnz?{" "}
-        <Link href="/signup/creator" className="font-medium text-orange-600 hover:text-orange-700">
+        <Link href="/signup/creator" className="font-medium text-ember hover:text-ember-dark">
           Sign up as a creator
         </Link>{" "}
         or{" "}
-        <Link href="/signup/brand" className="font-medium text-orange-600 hover:text-orange-700">
+        <Link href="/signup/brand" className="font-medium text-ember hover:text-ember-dark">
           as a brand
         </Link>
         .

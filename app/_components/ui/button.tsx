@@ -1,17 +1,19 @@
 import Link from "next/link";
 import type { ButtonHTMLAttributes } from "react";
 
-export type ButtonVariant = "primary" | "outline" | "ghost" | "danger";
+export type ButtonVariant = "primary" | "outline" | "ghost" | "danger" | "inverse";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const BASE =
   "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors disabled:opacity-60 disabled:pointer-events-none";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary: "bg-orange-600 text-white hover:bg-orange-700",
-  outline: "border border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100",
-  ghost: "border border-gray-200 bg-white text-gray-700 hover:bg-gray-50",
-  danger: "border border-red-200 bg-red-50 text-red-600 hover:bg-red-100",
+  primary: "bg-ember text-white hover:bg-ember-dark",
+  outline: "border border-ember/25 bg-ember-tint text-ember hover:border-ember/40",
+  ghost: "border border-line bg-surface text-strong hover:border-line-strong",
+  danger: "border border-stopped/25 bg-stopped/5 text-stopped hover:border-stopped/40",
+  /* For use on the ink base: landing page, auth surfaces. */
+  inverse: "bg-surface text-ink hover:bg-white/90",
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {

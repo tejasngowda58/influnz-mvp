@@ -16,8 +16,8 @@ export default async function NewCampaignPage() {
     <DashboardShell role="Brand" name={brandProfile?.name}>
       <div className="mx-auto w-full max-w-2xl">
         <BackLink href="/dashboard/brand/campaigns" label="Back to campaigns" />
-        <h1 className="mt-4 text-2xl font-semibold text-gray-900">New campaign</h1>
-        <p className="mt-1 text-sm text-gray-600">
+        <h1 className="mt-4 text-2xl font-semibold text-strong">New campaign</h1>
+        <p className="mt-1 text-sm text-muted">
           Describe the collaboration you&apos;re looking for. An admin reviews every campaign
           before it goes live for creators.
         </p>

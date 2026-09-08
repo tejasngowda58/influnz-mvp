@@ -10,8 +10,8 @@ type ReviewAction = "APPROVE" | "REQUEST_CHANGES" | "REJECT";
 
 const COMMENT_TONE: Record<ReviewAction, string> = {
   APPROVE: "",
-  REQUEST_CHANGES: "border-orange-200 bg-orange-50/40",
-  REJECT: "border-red-200 bg-red-50/40",
+  REQUEST_CHANGES: "border-ember/25 bg-ember-tint",
+  REJECT: "border-stopped/25 bg-stopped/5",
 };
 
 export function AdminReviewActions({ campaignId }: { campaignId: string }) {
@@ -56,7 +56,7 @@ export function AdminReviewActions({ campaignId }: { campaignId: string }) {
   return (
     <div className="flex flex-col gap-4">
       {showCommentFor && (
-        <div className={`rounded-xl border p-4 ${COMMENT_TONE[showCommentFor]}`}>
+        <div className={`rounded-inset border p-4 ${COMMENT_TONE[showCommentFor]}`}>
           <TextAreaField
             label={showCommentFor === "REJECT" ? "Reason for rejection" : "What needs to change"}
             id="comment"
@@ -66,7 +66,7 @@ export function AdminReviewActions({ campaignId }: { campaignId: string }) {
           />
         </div>
       )}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-stopped">{error}</p>}
       <div className="flex flex-wrap gap-2">
         <Button type="button" disabled={loading !== null} onClick={() => submit("APPROVE")}>
           {loading === "APPROVE" && <Loader2 className="h-3.5 w-3.5 animate-spin" />}

@@ -10,11 +10,11 @@ const STATUS_LABELS: Record<CampaignStatus, string> = {
 };
 
 const STATUS_TONES: Record<CampaignStatus, BadgeTone> = {
-  PENDING_REVIEW: "gray",
-  APPROVED: "green",
-  CHANGES_REQUESTED: "orange",
-  REJECTED: "red",
-  CLOSED: "gray",
+  PENDING_REVIEW: "neutral",
+  APPROVED: "settled",
+  CHANGES_REQUESTED: "accent",
+  REJECTED: "stopped",
+  CLOSED: "theirs",
 };
 
 export function CampaignStatusBadge({ status }: { status: CampaignStatus }) {

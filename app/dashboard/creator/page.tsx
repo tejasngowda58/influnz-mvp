@@ -50,10 +50,10 @@ export default async function CreatorDashboardPage({
     <DashboardShell role="Creator" name={profile?.name}>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
+          <h1 className="text-2xl font-semibold text-strong">
             Welcome{profile?.name ? `, ${profile.name}` : ""}
           </h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-muted">
             Here&apos;s an overview of your creator account on Influnz.
           </p>
         </div>
@@ -76,8 +76,8 @@ export default async function CreatorDashboardPage({
         <div>
           <div className="mb-4 flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-sm font-semibold text-gray-900">Your profile</h2>
-              <p className="mt-0.5 text-sm text-gray-600">
+              <h2 className="text-sm font-semibold text-strong">Your profile</h2>
+              <p className="mt-0.5 text-sm text-muted">
                 This is exactly what brands see when browsing the creator directory.
               </p>
             </div>
@@ -97,7 +97,7 @@ export default async function CreatorDashboardPage({
       )}
 
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">What&apos;s next</h2>
+        <h2 className="text-sm font-semibold text-strong">What&apos;s next</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <StatCard
             href="/dashboard/creator/campaigns"

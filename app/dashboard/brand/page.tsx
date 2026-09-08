@@ -36,10 +36,10 @@ export default async function BrandDashboardPage() {
     <DashboardShell role="Brand" name={profile?.name}>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
+          <h1 className="text-2xl font-semibold text-strong">
             Welcome{profile?.name ? `, ${profile.name}` : ""}
           </h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-muted">
             Here&apos;s an overview of your brand account on Influnz.
           </p>
         </div>
@@ -66,7 +66,7 @@ export default async function BrandDashboardPage() {
       )}
 
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">What&apos;s next</h2>
+        <h2 className="text-sm font-semibold text-strong">What&apos;s next</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <StatCard
             href="/dashboard/brand/campaigns"

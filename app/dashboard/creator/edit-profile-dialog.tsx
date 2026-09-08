@@ -100,8 +100,8 @@ export function EditProfileDialog({ bio: initialBio, followerCount: initialFollo
               setError(null);
             }}
           />
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <div className="mt-1 flex justify-end gap-3 border-t border-gray-100 pt-4">
+          {error && <p className="text-sm text-stopped">{error}</p>}
+          <div className="mt-1 flex justify-end gap-3 border-t border-line pt-4">
             <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)} disabled={loading}>
               Cancel
             </Button>

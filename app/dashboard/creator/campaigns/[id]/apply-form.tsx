@@ -60,8 +60,8 @@ export function ApplyForm({ campaignId, negotiable, campaignBudget, campaignDeli
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
       {negotiable ? (
-        <div className="flex flex-col gap-4 rounded-xl border border-orange-100 bg-orange-50/40 p-4">
-          <p className="text-xs font-medium text-orange-700">
+        <div className="flex flex-col gap-4 rounded-inset border border-ember/20 bg-ember-tint p-4">
+          <p className="text-xs font-medium text-ember-dark">
             Pre-filled with the brand&apos;s listed terms — edit these if you&apos;d like to propose
             something different.
           </p>
@@ -81,7 +81,7 @@ export function ApplyForm({ campaignId, negotiable, campaignBudget, campaignDeli
           />
         </div>
       ) : (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted">
           This campaign&apos;s budget and deliverables are fixed — apply below to be considered.
         </p>
       )}
@@ -92,7 +92,7 @@ export function ApplyForm({ campaignId, negotiable, campaignBudget, campaignDeli
         value={pitch}
         onChange={setPitch}
       />
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-stopped">{error}</p>}
       <Button type="submit" disabled={loading} className="w-full sm:w-auto">
         {loading ? "Applying..." : "Apply to this campaign"}
       </Button>

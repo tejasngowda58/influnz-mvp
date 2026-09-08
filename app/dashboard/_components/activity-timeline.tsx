@@ -10,8 +10,8 @@ const ROLE_ICON: Record<UserRole, typeof User> = {
 };
 
 const ROLE_CLASSES: Record<UserRole, string> = {
-  CREATOR: "bg-blue-50 text-blue-600",
-  BRAND: "bg-orange-50 text-orange-600",
+  CREATOR: "bg-held/5 text-held",
+  BRAND: "bg-ember-tint text-ember",
   ADMIN: "bg-purple-50 text-purple-600",
 };
 
@@ -27,7 +27,7 @@ export interface ActivityTimelineEntry {
 export function ActivityTimeline({ entries }: { entries: ActivityTimelineEntry[] }) {
   if (entries.length === 0) {
     return (
-      <p className="rounded-2xl border border-dashed border-gray-200 py-10 text-center text-sm text-gray-500">
+      <p className="rounded-surface border border-dashed border-line-strong py-10 text-center text-sm text-muted">
         No activity recorded yet.
       </p>
     );
@@ -45,7 +45,7 @@ export function ActivityTimeline({ entries }: { entries: ActivityTimelineEntry[]
               <Icon className="h-4 w-4" strokeWidth={1.75} />
             </span>
             <div className="flex flex-col gap-0.5 pt-0.5">
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-strong">
                 {describeActivity({
                   actionType: entry.actionType,
                   actorRole: entry.actorRole,
@@ -53,7 +53,7 @@ export function ActivityTimeline({ entries }: { entries: ActivityTimelineEntry[]
                   details: entry.details,
                 })}
               </p>
-              <p className="text-xs text-gray-400">{formatDateTime(entry.createdAt)}</p>
+              <p className="text-xs text-muted/70">{formatDateTime(entry.createdAt)}</p>
             </div>
           </li>
         );
