@@ -93,3 +93,47 @@ body {
     background: #ffffff;
   }
 }
+
+/*
+ * The landing page's single orchestrated moment: money leaves the brand, is
+ * held in escrow, then releases to the creator. This is the whole product in
+ * one gesture, so it is the only decorative motion anywhere in the app.
+ */
+@keyframes escrow-flow {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  26% {
+    transform: translateY(var(--flow-mid));
+  }
+  58% {
+    transform: translateY(var(--flow-mid));
+  }
+  80% {
+    transform: translateY(var(--flow-end));
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(var(--flow-end));
+    opacity: 0;
+  }
+}
+
+.escrow-flow-pill {
+  animation: escrow-flow 6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+/* Static, legible, and parked in escrow when motion isn't wanted. */
+@media (prefers-reduced-motion: reduce) {
+  .escrow-flow-pill {
+    animation: none !important;
+    transform: translateY(var(--flow-mid));
+    opacity: 1;
+  }
+}
