@@ -1,8 +1,8 @@
 import { AtSign, ShieldCheck } from "lucide-react";
 import { Card } from "@/app/_components/ui/card";
 import { Badge } from "@/app/_components/ui/badge";
-import { LinkButton } from "@/app/_components/ui/button";
 import { DisconnectInstagramButton } from "./disconnect-instagram-button";
+import { ConnectInstagramButton } from "./connect-instagram-button";
 import { formatDate } from "@/lib/format";
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -77,9 +77,7 @@ export function InstagramConnectionCard({
         <p className="text-sm font-medium text-green-700">Instagram connected!</p>
       )}
       {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
-      <LinkButton href="/api/instagram/connect" size="sm" className="self-start">
-        Connect Instagram
-      </LinkButton>
+      <ConnectInstagramButton />
     </Card>
   );
 }

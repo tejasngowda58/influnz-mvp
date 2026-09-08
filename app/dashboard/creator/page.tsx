@@ -3,9 +3,8 @@ import { DashboardShell } from "../_components/dashboard-shell";
 import { EmptyStateCard } from "../_components/empty-state-card";
 import { StatCard } from "../_components/stat-card";
 import { CreatorProfileCard } from "../_components/creator-profile-card";
-import { Card } from "@/app/_components/ui/card";
 import { LinkButton } from "@/app/_components/ui/button";
-import { EditProfileForm } from "./edit-profile-form";
+import { EditProfileDialog } from "./edit-profile-dialog";
 import { InstagramConnectionCard } from "./instagram-connection-card";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
@@ -74,31 +73,26 @@ export default async function CreatorDashboardPage({
       )}
 
       {profile && (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <div>
-            <h2 className="mb-3 text-sm font-semibold text-gray-900">
-              How brands see your profile
-            </h2>
-            <CreatorProfileCard
-              name={profile.name}
-              instagramHandle={profile.instagramHandle}
-              instagramProfilePictureUrl={profile.instagramProfilePictureUrl}
-              verified={Boolean(profile.instagramConnectedAt)}
-              category={profile.contentCategory}
-              city={profile.city}
-              followerCount={profile.followerCount}
-              bio={profile.bio}
-            />
-          </div>
-          <Card className="h-fit p-6">
-            <h2 className="text-sm font-semibold text-gray-900">Edit your profile</h2>
-            <p className="mt-1 text-sm text-gray-600">
-              Add a bio so brands know why you&apos;re a great fit for a collab.
-            </p>
-            <div className="mt-4">
-              <EditProfileForm bio={profile.bio ?? ""} />
+        <div>
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900">Your profile</h2>
+              <p className="mt-0.5 text-sm text-gray-600">
+                This is exactly what brands see when browsing the creator directory.
+              </p>
             </div>
-          </Card>
+            <EditProfileDialog bio={profile.bio ?? ""} followerCount={profile.followerCount} />
+          </div>
+          <CreatorProfileCard
+            name={profile.name}
+            instagramHandle={profile.instagramHandle}
+            instagramProfilePictureUrl={profile.instagramProfilePictureUrl}
+            verified={Boolean(profile.instagramConnectedAt)}
+            category={profile.contentCategory}
+            city={profile.city}
+            followerCount={profile.followerCount}
+            bio={profile.bio}
+          />
         </div>
       )}
 

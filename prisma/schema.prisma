@@ -85,6 +85,7 @@ model CreatorProfile {
   city                        String
   followerCount               Int?
   bio                         String?
+  avatarUrl                   String?
   instagramUserId             String?         @unique
   instagramProfilePictureUrl  String?
   instagramAccessToken        String?
@@ -117,6 +118,7 @@ model Campaign {
   budget         Int
   deliverables   String
   targetAudience String?
+  creatorsNeeded Int            @default(1)
   deadline       DateTime
   negotiable     Boolean        @default(false)
   status         CampaignStatus @default(PENDING_REVIEW)
