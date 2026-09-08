@@ -36,7 +36,7 @@ const TONE_CLASSES: Record<Tone, string> = {
 };
 
 const ICON_CLASSES: Record<Tone, string> = {
-  neutral: "bg-strong/[0.06] text-muted",
+  neutral: "bg-strong/6 text-muted",
   action: "bg-ember-tint text-ember",
   secured: "bg-held/10 text-held",
   warning: "bg-frozen/10 text-frozen",

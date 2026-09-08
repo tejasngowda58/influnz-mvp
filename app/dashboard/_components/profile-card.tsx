@@ -23,7 +23,7 @@ export function ProfileCard({ title, fields }: ProfileCardProps) {
               <Icon className="h-4 w-4" strokeWidth={1.75} />
             </span>
             <div>
-              <dt className="text-xs font-medium tracking-wide text-muted/70 uppercase">{label}</dt>
+              <dt className="text-xs font-medium text-muted/70">{label}</dt>
               <dd className="mt-0.5 text-sm font-medium break-words text-strong">{value}</dd>
             </div>
           </div>

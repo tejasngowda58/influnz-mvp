@@ -22,7 +22,7 @@ const TONE_CLASSES: Record<BadgeTone, string> = {
   settled: "bg-settled/10 text-settled",
   frozen: "bg-frozen/10 text-frozen",
   stopped: "bg-stopped/10 text-stopped",
-  neutral: "bg-strong/[0.06] text-muted",
+  neutral: "bg-strong/6 text-muted",
   accent: "bg-ember-tint text-ember",
 };
 

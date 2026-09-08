@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { Calendar, MapPin, Tag, Wallet } from "lucide-react";
+
 import { DashboardShell } from "../../../_components/dashboard-shell";
 import { BackLink } from "../../../_components/back-link";
 import { Card } from "@/app/_components/ui/card";
@@ -7,11 +7,13 @@ import { Badge } from "@/app/_components/ui/badge";
 import { ApplicationStatusBadge } from "../../../_components/status-badge";
 import { NegotiationPanel } from "../../../_components/negotiation-panel";
 import { EscrowPanel } from "../../../_components/escrow-panel";
+import { MetaRow } from "../../../_components/meta-row";
 import { ApplyForm } from "./apply-form";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatBudget, formatDate, formatEnumLabel } from "@/lib/format";
 import { isRazorpayConfigured } from "@/lib/razorpay";
+import { loadOfferHistories } from "@/lib/offer-history";
 
 export default async function CreatorCampaignDetailPage({
   params,
@@ -42,6 +44,10 @@ export default async function CreatorCampaignDetailPage({
       })
     : null;
 
+  const offerHistories = existingApplication
+    ? await loadOfferHistories([existingApplication.id])
+    : new Map();
+
   return (
     <DashboardShell role="Creator" name={creatorProfile?.name}>
       <BackLink href="/dashboard/creator/campaigns" label="Back to campaigns" />
@@ -55,33 +61,24 @@ export default async function CreatorCampaignDetailPage({
           <p className="mt-2 max-w-2xl text-sm text-muted">{campaign.description}</p>
         </div>
 
-        <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-4 text-sm text-muted">
-          <span className="inline-flex items-center gap-1.5">
-            <Tag className="h-4 w-4" strokeWidth={1.75} />
-            {formatEnumLabel(campaign.category)}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <MapPin className="h-4 w-4" strokeWidth={1.75} />
-            {campaign.city || "Any city"}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Wallet className="h-4 w-4" strokeWidth={1.75} />
-            {formatBudget(campaign.budget)}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Calendar className="h-4 w-4" strokeWidth={1.75} />
-            Due {formatDate(campaign.deadline)}
-          </span>
-        </div>
+        <MetaRow
+          className="border-t border-line pt-4"
+          items={[
+            { label: "Fee", value: formatBudget(campaign.budget) },
+            { label: "Deadline", value: formatDate(campaign.deadline) },
+            { label: "Category", value: formatEnumLabel(campaign.category) },
+            { label: "City", value: campaign.city || "Any city" },
+          ]}
+        />
 
         <div className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:grid-cols-2">
           <div>
-            <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">Deliverables</h3>
+            <h3 className="text-xs font-medium text-muted/70">Deliverables</h3>
             <p className="mt-1 text-sm text-strong">{campaign.deliverables}</p>
           </div>
           {campaign.targetAudience && (
             <div>
-              <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">
+              <h3 className="text-xs font-medium text-muted/70">
                 Target audience
               </h3>
               <p className="mt-1 text-sm text-strong">{campaign.targetAudience}</p>
@@ -128,8 +125,12 @@ export default async function CreatorCampaignDetailPage({
               campaignNegotiable={campaign.negotiable}
               proposedBudget={existingApplication.proposedBudget}
               proposedDeliverables={existingApplication.proposedDeliverables}
+              negotiationMessage={existingApplication.negotiationMessage}
               round={existingApplication.round}
               lastOfferBy={existingApplication.lastOfferBy}
+              brandName={campaign.brand.companyName}
+              creatorName={creatorProfile?.name ?? "You"}
+              history={offerHistories.get(existingApplication.id)}
             />
           </div>
         ) : (

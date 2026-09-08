@@ -21,7 +21,7 @@ export function AuthShell({ eyebrow, title, pitch, children }: AuthShellProps) {
           <Logo inverted />
         </Link>
         <div className="relative z-10 flex flex-col gap-3">
-          <span className="w-fit rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide text-ember-tint uppercase">
+          <span className="w-fit rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-ember-tint">
             {eyebrow}
           </span>
           <h2 className="text-3xl font-semibold tracking-tight text-white">{title}</h2>

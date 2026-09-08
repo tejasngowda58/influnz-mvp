@@ -50,7 +50,7 @@ export function Dialog({ open, onClose, title, description, children }: DialogPr
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 flex-none items-center justify-center rounded-full text-muted/70 transition-colors hover:bg-strong/[0.06] hover:text-muted"
+            className="flex h-8 w-8 flex-none items-center justify-center rounded-full text-muted/70 transition-colors hover:bg-strong/6 hover:text-muted"
             aria-label="Close"
           >
             <X className="h-4 w-4" strokeWidth={1.75} />

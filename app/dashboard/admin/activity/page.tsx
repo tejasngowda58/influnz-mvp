@@ -159,7 +159,7 @@ export default async function AdminActivityPage({
       ) : (
         <Card className="overflow-x-auto p-0">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-line text-xs font-medium tracking-wide text-muted/70 uppercase">
+            <thead className="border-b border-line text-xs font-medium text-muted/70">
               <tr>
                 <th className="px-4 py-3">Campaign</th>
                 <th className="px-4 py-3">Actor</th>
@@ -198,7 +198,7 @@ export default async function AdminActivityPage({
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-sm text-muted">
           <span>
-            Page {page} of {totalPages} · {total} total
+            Page {page} of {totalPages} — {total} events
           </span>
           <div className="flex gap-2">
             {page > 1 && (

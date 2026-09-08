@@ -44,7 +44,7 @@ export async function DashboardShell({ role, name, children }: DashboardShellPro
               aria-label={
                 unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"
               }
-              className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-strong/[0.06] hover:text-strong"
+              className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-strong/6 hover:text-strong"
             >
               <Bell className="h-4 w-4" strokeWidth={1.75} />
               {unreadCount > 0 && (

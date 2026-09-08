@@ -74,13 +74,13 @@ export default async function AdminDisputeDetailPage({
               <Badge tone={DISPUTE_TONES[dispute.status]}>{DISPUTE_LABELS[dispute.status]}</Badge>
             </div>
             <p className="mt-1 text-sm text-muted">
-              Raised by {dispute.raisedByRole.toLowerCase()} (
-              {resolveActorDisplayName(dispute.raisedBy)}) · {formatDateTime(dispute.createdAt)}
+              Raised by the {dispute.raisedByRole.toLowerCase()} (
+              {resolveActorDisplayName(dispute.raisedBy)}) on {formatDateTime(dispute.createdAt)}
             </p>
           </div>
           {application.escrow && (
             <div className="text-right">
-              <p className="text-xs font-medium tracking-wide text-muted/70 uppercase">Held in escrow</p>
+              <p className="text-xs font-medium text-muted/70">Held in escrow</p>
               <p className="text-xl font-semibold text-strong">
                 {formatPaise(application.escrow.amount)}
               </p>
@@ -90,13 +90,13 @@ export default async function AdminDisputeDetailPage({
         </div>
 
         <div className="rounded-inset border border-line bg-paper p-4">
-          <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
+          <h2 className="text-xs font-semibold text-muted/70">
             What they said
           </h2>
           <p className="mt-2 text-sm whitespace-pre-line text-strong">{dispute.description}</p>
           {dispute.evidence.length > 0 && (
             <div className="mt-3">
-              <h3 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">Evidence</h3>
+              <h3 className="text-xs font-semibold text-muted/70">Evidence</h3>
               <ul className="mt-1 flex flex-col gap-1">
                 {dispute.evidence.map((item) => (
                   <li key={item} className="text-sm break-all text-ember-dark underline">
@@ -110,14 +110,14 @@ export default async function AdminDisputeDetailPage({
 
         {isSettled && dispute.resolution && (
           <div className="rounded-inset border border-settled/20 bg-settled/5 p-4">
-            <h2 className="text-xs font-semibold tracking-wide text-settled uppercase">
+            <h2 className="text-xs font-semibold text-settled">
               Decision
             </h2>
             <p className="mt-2 text-sm text-strong">{dispute.resolution}</p>
             <p className="mt-1 text-xs text-muted">
               {DISPUTE_LABELS[dispute.status]}
               {dispute.resolvedBy ? ` by ${dispute.resolvedBy.email}` : ""}
-              {dispute.resolvedAt ? ` · ${formatDateTime(dispute.resolvedAt)}` : ""}
+              {dispute.resolvedAt ? ` on ${formatDateTime(dispute.resolvedAt)}` : ""}
             </p>
           </div>
         )}
@@ -177,12 +177,12 @@ export default async function AdminDisputeDetailPage({
           </h2>
           <div className="flex flex-col gap-3 text-sm">
             <div>
-              <p className="text-xs tracking-wide text-muted/70 uppercase">Brand</p>
+              <p className="text-xs text-muted/70">Brand</p>
               <p className="font-medium text-strong">{application.campaign.brand.companyName}</p>
               <p className="text-muted">{application.campaign.brand.workEmail}</p>
             </div>
             <div>
-              <p className="text-xs tracking-wide text-muted/70 uppercase">Creator</p>
+              <p className="text-xs text-muted/70">Creator</p>
               <Link
                 href={`/dashboard/admin/campaigns/${application.campaignId}`}
                 className="font-medium text-strong hover:text-ember"
@@ -196,7 +196,7 @@ export default async function AdminDisputeDetailPage({
               </p>
             </div>
             <div>
-              <p className="text-xs tracking-wide text-muted/70 uppercase">Campaign</p>
+              <p className="text-xs text-muted/70">Campaign</p>
               <Link
                 href={`/dashboard/admin/campaigns/${application.campaignId}`}
                 className="font-medium text-strong hover:text-ember"

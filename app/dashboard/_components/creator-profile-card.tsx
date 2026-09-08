@@ -106,7 +106,7 @@ export function CreatorProfileCard({
       </div>
 
       <div className="flex flex-col gap-2 p-6">
-        <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">About</h2>
+        <h2 className="text-xs font-semibold text-muted/70">About</h2>
         <p className="text-sm whitespace-pre-line text-strong">
           {bio?.trim() || "This creator hasn't added a bio yet."}
         </p>

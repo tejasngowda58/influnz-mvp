@@ -4,6 +4,7 @@ import { DashboardShell } from "../../_components/dashboard-shell";
 import { BackLink } from "../../_components/back-link";
 import { Card } from "@/app/_components/ui/card";
 import { ApplicationStatusBadge } from "../../_components/status-badge";
+import { MetaRow } from "../../_components/meta-row";
 import { Badge } from "@/app/_components/ui/badge";
 import { NEGOTIATION_TURN } from "@/lib/application-status";
 import { requireRole } from "@/lib/require-role";
@@ -55,10 +56,14 @@ export default async function CreatorApplicationsPage() {
               <Card className="flex items-center justify-between gap-4 p-5 transition-colors hover:border-line-strong">
                 <div>
                   <p className="font-semibold text-strong">{application.campaign.title}</p>
-                  <p className="mt-1 text-sm text-muted">
-                    {application.campaign.brand.companyName} · {formatBudget(application.proposedBudget)} ·{" "}
-                    Applied {formatDate(application.createdAt)}
-                  </p>
+                  <MetaRow
+                    className="mt-2"
+                    items={[
+                      { label: "Brand", value: application.campaign.brand.companyName },
+                      { label: "Agreed fee", value: formatBudget(application.proposedBudget) },
+                      { label: "Applied", value: formatDate(application.createdAt) },
+                    ]}
+                  />
                 </div>
                 <div className="flex items-center gap-2">
                   {NEGOTIATION_TURN[application.status] === "CREATOR" && (

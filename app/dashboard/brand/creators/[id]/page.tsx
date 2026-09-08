@@ -49,7 +49,7 @@ export default async function BrandCreatorProfilePage({
         bio={creator.bio}
       >
         <div>
-          <h2 className="text-xs font-semibold tracking-wide text-muted/70 uppercase">
+          <h2 className="text-xs font-semibold text-muted/70">
             Applications to your campaigns
           </h2>
           {applicationsToYourCampaigns.length === 0 ? (

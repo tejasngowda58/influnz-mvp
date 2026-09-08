@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, MapPin, Tag, Users, Wallet } from "lucide-react";
+import { Users } from "lucide-react";
 import { DashboardShell } from "../../../_components/dashboard-shell";
 import { BackLink } from "../../../_components/back-link";
 import { Card } from "@/app/_components/ui/card";
@@ -11,12 +11,14 @@ import { ApplicationStatusBadge } from "../../../_components/status-badge";
 import { NegotiationPanel } from "../../../_components/negotiation-panel";
 import { EscrowPanel } from "../../../_components/escrow-panel";
 import { StatusBanner } from "../../../_components/status-banner";
+import { MetaRow } from "../../../_components/meta-row";
 import { CampaignStatusToggle } from "./campaign-status-toggle";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatBudget, formatDate, formatEnumLabel } from "@/lib/format";
 import { NEGOTIATION_TURN } from "@/lib/application-status";
 import { isRazorpayConfigured } from "@/lib/razorpay";
+import { loadOfferHistories } from "@/lib/offer-history";
 
 export default async function BrandCampaignDetailPage({
   params,
@@ -28,7 +30,7 @@ export default async function BrandCampaignDetailPage({
 
   const brandProfile = await prisma.brandProfile.findUnique({
     where: { userId: session.user.id },
-    select: { id: true, name: true },
+    select: { id: true, name: true, companyName: true },
   });
 
   const campaign = brandProfile
@@ -63,6 +65,10 @@ export default async function BrandCampaignDetailPage({
     (application) => application.status === "APPROVED" || application.status === "RELEASED",
   ).length;
   const paymentsEnabled = isRazorpayConfigured();
+  // One batched query for every applicant's offer trail.
+  const offerHistories = await loadOfferHistories(
+    campaign.applications.map((application) => application.id),
+  );
   const quotaReached = approvedCount >= campaign.creatorsNeeded;
 
   return (
@@ -113,37 +119,28 @@ export default async function BrandCampaignDetailPage({
           </StatusBanner>
         )}
 
-        <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-4 text-sm text-muted">
-          <span className="inline-flex items-center gap-1.5">
-            <Tag className="h-4 w-4" strokeWidth={1.75} />
-            {formatEnumLabel(campaign.category)}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <MapPin className="h-4 w-4" strokeWidth={1.75} />
-            {campaign.city || "Any city"}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Wallet className="h-4 w-4" strokeWidth={1.75} />
-            {formatBudget(campaign.budget)}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Calendar className="h-4 w-4" strokeWidth={1.75} />
-            Due {formatDate(campaign.deadline)}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Users className="h-4 w-4" strokeWidth={1.75} />
-            {approvedCount} of {campaign.creatorsNeeded} creators approved
-          </span>
-        </div>
+        <MetaRow
+          className="border-t border-line pt-4"
+          items={[
+            { label: "Budget", value: formatBudget(campaign.budget) },
+            {
+              label: "Creators",
+              value: `${approvedCount} of ${campaign.creatorsNeeded} approved`,
+            },
+            { label: "Deadline", value: formatDate(campaign.deadline) },
+            { label: "Category", value: formatEnumLabel(campaign.category) },
+            { label: "City", value: campaign.city || "Any city" },
+          ]}
+        />
 
         <div className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:grid-cols-2">
           <div>
-            <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">Deliverables</h3>
+            <h3 className="text-xs font-medium text-muted/70">Deliverables</h3>
             <p className="mt-1 text-sm text-strong">{campaign.deliverables}</p>
           </div>
           {campaign.targetAudience && (
             <div>
-              <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">
+              <h3 className="text-xs font-medium text-muted/70">
                 Target audience
               </h3>
               <p className="mt-1 text-sm text-strong">{campaign.targetAudience}</p>
@@ -158,7 +155,11 @@ export default async function BrandCampaignDetailPage({
             <Users className="h-4 w-4" strokeWidth={1.75} />
             Applications ({campaign.applications.length})
           </h2>
-          {needsResponseCount > 0 && <Badge tone="yours">{needsResponseCount} need your response</Badge>}
+          {needsResponseCount > 0 && (
+            <Badge tone="yours">
+              {needsResponseCount} {needsResponseCount === 1 ? "needs" : "need"} your response
+            </Badge>
+          )}
         </div>
 
         {campaign.applications.length === 0 ? (
@@ -185,12 +186,31 @@ export default async function BrandCampaignDetailPage({
                       </Link>
                       <ApplicationStatusBadge status={application.status} />
                     </div>
-                    <p className="mt-1 text-sm text-muted">
-                      {application.creator.instagramHandle
-                        ? `@${application.creator.instagramHandle.replace(/^@/, "")} · `
-                        : "Instagram not connected · "}
-                      {formatEnumLabel(application.creator.contentCategory)} · {application.creator.city}
-                    </p>
+                    <MetaRow
+                      className="mt-2"
+                      items={[
+                        {
+                          label: "Instagram",
+                          value: application.creator.instagramHandle
+                            ? `@${application.creator.instagramHandle.replace(/^@/, "")}`
+                            : "Not connected",
+                        },
+                        {
+                          label: "Followers",
+                          value:
+                            application.creator.followerCount != null
+                              ? new Intl.NumberFormat("en-IN", { notation: "compact" }).format(
+                                  application.creator.followerCount,
+                                )
+                              : "—",
+                        },
+                        {
+                          label: "Category",
+                          value: formatEnumLabel(application.creator.contentCategory),
+                        },
+                        { label: "City", value: application.creator.city },
+                      ]}
+                    />
                     {application.pitch && (
                       <p className="mt-2 max-w-xl text-sm text-strong">{application.pitch}</p>
                     )}
@@ -214,8 +234,12 @@ export default async function BrandCampaignDetailPage({
                   campaignNegotiable={campaign.negotiable}
                   proposedBudget={application.proposedBudget}
                   proposedDeliverables={application.proposedDeliverables}
+                  negotiationMessage={application.negotiationMessage}
                   round={application.round}
                   lastOfferBy={application.lastOfferBy}
+                  brandName={brandProfile?.companyName ?? "Your brand"}
+                  creatorName={application.creator.name}
+                  history={offerHistories.get(application.id)}
                 />
               </Card>
             ))}

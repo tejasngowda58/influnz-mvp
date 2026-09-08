@@ -3,6 +3,7 @@ import type { CampaignStatus } from "@prisma/client";
 import { ClipboardList } from "lucide-react";
 import { DashboardShell } from "../../_components/dashboard-shell";
 import { CampaignStatusBadge } from "../../_components/campaign-status-badge";
+import { MetaRow } from "../../_components/meta-row";
 import { Card } from "@/app/_components/ui/card";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
@@ -75,10 +76,14 @@ export default async function AdminCampaignsPage({
               <Card className="flex items-center justify-between gap-4 p-5 transition-colors hover:border-line-strong">
                 <div>
                   <p className="font-semibold text-strong">{campaign.title}</p>
-                  <p className="mt-1 text-sm text-muted">
-                    {campaign.brand.companyName} · {formatBudget(campaign.budget)} ·{" "}
-                    Submitted {formatDate(campaign.createdAt)}
-                  </p>
+                  <MetaRow
+                    className="mt-2"
+                    items={[
+                      { label: "Brand", value: campaign.brand.companyName },
+                      { label: "Budget", value: formatBudget(campaign.budget) },
+                      { label: "Submitted", value: formatDate(campaign.createdAt) },
+                    ]}
+                  />
                 </div>
                 <CampaignStatusBadge status={campaign.status} />
               </Card>

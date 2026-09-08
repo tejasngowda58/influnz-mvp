@@ -23,7 +23,7 @@ interface StatusBannerProps {
 export function StatusBanner({ tone, title, children }: StatusBannerProps) {
   return (
     <div className={`rounded-inset border p-4 ${TONE_CLASSES[tone]}`}>
-      <h3 className={`text-xs font-medium tracking-wide uppercase ${TITLE_CLASSES[tone]}`}>{title}</h3>
+      <h3 className={`text-xs font-medium ${TITLE_CLASSES[tone]}`}>{title}</h3>
       <div className="mt-1 text-sm text-strong">{children}</div>
     </div>
   );

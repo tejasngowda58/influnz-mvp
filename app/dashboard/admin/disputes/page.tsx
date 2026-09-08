@@ -4,6 +4,7 @@ import { Scale } from "lucide-react";
 import { DashboardShell } from "../../_components/dashboard-shell";
 import { Card } from "@/app/_components/ui/card";
 import { Badge, type BadgeTone } from "@/app/_components/ui/badge";
+import { MetaRow } from "../../_components/meta-row";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/format";
@@ -97,13 +98,18 @@ export default async function AdminDisputesPage({
               <Card className="flex items-start justify-between gap-4 p-5 transition-colors hover:border-line-strong">
                 <div className="min-w-0">
                   <p className="font-semibold text-strong">{dispute.reason}</p>
-                  <p className="mt-1 text-sm text-muted">
-                    {dispute.application.campaign.title} ·{" "}
-                    {dispute.application.campaign.brand.companyName} vs {dispute.application.creator.name}
-                  </p>
-                  <p className="mt-1 text-xs text-muted/70">
-                    Raised by {dispute.raisedByRole.toLowerCase()} · {formatDateTime(dispute.createdAt)}
-                  </p>
+                  <MetaRow
+                    className="mt-2"
+                    items={[
+                      { label: "Campaign", value: dispute.application.campaign.title },
+                      {
+                        label: "Parties",
+                        value: `${dispute.application.campaign.brand.companyName} vs ${dispute.application.creator.name}`,
+                      },
+                      { label: "Raised by", value: dispute.raisedByRole.toLowerCase() },
+                      { label: "Raised", value: formatDateTime(dispute.createdAt) },
+                    ]}
+                  />
                 </div>
                 <div className="flex flex-none flex-col items-end gap-2">
                   <Badge tone={DISPUTE_TONES[dispute.status]}>{DISPUTE_LABELS[dispute.status]}</Badge>

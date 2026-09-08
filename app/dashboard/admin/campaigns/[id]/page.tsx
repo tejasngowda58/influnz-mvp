@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { Building2, Calendar, Globe, MapPin, Tag, Users, Wallet } from "lucide-react";
+import { Building2, Globe, MapPin } from "lucide-react";
 import { DashboardShell } from "../../../_components/dashboard-shell";
 import { BackLink } from "../../../_components/back-link";
 import { CampaignStatusBadge } from "../../../_components/campaign-status-badge";
@@ -7,6 +7,7 @@ import { Card } from "@/app/_components/ui/card";
 import { Badge } from "@/app/_components/ui/badge";
 import { AdminReviewActions } from "./admin-review-actions";
 import { ActivityTimeline } from "../../../_components/activity-timeline";
+import { MetaRow } from "../../../_components/meta-row";
 import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { formatBudget, formatDate, formatEnumLabel } from "@/lib/format";
@@ -64,37 +65,28 @@ export default async function AdminCampaignDetailPage({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-4 text-sm text-muted">
-          <span className="inline-flex items-center gap-1.5">
-            <Tag className="h-4 w-4" strokeWidth={1.75} />
-            {formatEnumLabel(campaign.category)}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <MapPin className="h-4 w-4" strokeWidth={1.75} />
-            {campaign.city || "Any city"}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Wallet className="h-4 w-4" strokeWidth={1.75} />
-            {formatBudget(campaign.budget)}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Calendar className="h-4 w-4" strokeWidth={1.75} />
-            Due {formatDate(campaign.deadline)}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Users className="h-4 w-4" strokeWidth={1.75} />
-            {approvedCount} of {campaign.creatorsNeeded} creators approved
-          </span>
-        </div>
+        <MetaRow
+          className="border-t border-line pt-4"
+          items={[
+            { label: "Budget", value: formatBudget(campaign.budget) },
+            {
+              label: "Creators",
+              value: `${approvedCount} of ${campaign.creatorsNeeded} approved`,
+            },
+            { label: "Deadline", value: formatDate(campaign.deadline) },
+            { label: "Category", value: formatEnumLabel(campaign.category) },
+            { label: "City", value: campaign.city || "Any city" },
+          ]}
+        />
 
         <div className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:grid-cols-2">
           <div>
-            <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">Deliverables</h3>
+            <h3 className="text-xs font-medium text-muted/70">Deliverables</h3>
             <p className="mt-1 text-sm text-strong">{campaign.deliverables}</p>
           </div>
           {campaign.targetAudience && (
             <div>
-              <h3 className="text-xs font-medium tracking-wide text-muted/70 uppercase">
+              <h3 className="text-xs font-medium text-muted/70">
                 Target audience
               </h3>
               <p className="mt-1 text-sm text-strong">{campaign.targetAudience}</p>
@@ -104,7 +96,7 @@ export default async function AdminCampaignDetailPage({
 
         {campaign.adminComment && (
           <div className="rounded-inset border border-ember/20 bg-ember-tint p-4">
-            <h3 className="text-xs font-medium tracking-wide text-ember uppercase">
+            <h3 className="text-xs font-medium text-ember">
               Previous admin comment
             </h3>
             <p className="mt-1 text-sm text-strong">{campaign.adminComment}</p>
