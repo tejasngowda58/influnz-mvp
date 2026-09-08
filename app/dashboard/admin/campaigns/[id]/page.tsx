@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { Building2, Calendar, Globe, MapPin, Tag, Wallet } from "lucide-react";
+import { Building2, Calendar, Globe, MapPin, Tag, Users, Wallet } from "lucide-react";
 import { DashboardShell } from "../../../_components/dashboard-shell";
 import { BackLink } from "../../../_components/back-link";
 import { CampaignStatusBadge } from "../../../_components/campaign-status-badge";
@@ -22,12 +22,16 @@ export default async function AdminCampaignDetailPage({
 
   const campaign = await prisma.campaign.findUnique({
     where: { id },
-    include: { brand: true },
+    include: { brand: true, applications: { select: { status: true } } },
   });
 
   if (!campaign) {
     notFound();
   }
+
+  const approvedCount = campaign.applications.filter(
+    (application) => application.status === "APPROVED",
+  ).length;
 
   const activities = await prisma.campaignActivity.findMany({
     where: { campaignId: id },
@@ -76,6 +80,10 @@ export default async function AdminCampaignDetailPage({
           <span className="inline-flex items-center gap-1.5">
             <Calendar className="h-4 w-4" strokeWidth={1.75} />
             Due {formatDate(campaign.deadline)}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Users className="h-4 w-4" strokeWidth={1.75} />
+            {approvedCount} of {campaign.creatorsNeeded} creators approved
           </span>
         </div>
 

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import type { CampaignStatus } from "@prisma/client";
 import { Megaphone } from "lucide-react";
 import { DashboardShell } from "../../_components/dashboard-shell";
 import { CampaignCard } from "../../_components/campaign-card";
@@ -6,8 +8,22 @@ import { requireRole } from "@/lib/require-role";
 import { prisma } from "@/lib/prisma";
 import { LinkButton } from "@/app/_components/ui/button";
 
-export default async function BrandCampaignsPage() {
+/** Campaigns that are finished with, as opposed to still in play. */
+const HISTORY_STATUSES: CampaignStatus[] = ["CLOSED", "REJECTED"];
+
+const VIEWS = [
+  { label: "Active", value: "active" },
+  { label: "History", value: "history" },
+] as const;
+
+export default async function BrandCampaignsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
   const session = await requireRole("BRAND");
+  const { view } = await searchParams;
+  const activeView = view === "history" ? "history" : "active";
 
   const brandProfile = await prisma.brandProfile.findUnique({
     where: { userId: session.user.id },
@@ -16,7 +32,10 @@ export default async function BrandCampaignsPage() {
 
   const campaigns = brandProfile
     ? await prisma.campaign.findMany({
-        where: { brandId: brandProfile.id },
+        where: {
+          brandId: brandProfile.id,
+          status: activeView === "history" ? { in: HISTORY_STATUSES } : { notIn: HISTORY_STATUSES },
+        },
         orderBy: { createdAt: "desc" },
         include: { _count: { select: { applications: true } } },
       })
@@ -37,18 +56,40 @@ export default async function BrandCampaignsPage() {
         </div>
       </div>
 
+      <div className="flex flex-wrap gap-2">
+        {VIEWS.map((tab) => (
+          <Link
+            key={tab.value}
+            href={`/dashboard/brand/campaigns?view=${tab.value}`}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+              activeView === tab.value
+                ? "bg-orange-600 text-white"
+                : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            {tab.label}
+          </Link>
+        ))}
+      </div>
+
       {campaigns.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-gray-200 py-16 text-center">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
             <Megaphone className="h-6 w-6" strokeWidth={1.75} />
           </span>
-          <p className="text-sm font-medium text-gray-900">No campaigns yet</p>
-          <p className="max-w-sm text-sm text-gray-600">
-            Create your first campaign so creators can find and apply to it.
+          <p className="text-sm font-medium text-gray-900">
+            {activeView === "history" ? "No campaign history yet" : "No campaigns yet"}
           </p>
-          <LinkButton href="/dashboard/brand/campaigns/new" className="mt-2">
-            New campaign
-          </LinkButton>
+          <p className="max-w-sm text-sm text-gray-600">
+            {activeView === "history"
+              ? "Completed and rejected campaigns will show up here once they wrap."
+              : "Create your first campaign so creators can find and apply to it."}
+          </p>
+          {activeView === "active" && (
+            <LinkButton href="/dashboard/brand/campaigns/new" className="mt-2">
+              New campaign
+            </LinkButton>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

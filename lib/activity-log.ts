@@ -1,5 +1,4 @@
 import type { ActivityActionType, Prisma, UserRole } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
 
 /** A single before/after field change, e.g. a counter-offer's budget or deliverables. */
 export interface ActivityChange {
@@ -34,14 +33,17 @@ export interface LogCampaignActivityInput {
 }
 
 /**
- * Records a CampaignActivity row. Pass a transaction client (`tx`) from
- * inside `prisma.$transaction(...)` so the log write succeeds or fails
- * atomically with the mutation it's describing — never call this after a
- * separate, already-committed write.
+ * Records a CampaignActivity row.
+ *
+ * The transaction client is required, not optional: the audit log is the
+ * evidence trail behind dispute resolution, so a state change must never be
+ * able to commit without its log row. Call this inside
+ * `prisma.$transaction(...)` and pass that `tx` — if the log write fails, the
+ * state change it describes rolls back with it.
  */
 export async function logCampaignActivity(
   input: LogCampaignActivityInput,
-  client: Prisma.TransactionClient | typeof prisma = prisma,
+  client: Prisma.TransactionClient,
 ) {
   await client.campaignActivity.create({
     data: {

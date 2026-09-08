@@ -53,6 +53,10 @@ export default async function BrandCampaignDetailPage({
   const needsResponseCount = campaign.applications.filter(
     (application) => NEGOTIATION_TURN[application.status] === "BRAND",
   ).length;
+  const approvedCount = campaign.applications.filter(
+    (application) => application.status === "APPROVED",
+  ).length;
+  const quotaReached = approvedCount >= campaign.creatorsNeeded;
 
   return (
     <DashboardShell role="Brand" name={brandProfile?.name}>
@@ -87,6 +91,15 @@ export default async function BrandCampaignDetailPage({
           </StatusBanner>
         )}
 
+        {campaign.status === "CLOSED" && quotaReached && (
+          <StatusBanner tone="green" title="Campaign complete">
+            <p>
+              Creator quota reached ({approvedCount}/{campaign.creatorsNeeded}) — automatically closed to
+              new applicants.
+            </p>
+          </StatusBanner>
+        )}
+
         {campaign.status === "PENDING_REVIEW" && (
           <StatusBanner tone="gray" title="Pending review">
             <p>This campaign is waiting on admin review before it goes live for creators.</p>
@@ -109,6 +122,10 @@ export default async function BrandCampaignDetailPage({
           <span className="inline-flex items-center gap-1.5">
             <Calendar className="h-4 w-4" strokeWidth={1.75} />
             Due {formatDate(campaign.deadline)}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Users className="h-4 w-4" strokeWidth={1.75} />
+            {approvedCount} of {campaign.creatorsNeeded} creators approved
           </span>
         </div>
 

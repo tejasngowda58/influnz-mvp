@@ -23,6 +23,7 @@ interface PatchCampaignBody {
   budget?: number;
   deliverables?: string;
   targetAudience?: string;
+  creatorsNeeded?: number;
   deadline?: string;
   negotiable?: boolean;
 }
@@ -86,11 +87,33 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     );
   }
 
-  const { title, description, category, city, budget, deliverables, targetAudience, deadline, negotiable } = body;
+  const {
+    title,
+    description,
+    category,
+    city,
+    budget,
+    deliverables,
+    targetAudience,
+    creatorsNeeded,
+    deadline,
+    negotiable,
+  } = body;
 
-  if (!title || !description || !category || !deliverables || !deadline || budget == null) {
+  if (
+    !title ||
+    !description ||
+    !category ||
+    !deliverables ||
+    !deadline ||
+    budget == null ||
+    creatorsNeeded == null
+  ) {
     return NextResponse.json(
-      { error: "title, description, category, budget, deliverables, and deadline are all required" },
+      {
+        error:
+          "title, description, category, budget, deliverables, creatorsNeeded, and deadline are all required",
+      },
       { status: 400 },
     );
   }
@@ -105,6 +128,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const budgetNumber = Number(budget);
   if (!Number.isFinite(budgetNumber) || budgetNumber <= 0) {
     return NextResponse.json({ error: "budget must be a positive number" }, { status: 400 });
+  }
+
+  const creatorsNeededNumber = Number(creatorsNeeded);
+  if (!Number.isInteger(creatorsNeededNumber) || creatorsNeededNumber <= 0) {
+    return NextResponse.json(
+      { error: "creatorsNeeded must be a positive whole number" },
+      { status: 400 },
+    );
   }
 
   const deadlineDate = new Date(deadline);
@@ -123,6 +154,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         budget: Math.round(budgetNumber),
         deliverables,
         targetAudience: targetAudience?.trim() || null,
+        creatorsNeeded: creatorsNeededNumber,
         deadline: deadlineDate,
         negotiable: Boolean(negotiable),
         status: "PENDING_REVIEW",

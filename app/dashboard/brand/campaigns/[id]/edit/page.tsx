@@ -55,6 +55,7 @@ export default async function EditCampaignPage({
               budget: String(campaign.budget),
               deliverables: campaign.deliverables,
               targetAudience: campaign.targetAudience ?? "",
+              creatorsNeeded: String(campaign.creatorsNeeded),
               deadline: campaign.deadline.toISOString().slice(0, 10),
               negotiable: campaign.negotiable,
             }}

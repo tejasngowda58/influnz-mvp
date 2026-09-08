@@ -15,6 +15,7 @@ interface FormState {
   budget: string;
   deliverables: string;
   targetAudience: string;
+  creatorsNeeded: string;
   deadline: string;
   negotiable: boolean;
 }
@@ -29,6 +30,7 @@ const emptyFormState: FormState = {
   budget: "",
   deliverables: "",
   targetAudience: "",
+  creatorsNeeded: "1",
   deadline: "",
   negotiable: false,
 };
@@ -62,6 +64,11 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
       nextErrors.budget = "Budget must be a positive number";
     }
     if (!form.deliverables.trim()) nextErrors.deliverables = "Deliverables are required";
+    if (!form.creatorsNeeded.trim()) {
+      nextErrors.creatorsNeeded = "Enter how many creators you need";
+    } else if (!(Number.isInteger(Number(form.creatorsNeeded)) && Number(form.creatorsNeeded) > 0)) {
+      nextErrors.creatorsNeeded = "Must be a positive whole number";
+    }
     if (!form.deadline) nextErrors.deadline = "Deadline is required";
 
     return nextErrors;
@@ -88,6 +95,7 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
           body: JSON.stringify({
             ...form,
             budget: Number(form.budget),
+            creatorsNeeded: Number(form.creatorsNeeded),
           }),
         },
       );
@@ -155,6 +163,15 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
             value={form.budget}
             onChange={(value) => updateField("budget", value)}
             error={errors.budget}
+          />
+          <Field
+            label="Creators needed"
+            id="creatorsNeeded"
+            type="number"
+            placeholder="1"
+            value={form.creatorsNeeded}
+            onChange={(value) => updateField("creatorsNeeded", value)}
+            error={errors.creatorsNeeded}
           />
           <TextAreaField
             label="Deliverables"

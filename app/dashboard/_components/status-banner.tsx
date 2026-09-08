@@ -1,15 +1,17 @@
-export type StatusBannerTone = "orange" | "red" | "gray";
+export type StatusBannerTone = "orange" | "red" | "gray" | "green";
 
 const TONE_CLASSES: Record<StatusBannerTone, string> = {
   orange: "border-orange-100 bg-orange-50/50",
   red: "border-red-100 bg-red-50/50",
   gray: "border-gray-100 bg-gray-50",
+  green: "border-green-100 bg-green-50/50",
 };
 
 const TITLE_CLASSES: Record<StatusBannerTone, string> = {
   orange: "text-orange-600",
   red: "text-red-600",
   gray: "text-gray-500",
+  green: "text-green-700",
 };
 
 interface StatusBannerProps {

@@ -201,6 +201,33 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         },
         tx,
       );
+
+      // Once enough creators are approved to fill the campaign's quota, close it to new applicants.
+      if (nextApplicationStatus === "APPROVED" && application.campaign.status === "APPROVED") {
+        const approvedCount = await tx.application.count({
+          where: { campaignId: application.campaignId, status: "APPROVED" },
+        });
+
+        if (approvedCount >= application.campaign.creatorsNeeded) {
+          await tx.campaign.update({
+            where: { id: application.campaignId },
+            data: { status: "CLOSED" },
+          });
+          await logCampaignActivity(
+            {
+              campaignId: application.campaignId,
+              actorId: userId,
+              actorRole: role,
+              actionType: "STATUS_CHANGED",
+              details: {
+                note: `Auto-closed — creator quota reached (${approvedCount}/${application.campaign.creatorsNeeded}).`,
+              },
+            },
+            tx,
+          );
+        }
+      }
+
       return result;
     });
     return NextResponse.json({ application: updated });
