@@ -11,6 +11,8 @@ import {
 } from "@/lib/application-status";
 import { logCampaignActivity } from "@/lib/activity-log";
 import { formatBudget } from "@/lib/format";
+import { AUTO_RELEASE_DAYS, releaseEscrow } from "@/lib/escrow";
+import { deliverNotificationEmails, writeNotifications, type NotifyPayload } from "@/lib/notify";
 
 interface PatchApplicationBody {
   action?: NegotiationAction;
@@ -37,9 +39,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
+  const PARTY_USER = { select: { id: true, email: true, emailNotifications: true } } as const;
+
   const application = await prisma.application.findUnique({
     where: { id },
-    include: { campaign: { include: { brand: true } }, creator: true },
+    include: {
+      campaign: { include: { brand: { include: { user: PARTY_USER } } } },
+      creator: { include: { user: PARTY_USER } },
+    },
   });
 
   if (!application) {
@@ -55,6 +62,20 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (role === "CREATOR" && !isCreatorOwner) {
     return NextResponse.json({ error: "Application not found" }, { status: 404 });
   }
+
+  /** The other side of this deal — whoever did not make the current request. */
+  const counterparty: Pick<NotifyPayload, "userId" | "email" | "emailEnabled"> =
+    role === "BRAND"
+      ? {
+          userId: application.creator.user.id,
+          email: application.creator.user.email,
+          emailEnabled: application.creator.user.emailNotifications,
+        }
+      : {
+          userId: application.campaign.brand.user.id,
+          email: application.campaign.brand.user.email,
+          emailEnabled: application.campaign.brand.user.emailNotifications,
+        };
 
   // Negotiation actions: Accept / Counter / Decline, turn-based.
   if (body.action) {
@@ -94,6 +115,17 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       const newBudget = Math.round(budgetNumber);
       const newDeliverables = body.proposedDeliverables.trim();
 
+      const counterNotification: NotifyPayload = {
+        ...counterparty,
+        type: "COUNTER_OFFER",
+        title: "You have a counter-offer",
+        body: `${role === "BRAND" ? application.campaign.brand.companyName : application.creator.name} countered on "${application.campaign.title}": ${formatBudget(newBudget)} for ${newDeliverables}.`,
+        linkUrl:
+          role === "BRAND"
+            ? "/dashboard/creator/applications"
+            : `/dashboard/brand/campaigns/${application.campaignId}`,
+      };
+
       const updated = await prisma.$transaction(async (tx) => {
         const result = await tx.application.update({
           where: { id },
@@ -128,16 +160,74 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
           tx,
         );
 
+        await writeNotifications(tx, [counterNotification]);
+
         return result;
       });
+
+      await deliverNotificationEmails([counterNotification]);
       return NextResponse.json({ application: updated });
     }
 
     // ACCEPT or DECLINE — terms lock at whatever is currently proposed, no field changes needed.
+    const settlementNotifications: NotifyPayload[] =
+      nextStatus === "CONFIRMED"
+        ? [
+            {
+              userId: application.campaign.brand.user.id,
+              email: application.campaign.brand.user.email,
+              emailEnabled: application.campaign.brand.user.emailNotifications,
+              type: "TERMS_AGREED",
+              title: "Terms agreed — fund escrow to start",
+              body: `You and ${application.creator.name} agreed ${formatBudget(application.proposedBudget)} for "${application.campaign.title}". Fund escrow so they can begin — they will not start work until the money is held.`,
+              linkUrl: `/dashboard/brand/campaigns/${application.campaignId}`,
+            },
+            {
+              userId: application.creator.user.id,
+              email: application.creator.user.email,
+              emailEnabled: application.creator.user.emailNotifications,
+              type: "TERMS_AGREED",
+              title: "Terms agreed",
+              body: `${application.campaign.brand.companyName} agreed ${formatBudget(application.proposedBudget)} for "${application.campaign.title}". Wait for escrow to be funded before starting work — you will be notified.`,
+              linkUrl: "/dashboard/creator/applications",
+            },
+          ]
+        : [
+            {
+              ...counterparty,
+              type: "APPLICATION_DECLINED",
+              title: "Application declined",
+              body: `${role === "BRAND" ? application.campaign.brand.companyName : application.creator.name} declined the deal on "${application.campaign.title}".`,
+              linkUrl:
+                role === "BRAND"
+                  ? "/dashboard/creator/applications"
+                  : `/dashboard/brand/campaigns/${application.campaignId}`,
+            },
+          ];
+
     const updated = await prisma.$transaction(async (tx) => {
       const result = await tx.application.update({ where: { id }, data: { status: nextStatus } });
 
       if (nextStatus === "CONFIRMED") {
+        // Freeze what was agreed. This snapshot is what both sides accept and
+        // what an admin reads if the deal is later disputed, so it must not
+        // move when the campaign or profile is edited afterwards.
+        await tx.contract.upsert({
+          where: { applicationId: application.id },
+          create: {
+            applicationId: application.id,
+            campaignTitle: application.campaign.title,
+            budget: application.proposedBudget,
+            deliverables: application.proposedDeliverables,
+            deadline: application.campaign.deadline,
+            brandName: application.campaign.brand.name,
+            brandCompanyName: application.campaign.brand.companyName,
+            creatorName: application.creator.name,
+            creatorHandle: application.creator.instagramHandle,
+          },
+          update: {},
+        });
+
         await logCampaignActivity(
           {
             campaignId: application.campaignId,
@@ -164,8 +254,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         );
       }
 
+      await writeNotifications(tx, settlementNotifications);
+
       return result;
     });
+
+    await deliverNotificationEmails(settlementNotifications);
     return NextResponse.json({ application: updated });
   }
 
@@ -186,7 +280,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const updated = await prisma.$transaction(async (tx) => {
       const result = await tx.application.update({
         where: { id },
-        data: { status: nextApplicationStatus },
+        data: {
+          status: nextApplicationStatus,
+          // Starts the auto-release clock: the brand has a fixed window to
+          // approve before escrow releases itself.
+          ...(nextApplicationStatus === "CONTENT_SUBMITTED"
+            ? { contentSubmittedAt: new Date() }
+            : {}),
+        },
       });
       await logCampaignActivity(
         {
@@ -205,7 +306,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       // Once enough creators are approved to fill the campaign's quota, close it to new applicants.
       if (nextApplicationStatus === "APPROVED" && application.campaign.status === "APPROVED") {
         const approvedCount = await tx.application.count({
-          where: { campaignId: application.campaignId, status: "APPROVED" },
+          where: {
+            campaignId: application.campaignId,
+            // RELEASED is an approved deal that has already been paid out, so
+            // it still counts against the quota.
+            status: { in: ["APPROVED", "RELEASED"] },
+          },
         });
 
         if (approvedCount >= application.campaign.creatorsNeeded) {
@@ -230,6 +336,39 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
       return result;
     });
+
+    // Approving the work releases the money. Done after the status transition
+    // commits (and outside it, because releasing talks to the payment layer),
+    // and it is what moves the application on to RELEASED.
+    if (nextApplicationStatus === "APPROVED") {
+      const release = await releaseEscrow({
+        applicationId: application.id,
+        actorId: userId,
+        actorRole: role,
+        note: "Released on brand approval.",
+      });
+
+      if (!release.released) {
+        // Legacy deals predating escrow have no funded row; the approval still
+        // stands, there is simply nothing to pay out.
+        console.info(`[escrow] release skipped for ${application.id}: ${release.reason}`);
+      }
+    }
+
+    if (nextApplicationStatus === "CONTENT_SUBMITTED") {
+      const notification: NotifyPayload = {
+        userId: application.campaign.brand.userId,
+        email: application.campaign.brand.user.email,
+        emailEnabled: application.campaign.brand.user.emailNotifications,
+        type: "CONTENT_SUBMITTED",
+        title: "Content submitted for review",
+        body: `${application.creator.name} submitted content for "${application.campaign.title}". You have ${AUTO_RELEASE_DAYS} days to approve before escrow releases automatically.`,
+        linkUrl: `/dashboard/brand/campaigns/${application.campaignId}`,
+      };
+      await prisma.$transaction(async (tx) => writeNotifications(tx, [notification]));
+      await deliverNotificationEmails([notification]);
+    }
+
     return NextResponse.json({ application: updated });
   }
 

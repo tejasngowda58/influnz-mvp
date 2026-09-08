@@ -65,9 +65,9 @@ interface ActivityDetails {
 function formatChangeValue(field: string, value: string | number | null): string {
   if (value == null) return "—";
   if (field === "budget") {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("en-IN", {
       style: "currency",
-      currency: "USD",
+      currency: "INR",
       maximumFractionDigits: 0,
     }).format(Number(value));
   }

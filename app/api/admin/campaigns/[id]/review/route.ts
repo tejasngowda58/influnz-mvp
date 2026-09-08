@@ -3,6 +3,7 @@ import type { ActivityActionType } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logCampaignActivity } from "@/lib/activity-log";
+import { deliverNotificationEmails, writeNotifications, type NotifyPayload } from "@/lib/notify";
 
 type ReviewAction = "APPROVE" | "REQUEST_CHANGES" | "REJECT";
 
@@ -47,7 +48,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     );
   }
 
-  const campaign = await prisma.campaign.findUnique({ where: { id } });
+  const campaign = await prisma.campaign.findUnique({
+    where: { id },
+    include: {
+      brand: { include: { user: { select: { id: true, email: true, emailNotifications: true } } } },
+    },
+  });
   if (!campaign) {
     return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
   }
@@ -57,6 +63,31 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
   const action = body.action;
   const comment = body.comment?.trim() || null;
+
+  const DECISION_COPY: Record<ReviewAction, { title: string; body: string }> = {
+    APPROVE: {
+      title: "Campaign approved",
+      body: `"${campaign.title}" is live and creators can now apply.`,
+    },
+    REQUEST_CHANGES: {
+      title: "Changes requested on your campaign",
+      body: `An admin asked for changes to "${campaign.title}"${comment ? `: ${comment}` : "."} Edit and resubmit to go live.`,
+    },
+    REJECT: {
+      title: "Campaign rejected",
+      body: `"${campaign.title}" was not approved${comment ? `: ${comment}` : "."}`,
+    },
+  };
+
+  const notification: NotifyPayload = {
+    userId: campaign.brand.user.id,
+    email: campaign.brand.user.email,
+    emailEnabled: campaign.brand.user.emailNotifications,
+    type: `CAMPAIGN_${action}`,
+    title: DECISION_COPY[action].title,
+    body: DECISION_COPY[action].body,
+    linkUrl: `/dashboard/brand/campaigns/${campaign.id}`,
+  };
 
   const updated = await prisma.$transaction(async (tx) => {
     const result = await tx.campaign.update({
@@ -79,8 +110,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       tx,
     );
 
+    await writeNotifications(tx, [notification]);
+
     return result;
   });
 
+  await deliverNotificationEmails([notification]);
   return NextResponse.json({ campaign: updated });
 }

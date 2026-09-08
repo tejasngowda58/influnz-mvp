@@ -25,8 +25,10 @@ const NEGOTIATION_RESULT: Record<ApplicationStatus, Partial<Record<NegotiationAc
   CREATOR_COUNTERED: { ACCEPT: "CONFIRMED", DECLINE: "REJECTED" },
   SHORTLISTED: {},
   CONFIRMED: {},
+  FUNDED: {},
   CONTENT_SUBMITTED: {},
   APPROVED: {},
+  RELEASED: {},
   REJECTED: {},
 };
 
@@ -37,11 +39,28 @@ export function nextStatusForAction(
   return NEGOTIATION_RESULT[current]?.[action] ?? null;
 }
 
-/** Simple forward-only pipeline once terms are agreed — brand-driven, unchanged from before negotiation existed. */
+/**
+ * Forward-only pipeline the brand drives by hand, once terms are agreed *and*
+ * the money is in escrow.
+ *
+ * CONFIRMED is deliberately absent: an application only leaves CONFIRMED when a
+ * verified payment lands (see `lib/escrow.ts`), so a brand cannot ask a creator
+ * to start work without funding it first. APPROVED is likewise absent because
+ * RELEASED is driven by the escrow release, not by a status PATCH.
+ */
 export const ALLOWED_TRANSITIONS: Partial<Record<ApplicationStatus, ApplicationStatus[]>> = {
-  CONFIRMED: ["CONTENT_SUBMITTED"],
+  FUNDED: ["CONTENT_SUBMITTED"],
   CONTENT_SUBMITTED: ["APPROVED"],
 };
+
+/** Terms are locked in and the deal is live — money is involved from here on. */
+export const LIVE_DEAL_STATUSES: ApplicationStatus[] = [
+  "CONFIRMED",
+  "FUNDED",
+  "CONTENT_SUBMITTED",
+  "APPROVED",
+  "RELEASED",
+];
 
 export const STATUS_ACTION_LABELS: Record<ApplicationStatus, string> = {
   APPLIED: "Applied",
@@ -49,7 +68,9 @@ export const STATUS_ACTION_LABELS: Record<ApplicationStatus, string> = {
   BRAND_COUNTERED: "Countered",
   CREATOR_COUNTERED: "Countered",
   CONFIRMED: "Confirm",
+  FUNDED: "Funded",
   CONTENT_SUBMITTED: "Mark content submitted",
   APPROVED: "Approve",
+  RELEASED: "Paid out",
   REJECTED: "Reject",
 };

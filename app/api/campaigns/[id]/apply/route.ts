@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logCampaignActivity } from "@/lib/activity-log";
+import { deliverNotificationEmails, writeNotifications, type NotifyPayload } from "@/lib/notify";
 
 interface ApplyBody {
   pitch?: string;
@@ -30,7 +31,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Creator profile not found" }, { status: 404 });
   }
 
-  const campaign = await prisma.campaign.findUnique({ where: { id } });
+  const campaign = await prisma.campaign.findUnique({
+    where: { id },
+    include: {
+      brand: { include: { user: { select: { id: true, email: true, emailNotifications: true } } } },
+    },
+  });
   if (!campaign) {
     return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
   }
@@ -53,6 +59,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       proposedDeliverables = body.proposedDeliverables.trim();
     }
   }
+
+  const notification: NotifyPayload = {
+    userId: campaign.brand.user.id,
+    email: campaign.brand.user.email,
+    emailEnabled: campaign.brand.user.emailNotifications,
+    type: "NEW_APPLICATION",
+    title: "New application",
+    body: `${creatorProfile.name} applied to "${campaign.title}".`,
+    linkUrl: `/dashboard/brand/campaigns/${campaign.id}`,
+  };
 
   try {
     const application = await prisma.$transaction(async (tx) => {
@@ -83,9 +99,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         tx,
       );
 
+      await writeNotifications(tx, [notification]);
+
       return created;
     });
 
+    await deliverNotificationEmails([notification]);
     return NextResponse.json({ application }, { status: 201 });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {

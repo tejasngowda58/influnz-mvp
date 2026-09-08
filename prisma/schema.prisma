@@ -37,8 +37,10 @@ enum ApplicationStatus {
   BRAND_COUNTERED
   CREATOR_COUNTERED
   CONFIRMED
+  FUNDED
   CONTENT_SUBMITTED
   APPROVED
+  RELEASED
   REJECTED
 }
 
@@ -59,39 +61,63 @@ enum ActivityActionType {
   COUNTER_OFFER_DECLINED
   TERMS_AGREED
   STATUS_CHANGED
+  ESCROW_FUNDED
+  ESCROW_RELEASED
+  ESCROW_REFUNDED
+  CONTRACT_ACCEPTED
   DISPUTE_RAISED
   DISPUTE_RESOLVED
 }
 
+enum EscrowStatus {
+  PENDING
+  FUNDED
+  RELEASED
+  REFUNDED
+  DISPUTED
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED_CREATOR
+  RESOLVED_BRAND
+  SPLIT
+}
+
 model User {
-  id                String             @id @default(uuid())
-  email             String             @unique
-  passwordHash      String
-  role              UserRole
-  createdAt         DateTime           @default(now())
-  creatorProfile    CreatorProfile?
-  brandProfile      BrandProfile?
+  id                 String             @id @default(uuid())
+  email              String             @unique
+  passwordHash       String
+  role               UserRole
+  emailNotifications Boolean            @default(true)
+  createdAt          DateTime           @default(now())
+  creatorProfile     CreatorProfile?
+  brandProfile       BrandProfile?
   campaignActivities CampaignActivity[]
+  notifications      Notification[]
+  disputesRaised     Dispute[]          @relation("DisputeRaisedBy")
+  disputesResolved   Dispute[]          @relation("DisputeResolvedBy")
 }
 
 model CreatorProfile {
-  id                          String          @id @default(uuid())
-  userId                      String          @unique
-  user                        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name                        String
-  phone                       String
-  instagramHandle             String?
-  contentCategory             ContentCategory
-  city                        String
-  followerCount               Int?
-  bio                         String?
-  avatarUrl                   String?
-  instagramUserId             String?         @unique
-  instagramProfilePictureUrl  String?
-  instagramAccessToken        String?
-  instagramTokenExpiresAt     DateTime?
-  instagramConnectedAt        DateTime?
-  applications                Application[]
+  id                         String          @id @default(uuid())
+  userId                     String          @unique
+  user                       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                       String
+  phone                      String
+  instagramHandle            String?
+  contentCategory            ContentCategory
+  city                       String
+  followerCount              Int?
+  bio                        String?
+  avatarUrl                  String?
+  instagramUserId            String?         @unique
+  instagramProfilePictureUrl String?
+  instagramAccessToken       String?
+  instagramTokenExpiresAt    DateTime?
+  instagramConnectedAt       DateTime?
+  applications               Application[]
 }
 
 model BrandProfile {
@@ -108,9 +134,9 @@ model BrandProfile {
 }
 
 model Campaign {
-  id             String         @id @default(uuid())
+  id             String             @id @default(uuid())
   brandId        String
-  brand          BrandProfile   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  brand          BrandProfile       @relation(fields: [brandId], references: [id], onDelete: Cascade)
   title          String
   description    String
   category       ContentCategory
@@ -118,35 +144,137 @@ model Campaign {
   budget         Int
   deliverables   String
   targetAudience String?
-  creatorsNeeded Int            @default(1)
+  creatorsNeeded Int                @default(1)
   deadline       DateTime
-  negotiable     Boolean        @default(false)
-  status         CampaignStatus @default(PENDING_REVIEW)
+  negotiable     Boolean            @default(false)
+  status         CampaignStatus     @default(PENDING_REVIEW)
   adminComment   String?
   reviewedAt     DateTime?
-  createdAt      DateTime       @default(now())
+  createdAt      DateTime           @default(now())
   applications   Application[]
   activities     CampaignActivity[]
 }
 
 model Application {
-  id         String            @id @default(uuid())
-  campaignId String
-  campaign   Campaign          @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  creatorId  String
-  creator    CreatorProfile    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  pitch      String?
+  id                   String             @id @default(uuid())
+  campaignId           String
+  campaign             Campaign           @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  creatorId            String
+  creator              CreatorProfile     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  pitch                String?
   proposedBudget       Int
   proposedDeliverables String
   negotiationMessage   String?
-  round                Int               @default(1)
-  lastOfferBy          OfferSide         @default(CREATOR)
-  status     ApplicationStatus @default(APPLIED)
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
-  activities CampaignActivity[]
+  round                Int                @default(1)
+  lastOfferBy          OfferSide          @default(CREATOR)
+  status               ApplicationStatus  @default(APPLIED)
+  contentSubmittedAt   DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  activities           CampaignActivity[]
+  escrow               EscrowTransaction?
+  contract             Contract?
+  disputes             Dispute[]
 
   @@unique([campaignId, creatorId])
+}
+
+/// Money held between terms being agreed and the work being approved.
+/// One per application: the brand funds it, the creator works against it,
+/// approval (or auto-release) queues the payout.
+model EscrowTransaction {
+  id                      String       @id @default(uuid())
+  applicationId           String       @unique
+  application             Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  /// Amount agreed with the creator, in paise. Always recomputed server-side.
+  amount                  Int
+  /// Influnz's cut, in paise, taken from the funded amount on release.
+  platformFee             Int
+  currency                String       @default("INR")
+  razorpayOrderId         String?      @unique
+  razorpayPaymentId       String?      @unique
+  razorpayRefundId        String?      @unique
+  status                  EscrowStatus @default(PENDING)
+  /// How many auto-release warnings have gone out (0, 1 at day 3, 2 at day 6).
+  autoReleaseWarningsSent Int          @default(0)
+  fundedAt                DateTime?
+  releasedAt              DateTime?
+  refundedAt              DateTime?
+  /// Paid to the creator on release; the remainder went back to the brand.
+  releasedAmount          Int?
+  refundedAmount          Int?
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+
+  @@index([status])
+}
+
+/// Every gateway callback we have already handled, so retries are no-ops.
+model WebhookEvent {
+  id         String   @id @default(uuid())
+  provider   String
+  eventId    String
+  eventType  String
+  payload    Json
+  receivedAt DateTime @default(now())
+
+  @@unique([provider, eventId])
+}
+
+/// Immutable snapshot of what both sides agreed to, taken at CONFIRMED.
+model Contract {
+  id                String      @id @default(uuid())
+  applicationId     String      @unique
+  application       Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  campaignTitle     String
+  budget            Int
+  deliverables      String
+  deadline          DateTime
+  brandName         String
+  brandCompanyName  String
+  creatorName       String
+  creatorHandle     String?
+  brandAcceptedAt   DateTime?
+  creatorAcceptedAt DateTime?
+  createdAt         DateTime    @default(now())
+}
+
+model Dispute {
+  id            String        @id @default(uuid())
+  applicationId String
+  application   Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  raisedById    String
+  raisedBy      User          @relation("DisputeRaisedBy", fields: [raisedById], references: [id], onDelete: Cascade)
+  raisedByRole  UserRole
+  reason        String
+  description   String
+  /// Free-form evidence: post links, screenshots urls, notes.
+  evidence      String[]      @default([])
+  status        DisputeStatus @default(OPEN)
+  resolution    String?
+  resolvedById  String?
+  resolvedBy    User?         @relation("DisputeResolvedBy", fields: [resolvedById], references: [id], onDelete: SetNull)
+  resolvedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([status])
+  @@index([applicationId])
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  body      String
+  linkUrl   String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+  @@index([createdAt])
 }
 
 model CampaignActivity {

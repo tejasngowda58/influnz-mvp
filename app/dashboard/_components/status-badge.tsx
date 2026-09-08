@@ -6,9 +6,11 @@ const STATUS_LABELS: Record<ApplicationStatus, string> = {
   SHORTLISTED: "Shortlisted",
   BRAND_COUNTERED: "Brand countered",
   CREATOR_COUNTERED: "Creator countered",
-  CONFIRMED: "Terms agreed",
+  CONFIRMED: "Awaiting funding",
+  FUNDED: "Funded — in escrow",
   CONTENT_SUBMITTED: "Content submitted",
   APPROVED: "Approved",
+  RELEASED: "Paid out",
   REJECTED: "Declined",
 };
 
@@ -17,9 +19,11 @@ const STATUS_TONES: Record<ApplicationStatus, BadgeTone> = {
   SHORTLISTED: "orange",
   BRAND_COUNTERED: "blue",
   CREATOR_COUNTERED: "blue",
-  CONFIRMED: "green",
+  CONFIRMED: "orange",
+  FUNDED: "blue",
   CONTENT_SUBMITTED: "orange",
   APPROVED: "green",
+  RELEASED: "green",
   REJECTED: "red",
 };
 

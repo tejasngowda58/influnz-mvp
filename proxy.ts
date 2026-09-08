@@ -64,5 +64,12 @@ export const config = {
     "/api/campaigns",
     "/api/campaigns/:path*",
     "/api/applications/:path*",
+    "/api/escrow/:path*",
+    "/api/disputes",
+    "/api/contracts/:path*",
+    "/api/notifications",
+    // Deliberately absent: /api/webhooks/* (signed by the payment provider),
+    // /api/cron/* (bearer secret), /api/instagram/callback and the Meta
+    // deauthorize/data-deletion callbacks, and /api/auth/* and /api/signup/*.
   ],
 };
