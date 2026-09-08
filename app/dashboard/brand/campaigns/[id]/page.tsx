@@ -135,12 +135,12 @@ export default async function BrandCampaignDetailPage({
 
         <div className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:grid-cols-2">
           <div>
-            <h3 className="text-xs font-medium text-muted/70">Deliverables</h3>
+            <h3 className="text-xs font-medium text-muted">Deliverables</h3>
             <p className="mt-1 text-sm text-strong">{campaign.deliverables}</p>
           </div>
           {campaign.targetAudience && (
             <div>
-              <h3 className="text-xs font-medium text-muted/70">
+              <h3 className="text-xs font-medium text-muted">
                 Target audience
               </h3>
               <p className="mt-1 text-sm text-strong">{campaign.targetAudience}</p>
@@ -180,7 +180,7 @@ export default async function BrandCampaignDetailPage({
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/dashboard/brand/creators/${application.creator.id}`}
-                        className="font-semibold text-strong hover:text-ember"
+                        className="font-semibold text-strong hover:text-ember-dark"
                       >
                         {application.creator.name}
                       </Link>

@@ -8,8 +8,8 @@ const BASE =
   "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors disabled:opacity-60 disabled:pointer-events-none";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary: "bg-ember text-white hover:bg-ember-dark",
-  outline: "border border-ember/25 bg-ember-tint text-ember hover:border-ember/40",
+  primary: "bg-ember-solid text-white hover:bg-ember-dark",
+  outline: "border border-ember/25 bg-ember-tint text-ember-dark hover:border-ember/40",
   ghost: "border border-line bg-surface text-strong hover:border-line-strong",
   danger: "border border-stopped/25 bg-stopped/5 text-stopped hover:border-stopped/40",
   /* For use on the ink base: landing page, auth surfaces. */

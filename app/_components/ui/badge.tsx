@@ -17,13 +17,13 @@ export type BadgeTone =
 
 const TONE_CLASSES: Record<BadgeTone, string> = {
   held: "bg-held/10 text-held",
-  yours: "bg-ember/10 text-ember",
+  yours: "bg-ember/10 text-ember-dark",
   theirs: "bg-muted/10 text-muted",
   settled: "bg-settled/10 text-settled",
   frozen: "bg-frozen/10 text-frozen",
   stopped: "bg-stopped/10 text-stopped",
   neutral: "bg-strong/6 text-muted",
-  accent: "bg-ember-tint text-ember",
+  accent: "bg-ember-tint text-ember-dark",
 };
 
 interface BadgeProps {

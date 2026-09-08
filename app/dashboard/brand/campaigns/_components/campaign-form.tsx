@@ -120,7 +120,7 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
     <Card className="p-8">
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
         <div className="flex flex-col gap-4">
-          <h2 className="text-xs font-semibold text-muted/70">
+          <h2 className="text-xs font-semibold text-muted">
             Campaign details
           </h2>
           <Field
@@ -152,7 +152,7 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
         </div>
 
         <div className="flex flex-col gap-4 border-t border-line pt-6">
-          <h2 className="text-xs font-semibold text-muted/70">
+          <h2 className="text-xs font-semibold text-muted">
             Budget &amp; timeline
           </h2>
           <Field
@@ -199,7 +199,7 @@ export function CampaignForm({ campaignId, initialValues }: CampaignFormProps) {
         </div>
 
         <div className="flex flex-col gap-4 border-t border-line pt-6">
-          <h2 className="text-xs font-semibold text-muted/70">
+          <h2 className="text-xs font-semibold text-muted">
             Targeting (optional)
           </h2>
           <Field

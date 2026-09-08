@@ -12,7 +12,7 @@ export function EmptyStateCard({ icon: Icon, title, description }: EmptyStateCar
   return (
     <Card className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-ember-tint text-ember">
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-ember-tint text-ember-dark">
           <Icon className="h-5 w-5" strokeWidth={1.75} />
         </span>
         <Badge tone="neutral">Coming soon</Badge>

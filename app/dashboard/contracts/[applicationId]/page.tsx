@@ -64,7 +64,7 @@ export default async function ContractPage({
       <Card className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-8 print:border-0 print:shadow-none">
         <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line pb-5">
           <div>
-            <p className="text-xs font-semibold text-ember">
+            <p className="text-xs font-semibold text-ember-dark">
               Collaboration agreement
             </p>
             <h1 className="mt-1 text-2xl font-semibold text-strong">{contract.campaignTitle}</h1>
@@ -80,12 +80,12 @@ export default async function ContractPage({
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
-            <h2 className="text-xs font-semibold text-muted/70">Brand</h2>
+            <h2 className="text-xs font-semibold text-muted">Brand</h2>
             <p className="mt-1 font-medium text-strong">{contract.brandCompanyName}</p>
             <p className="text-sm text-muted">{contract.brandName}</p>
           </div>
           <div>
-            <h2 className="text-xs font-semibold text-muted/70">Creator</h2>
+            <h2 className="text-xs font-semibold text-muted">Creator</h2>
             <p className="mt-1 font-medium text-strong">{contract.creatorName}</p>
             <p className="text-sm text-muted">
               {contract.creatorHandle
@@ -98,13 +98,13 @@ export default async function ContractPage({
         <div className="flex flex-col gap-4 border-t border-line pt-5">
           <div className="flex flex-wrap justify-between gap-4">
             <div>
-              <h2 className="text-xs font-semibold text-muted/70">Fee</h2>
+              <h2 className="text-xs font-semibold text-muted">Fee</h2>
               <p className="mt-1 text-xl font-semibold text-strong">
                 {formatBudget(contract.budget)}
               </p>
             </div>
             <div>
-              <h2 className="text-xs font-semibold text-muted/70">
+              <h2 className="text-xs font-semibold text-muted">
                 Delivery deadline
               </h2>
               <p className="mt-1 text-xl font-semibold text-strong">
@@ -114,14 +114,14 @@ export default async function ContractPage({
           </div>
 
           <div>
-            <h2 className="text-xs font-semibold text-muted/70">
+            <h2 className="text-xs font-semibold text-muted">
               Deliverables
             </h2>
             <p className="mt-1 text-sm whitespace-pre-line text-strong">{contract.deliverables}</p>
           </div>
 
           <div className="rounded-inset border border-line bg-paper p-4">
-            <h2 className="text-xs font-semibold text-muted/70">
+            <h2 className="text-xs font-semibold text-muted">
               How payment works
             </h2>
             <p className="mt-1 text-sm text-strong">
@@ -142,7 +142,7 @@ export default async function ContractPage({
             ] as const
           ).map((party) => (
             <div key={party.label} className="rounded-inset border border-line p-4">
-              <h3 className="text-xs font-semibold text-muted/70">
+              <h3 className="text-xs font-semibold text-muted">
                 {party.label}
               </h3>
               {party.at ? (

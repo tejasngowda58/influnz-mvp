@@ -9,7 +9,7 @@ export function Logo({ className = "", inverted = false }: LogoProps) {
       className={`text-xl font-semibold tracking-tight ${inverted ? "text-white" : "text-strong"} ${className}`}
     >
       Influ
-      <span className={inverted ? "text-ember-tint" : "text-ember"}>nz</span>
+      <span className={inverted ? "text-ember-tint" : "text-ember-dark"}>nz</span>
     </span>
   );
 }

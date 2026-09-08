@@ -189,7 +189,7 @@ export default async function AdminActivityPage({
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-paper px-5 py-3">
                 <Link
                   href={`/dashboard/admin/campaigns/${group.campaignId}`}
-                  className="font-semibold text-strong hover:text-ember"
+                  className="font-semibold text-strong hover:text-ember-dark"
                 >
                   {group.campaignTitle}
                 </Link>
@@ -212,7 +212,7 @@ export default async function AdminActivityPage({
                     </Badge>
                     <span className="text-muted">{formatEnumLabel(activity.actionType)}</span>
                     <span className="text-muted/80">{summarizeActivityDetails(activity.details)}</span>
-                    <span className="ml-auto whitespace-nowrap text-xs text-muted/70">
+                    <span className="ml-auto whitespace-nowrap text-xs text-muted">
                       {formatDateTime(activity.createdAt)}
                     </span>
                   </li>

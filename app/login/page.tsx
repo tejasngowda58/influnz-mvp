@@ -84,11 +84,11 @@ export default function LoginPage() {
       </form>
       <p className="mt-6 text-center text-sm text-muted">
         New to Influnz?{" "}
-        <Link href="/signup/creator" className="font-medium text-ember hover:text-ember-dark">
+        <Link href="/signup/creator" className="font-medium text-ember-dark hover:text-ember-dark">
           Sign up as a creator
         </Link>{" "}
         or{" "}
-        <Link href="/signup/brand" className="font-medium text-ember hover:text-ember-dark">
+        <Link href="/signup/brand" className="font-medium text-ember-dark hover:text-ember-dark">
           as a brand
         </Link>
         .

@@ -19,7 +19,7 @@ export default async function InstagramDataDeletionStatusPage({
           removed from Influnz.
         </p>
         {code && (
-          <p className="mt-4 text-xs text-muted/70">
+          <p className="mt-4 text-xs text-muted">
             Confirmation code: <span className="font-mono">{code}</span>
           </p>
         )}

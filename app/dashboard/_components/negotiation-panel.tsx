@@ -71,7 +71,7 @@ function Party({
     >
       <p className="truncate text-sm font-semibold text-strong">{name}</p>
       <p className="text-xs text-muted">{role}</p>
-      {isOfferer && <p className="text-micro font-semibold text-ember">their offer stands</p>}
+      {isOfferer && <p className="text-micro font-semibold text-ember-dark">their offer stands</p>}
     </div>
   );
 }
@@ -175,7 +175,7 @@ export function NegotiationPanel({
                     : "Admin"}
               </span>
               <span className="text-muted">{entry.text}</span>
-              <span className="ml-auto text-muted/70">{formatDateTime(entry.at)}</span>
+              <span className="ml-auto text-muted">{formatDateTime(entry.at)}</span>
             </li>
           ))}
         </ol>
@@ -240,7 +240,7 @@ export function NegotiationPanel({
     <div className="overflow-hidden rounded-card border border-line">
       <div
         className={`flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 ${
-          isMyTurn ? "bg-ember text-white" : "bg-strong/4 text-muted"
+          isMyTurn ? "bg-ember-solid text-white" : "bg-strong/4 text-muted"
         }`}
       >
         <span className="inline-flex items-center gap-1.5 text-sm font-semibold">
@@ -264,7 +264,7 @@ export function NegotiationPanel({
           <div className="rounded-inset border border-ember/25 bg-ember-tint px-5 py-3 text-center">
             <p className="text-xl font-bold text-strong">{formatBudget(proposedBudget)}</p>
             <p className="mt-0.5 text-xs text-muted">{proposedDeliverables}</p>
-            <p className="mt-1.5 inline-flex items-center gap-1 text-micro font-semibold text-ember">
+            <p className="mt-1.5 inline-flex items-center gap-1 text-micro font-semibold text-ember-dark">
               {lastOfferBy === "BRAND" ? (
                 <>
                   brand offered

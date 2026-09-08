@@ -72,7 +72,7 @@ export function ProfileCardShell({
                 className="h-24 w-24 rounded-full border-4 border-surface object-cover"
               />
             ) : (
-              <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-surface bg-ember-tint text-2xl font-semibold text-ember">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-surface bg-ember-tint text-2xl font-semibold text-ember-dark">
                 {getInitials(name)}
               </div>
             )}
@@ -91,12 +91,12 @@ export function ProfileCardShell({
             href={`https://instagram.com/${cleanHandle}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-muted hover:text-ember"
+            className="text-sm text-muted hover:text-ember-dark"
           >
             @{cleanHandle}
           </a>
         ) : (
-          <span className="text-sm text-muted/70">Instagram not connected</span>
+          <span className="text-sm text-muted">Instagram not connected</span>
         )}
 
         <div className="mt-4 flex flex-wrap justify-center gap-2 pb-6">
@@ -107,21 +107,21 @@ export function ProfileCardShell({
 
       <div className="grid grid-cols-3 divide-x divide-line border-y border-line">
         <div className="flex flex-col items-center gap-1 py-4">
-          <Users className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+          <Users className="h-4 w-4 text-muted" strokeWidth={1.75} />
           {followerLabel ? (
             <p className="text-sm font-semibold text-strong">{followerLabel}</p>
           ) : (
-            (followerFallback ?? <p className="text-sm font-semibold text-muted/70">—</p>)
+            (followerFallback ?? <p className="text-sm font-semibold text-muted">—</p>)
           )}
           <p className="text-xs text-muted">Followers</p>
         </div>
         <div className="flex flex-col items-center gap-1 py-4">
-          <Tag className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+          <Tag className="h-4 w-4 text-muted" strokeWidth={1.75} />
           <p className="text-sm font-semibold text-strong">{formatEnumLabel(category)}</p>
           <p className="text-xs text-muted">Category</p>
         </div>
         <div className="flex flex-col items-center gap-1 py-4">
-          <MapPin className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+          <MapPin className="h-4 w-4 text-muted" strokeWidth={1.75} />
           <p className="text-sm font-semibold text-strong">{city}</p>
           <p className="text-xs text-muted">City</p>
         </div>
@@ -133,7 +133,7 @@ export function ProfileCardShell({
           <p className="text-sm whitespace-pre-line text-strong">{bio}</p>
         ) : (
           (bioFallback ?? (
-            <p className="text-sm text-muted/70">This creator hasn&apos;t added a bio yet.</p>
+            <p className="text-sm text-muted">This creator hasn&apos;t added a bio yet.</p>
           ))
         )}
       </div>

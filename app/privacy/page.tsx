@@ -100,7 +100,7 @@ export default function PrivacyPolicyPage() {
               Questions about this policy or a request to delete your data can be sent to{" "}
               <a
                 href="mailto:tejasngowda58@gmail.com"
-                className="font-medium text-ember hover:text-ember-dark"
+                className="font-medium text-ember-dark hover:text-ember-dark"
               >
                 tejasngowda58@gmail.com
               </a>

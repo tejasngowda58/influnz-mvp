@@ -80,7 +80,7 @@ export default async function AdminDisputeDetailPage({
           </div>
           {application.escrow && (
             <div className="text-right">
-              <p className="text-xs font-medium text-muted/70">Held in escrow</p>
+              <p className="text-xs font-medium text-muted">Held in escrow</p>
               <p className="text-xl font-semibold text-strong">
                 {formatPaise(application.escrow.amount)}
               </p>
@@ -90,13 +90,13 @@ export default async function AdminDisputeDetailPage({
         </div>
 
         <div className="rounded-inset border border-line bg-paper p-4">
-          <h2 className="text-xs font-semibold text-muted/70">
+          <h2 className="text-xs font-semibold text-muted">
             What they said
           </h2>
           <p className="mt-2 text-sm whitespace-pre-line text-strong">{dispute.description}</p>
           {dispute.evidence.length > 0 && (
             <div className="mt-3">
-              <h3 className="text-xs font-semibold text-muted/70">Evidence</h3>
+              <h3 className="text-xs font-semibold text-muted">Evidence</h3>
               <ul className="mt-1 flex flex-col gap-1">
                 {dispute.evidence.map((item) => (
                   <li key={item} className="text-sm break-all text-ember-dark underline">
@@ -126,7 +126,7 @@ export default async function AdminDisputeDetailPage({
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card className="flex flex-col gap-3 p-6">
           <h2 className="inline-flex items-center gap-2 text-sm font-semibold text-strong">
-            <FileText className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+            <FileText className="h-4 w-4 text-muted" strokeWidth={1.75} />
             Agreed terms
           </h2>
           {application.contract ? (
@@ -172,20 +172,20 @@ export default async function AdminDisputeDetailPage({
 
         <Card className="flex flex-col gap-3 p-6">
           <h2 className="inline-flex items-center gap-2 text-sm font-semibold text-strong">
-            <User className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+            <User className="h-4 w-4 text-muted" strokeWidth={1.75} />
             The parties
           </h2>
           <div className="flex flex-col gap-3 text-sm">
             <div>
-              <p className="text-xs text-muted/70">Brand</p>
+              <p className="text-xs text-muted">Brand</p>
               <p className="font-medium text-strong">{application.campaign.brand.companyName}</p>
               <p className="text-muted">{application.campaign.brand.workEmail}</p>
             </div>
             <div>
-              <p className="text-xs text-muted/70">Creator</p>
+              <p className="text-xs text-muted">Creator</p>
               <Link
                 href={`/dashboard/admin/campaigns/${application.campaignId}`}
-                className="font-medium text-strong hover:text-ember"
+                className="font-medium text-strong hover:text-ember-dark"
               >
                 {application.creator.name}
               </Link>
@@ -196,10 +196,10 @@ export default async function AdminDisputeDetailPage({
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted/70">Campaign</p>
+              <p className="text-xs text-muted">Campaign</p>
               <Link
                 href={`/dashboard/admin/campaigns/${application.campaignId}`}
-                className="font-medium text-strong hover:text-ember"
+                className="font-medium text-strong hover:text-ember-dark"
               >
                 {application.campaign.title}
               </Link>
@@ -212,7 +212,7 @@ export default async function AdminDisputeDetailPage({
         <Card className="flex flex-col gap-4 p-6">
           <div>
             <h2 className="inline-flex items-center gap-2 text-sm font-semibold text-strong">
-              <Lock className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+              <Lock className="h-4 w-4 text-muted" strokeWidth={1.75} />
               Settle {formatPaise(application.escrow.amount)}
             </h2>
             <p className="mt-1 text-sm text-muted">

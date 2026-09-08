@@ -81,12 +81,12 @@ export default async function AdminCampaignDetailPage({
 
         <div className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:grid-cols-2">
           <div>
-            <h3 className="text-xs font-medium text-muted/70">Deliverables</h3>
+            <h3 className="text-xs font-medium text-muted">Deliverables</h3>
             <p className="mt-1 text-sm text-strong">{campaign.deliverables}</p>
           </div>
           {campaign.targetAudience && (
             <div>
-              <h3 className="text-xs font-medium text-muted/70">
+              <h3 className="text-xs font-medium text-muted">
                 Target audience
               </h3>
               <p className="mt-1 text-sm text-strong">{campaign.targetAudience}</p>
@@ -96,7 +96,7 @@ export default async function AdminCampaignDetailPage({
 
         {campaign.adminComment && (
           <div className="rounded-inset border border-ember/20 bg-ember-tint p-4">
-            <h3 className="text-xs font-medium text-ember">
+            <h3 className="text-xs font-medium text-ember-dark">
               Previous admin comment
             </h3>
             <p className="mt-1 text-sm text-strong">{campaign.adminComment}</p>
@@ -108,15 +108,15 @@ export default async function AdminCampaignDetailPage({
         <h2 className="text-sm font-semibold text-strong">Brand</h2>
         <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
           <span className="inline-flex items-center gap-1.5">
-            <Building2 className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+            <Building2 className="h-4 w-4 text-muted" strokeWidth={1.75} />
             {campaign.brand.companyName}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <MapPin className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+            <MapPin className="h-4 w-4 text-muted" strokeWidth={1.75} />
             {campaign.brand.city}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <Globe className="h-4 w-4 text-muted/70" strokeWidth={1.75} />
+            <Globe className="h-4 w-4 text-muted" strokeWidth={1.75} />
             {campaign.brand.companyWebsite}
           </span>
         </div>

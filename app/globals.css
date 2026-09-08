@@ -18,9 +18,15 @@
   --color-ink-soft: #2b2545;
   --color-ink-line: #3a3358;
 
-  /* The action accent. Means "primary action", never decoration. */
+  /* The action accent. Means "primary action", never decoration.
+   * Three shades because contrast is not optional:
+   *   ember       — fills, borders, icons, and large display text
+   *   ember-solid — surfaces that carry white text (4.7:1), e.g. buttons
+   *   ember-dark  — accent *text* on light backgrounds (5.9:1), and hovers
+   */
   --color-ember: #e8590c;
-  --color-ember-dark: #c94a06;
+  --color-ember-solid: #c94a06;
+  --color-ember-dark: #a83a04;
   --color-ember-tint: #fff2e9;
 
   /* --- neutrals, tinted toward the base so surfaces feel deliberate ----- */
@@ -39,7 +45,7 @@
   --color-yours: #e8590c; /* awaiting your move — same as the primary action */
   --color-theirs: #6b6580; /* awaiting them — recedes */
   --color-settled: #157a5b; /* approved / released */
-  --color-frozen: #b4530a; /* disputed — serious, not an error */
+  --color-frozen: #a54a08; /* disputed — serious, not an error */
   --color-stopped: #a8324a; /* rejected / refunded */
 
   /* --- radius by hierarchy --------------------------------------------- */

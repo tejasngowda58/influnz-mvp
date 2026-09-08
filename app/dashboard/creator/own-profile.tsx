@@ -166,7 +166,7 @@ export function OwnProfile({
     <button
       type="button"
       onClick={openDialog}
-      className="rounded-full border border-dashed border-ember/40 px-2.5 py-0.5 text-xs font-semibold text-ember transition-colors hover:bg-ember-tint"
+      className="rounded-full border border-dashed border-ember/40 px-2.5 py-0.5 text-xs font-semibold text-ember-dark transition-colors hover:bg-ember-tint"
     >
       {label}
     </button>
@@ -225,7 +225,7 @@ export function OwnProfile({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="text-xs font-semibold text-ember underline underline-offset-2"
+                    className="text-xs font-semibold text-ember-dark underline underline-offset-2"
                   >
                     Upload
                   </button>
@@ -234,7 +234,7 @@ export function OwnProfile({
                   <button
                     type="button"
                     onClick={openDialog}
-                    className="text-xs font-semibold text-ember underline underline-offset-2"
+                    className="text-xs font-semibold text-ember-dark underline underline-offset-2"
                   >
                     Add
                   </button>

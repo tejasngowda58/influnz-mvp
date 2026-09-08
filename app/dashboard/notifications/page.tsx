@@ -64,7 +64,7 @@ export default async function NotificationsPage() {
                 <div className={notification.readAt ? "pl-5" : ""}>
                   <p className="text-sm font-semibold text-strong">{notification.title}</p>
                   <p className="mt-1 text-sm text-muted">{notification.body}</p>
-                  <p className="mt-1.5 text-xs text-muted/70">
+                  <p className="mt-1.5 text-xs text-muted">
                     {formatDateTime(notification.createdAt)}
                   </p>
                 </div>

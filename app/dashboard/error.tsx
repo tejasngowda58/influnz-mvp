@@ -27,7 +27,7 @@ export default function DashboardError({
   return (
     <div className="flex flex-1 items-center justify-center bg-paper p-6">
       <Card radius="surface" className="flex w-full max-w-md flex-col items-center gap-4 p-8 text-center">
-        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
+        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember-dark">
           <PlugZap className="h-6 w-6" strokeWidth={1.75} />
         </span>
         <div>
@@ -41,7 +41,7 @@ export default function DashboardError({
           <RotateCcw className="h-4 w-4" strokeWidth={2} />
           Try again
         </Button>
-        {error.digest && <p className="text-micro text-muted/70">Reference {error.digest}</p>}
+        {error.digest && <p className="text-micro text-muted">Reference {error.digest}</p>}
       </Card>
     </div>
   );

@@ -49,7 +49,7 @@ export function CreatorCard({
               className="h-10 w-10 flex-none rounded-full object-cover"
             />
           ) : (
-            <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-ember-tint text-sm font-semibold text-ember">
+            <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-ember-tint text-sm font-semibold text-ember-dark">
               {getInitials(name)}
             </div>
           )}

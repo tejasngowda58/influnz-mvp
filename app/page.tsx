@@ -133,7 +133,7 @@ export default function LandingPage() {
                 { icon: Scale, label: "Disputes actually decided" },
               ].map((item) => (
                 <span key={item.label} className="inline-flex items-center gap-2 text-sm text-white/60">
-                  <item.icon className="h-4 w-4 text-ember" strokeWidth={2} />
+                  <item.icon className="h-4 w-4 text-ember-dark" strokeWidth={2} />
                   {item.label}
                 </span>
               ))}
@@ -186,7 +186,7 @@ export default function LandingPage() {
             <ol className="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
               {LIFECYCLE.map((step, index) => (
                 <li key={step.title} className="flex gap-4">
-                  <span className="flex h-7 w-7 flex-none items-center justify-center rounded-full border border-ember/30 bg-ember-tint text-sm font-bold text-ember">
+                  <span className="flex h-7 w-7 flex-none items-center justify-center rounded-full border border-ember/30 bg-ember-tint text-sm font-bold text-ember-dark">
                     {index + 1}
                   </span>
                   <div>
@@ -219,7 +219,7 @@ export default function LandingPage() {
                 key={side.title}
                 className="flex flex-col rounded-surface border border-line bg-surface p-8"
               >
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-inset bg-ember-tint text-ember">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-inset bg-ember-tint text-ember-dark">
                   <side.icon className="h-5 w-5" strokeWidth={2} />
                 </span>
                 <h3 className="mt-4 font-display text-2xl text-strong">{side.title}</h3>

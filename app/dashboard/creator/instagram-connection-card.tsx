@@ -47,7 +47,7 @@ export function InstagramConnectionCard({
             className="h-12 w-12 rounded-full object-cover"
           />
         ) : (
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ember-tint text-ember-dark">
             <AtSign className="h-5 w-5" strokeWidth={1.75} />
           </span>
         )}

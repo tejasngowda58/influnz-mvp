@@ -84,7 +84,7 @@ export default async function BrandDashboardPage() {
               },
             ].map((step, index) => (
               <li key={step.title} className="flex gap-3">
-                <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full border border-ember/30 bg-ember-tint text-xs font-bold text-ember">
+                <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full border border-ember/30 bg-ember-tint text-xs font-bold text-ember-dark">
                   {index + 1}
                 </span>
                 <div>

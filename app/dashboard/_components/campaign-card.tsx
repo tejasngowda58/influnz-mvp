@@ -33,7 +33,7 @@ export function CampaignCard({
       <Card className="flex flex-col gap-3 p-6 transition-colors hover:border-line-strong">
         <div className="flex items-start justify-between gap-3">
           <div>
-            {brandName && <p className="text-xs font-medium text-ember">{brandName}</p>}
+            {brandName && <p className="text-xs font-medium text-ember-dark">{brandName}</p>}
             <h3 className="font-semibold text-strong">{title}</h3>
           </div>
           {status && <CampaignStatusBadge status={status} />}
@@ -57,7 +57,7 @@ export function CampaignCard({
           </span>
         </div>
         {typeof applicantCount === "number" && (
-          <p className="text-xs font-medium text-muted/70">
+          <p className="text-xs font-medium text-muted">
             {applicantCount} applicant{applicantCount === 1 ? "" : "s"}
           </p>
         )}

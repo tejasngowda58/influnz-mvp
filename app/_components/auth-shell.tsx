@@ -39,7 +39,7 @@ export function AuthShell({ eyebrow, title, pitch, children }: AuthShellProps) {
           </Link>
           <Link
             href="/"
-            className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-ember"
+            className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-ember-dark"
           >
             <ArrowLeft className="h-4 w-4" strokeWidth={2} />
             Back to home

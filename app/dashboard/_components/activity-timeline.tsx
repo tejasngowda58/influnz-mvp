@@ -11,7 +11,7 @@ const ROLE_ICON: Record<UserRole, typeof User> = {
 
 const ROLE_CLASSES: Record<UserRole, string> = {
   CREATOR: "bg-held/5 text-held",
-  BRAND: "bg-ember-tint text-ember",
+  BRAND: "bg-ember-tint text-ember-dark",
   ADMIN: "bg-purple-50 text-purple-600",
 };
 
@@ -53,7 +53,7 @@ export function ActivityTimeline({ entries }: { entries: ActivityTimelineEntry[]
                   details: entry.details,
                 })}
               </p>
-              <p className="text-xs text-muted/70">{formatDateTime(entry.createdAt)}</p>
+              <p className="text-xs text-muted">{formatDateTime(entry.createdAt)}</p>
             </div>
           </li>
         );

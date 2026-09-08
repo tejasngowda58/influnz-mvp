@@ -204,11 +204,11 @@ export default function BrandSignupPage() {
 
       <p className="mt-6 text-center text-sm text-muted">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-ember hover:text-ember-dark">
+        <Link href="/login" className="font-medium text-ember-dark hover:text-ember-dark">
           Log in
         </Link>{" "}
         &middot;{" "}
-        <Link href="/signup/creator" className="font-medium text-ember hover:text-ember-dark">
+        <Link href="/signup/creator" className="font-medium text-ember-dark hover:text-ember-dark">
           Sign up as a creator
         </Link>
       </p>

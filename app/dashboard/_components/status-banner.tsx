@@ -8,7 +8,7 @@ const TONE_CLASSES: Record<StatusBannerTone, string> = {
 };
 
 const TITLE_CLASSES: Record<StatusBannerTone, string> = {
-  orange: "text-ember",
+  orange: "text-ember-dark",
   red: "text-stopped",
   gray: "text-muted",
   green: "text-settled",

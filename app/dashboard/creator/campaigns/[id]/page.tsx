@@ -53,7 +53,7 @@ export default async function CreatorCampaignDetailPage({
       <BackLink href="/dashboard/creator/campaigns" label="Back to campaigns" />
       <Card className="flex flex-col gap-4 p-8">
         <div>
-          <p className="text-sm font-medium text-ember">{campaign.brand.companyName}</p>
+          <p className="text-sm font-medium text-ember-dark">{campaign.brand.companyName}</p>
           <div className="mt-1 flex items-center gap-2">
             <h1 className="text-2xl font-semibold text-strong">{campaign.title}</h1>
             {campaign.negotiable && <Badge tone="accent">Negotiable</Badge>}
@@ -73,12 +73,12 @@ export default async function CreatorCampaignDetailPage({
 
         <div className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:grid-cols-2">
           <div>
-            <h3 className="text-xs font-medium text-muted/70">Deliverables</h3>
+            <h3 className="text-xs font-medium text-muted">Deliverables</h3>
             <p className="mt-1 text-sm text-strong">{campaign.deliverables}</p>
           </div>
           {campaign.targetAudience && (
             <div>
-              <h3 className="text-xs font-medium text-muted/70">
+              <h3 className="text-xs font-medium text-muted">
                 Target audience
               </h3>
               <p className="mt-1 text-sm text-strong">{campaign.targetAudience}</p>

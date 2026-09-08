@@ -19,11 +19,11 @@ export function ProfileCard({ title, fields }: ProfileCardProps) {
       <dl className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {fields.map(({ label, value, icon: Icon }) => (
           <div key={label} className="flex items-start gap-3">
-            <span className="mt-0.5 inline-flex h-8 w-8 flex-none items-center justify-center rounded-full bg-ember-tint text-ember">
+            <span className="mt-0.5 inline-flex h-8 w-8 flex-none items-center justify-center rounded-full bg-ember-tint text-ember-dark">
               <Icon className="h-4 w-4" strokeWidth={1.75} />
             </span>
             <div>
-              <dt className="text-xs font-medium text-muted/70">{label}</dt>
+              <dt className="text-xs font-medium text-muted">{label}</dt>
               <dd className="mt-0.5 text-sm font-medium break-words text-strong">{value}</dd>
             </div>
           </div>
